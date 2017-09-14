@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import re
 import structures_collection as collection
+import resource_handler as resources
+import convertation_handler as converter
 
 class Container:
     def __init__(self):
@@ -28,7 +30,7 @@ class Container:
                         for action in af.actions:
                             # allow resources ?
                             if parameter in action.edit_affected_parameters and LinkSentence(af.link).check(element):
-                                afs.append(af)
+                                afs.append((row.get_id(), af))
         return afs
 
     def add_element(self, element_type, element_content, element_id):
@@ -38,12 +40,15 @@ class Container:
         self.rows.append(element)
 
     def make_apply(self, link_action_pair, element_id):
+        coll_handler = CollectionHandler()
         for row in self.rows:
             if LinkSentence(link_action_pair.link).check(row):
                 # is it possible to make a variable?
                 self.get_by_id(row.get_id()).add_applied(element_id)
+
                 if len(link_action_pair.actions) > 0:
-                    # request to MGSSC!!
+                    for action in link_action_pair.actions:
+                        coll_handler.run_function(action.path, action.arguments)
 
 class CollectionHandler:
 
@@ -82,6 +87,9 @@ class CollectionHandler:
         except:
             raise WrongFunctionUse()
 
+    def get_static(self, path):
+        static = self.if_exists(path)
+        return static
 
 
 class ContainerElement:
@@ -139,7 +147,10 @@ class LinkSentence:
         except NoSuchParameter:
             good_afs = self.container.get_actions_declaring(param_pair.key, element)
             if len(good_afs) > 0:
-
+                self.container.make_apply(good_afs[0][1], good_afs[0][0])
+            else:
+                resources.get_parameter(param_pair.key, element)
+            is_good = element.get_parameter(param_pair.key) == param_pair.value
 
 
     class ParameterPair:
