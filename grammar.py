@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import re
+import structures_collection as collection
 
 class Container:
     def __init__(self):
@@ -43,6 +44,45 @@ class Container:
                 self.get_by_id(row.get_id()).add_applied(element_id)
                 if len(link_action_pair.actions) > 0:
                     # request to MGSSC!!
+
+class CollectionHandler:
+
+    def __init__(self):
+        pass
+
+    def if_exists(self, path):
+        if not re.search(r'^[\w_:]+$', path):
+            raise WrongCollectionPath()
+
+        s_path = path.split(':')
+
+        if len(s_path) < 2:
+            raise WrongCollectionPath()
+
+        if not hasattr(collection, s_path[0]):
+            raise NoSuchSystem()
+
+        system = getattr(collection, s_path[0])()
+        if not hasattr(system, s_path[1]):
+            raise NoSuchSubsystem()
+        else:
+            subsystem = getattr(system, s_path[1])
+
+        for step in s_path[2:]:
+            if not hasattr(subsystem, step):
+                raise NoSuchSubsystem()
+            subsystem = getattr(subsystem, step)
+
+        return subsystem
+
+    def run_function(self, path, args = []):
+        function = self.if_exists(path)
+        try:
+            return function(args)
+        except:
+            raise WrongFunctionUse()
+
+
 
 class ContainerElement:
     def __init__(self, element_type, element_content, element_id):
@@ -128,9 +168,20 @@ class LinkSentence:
 class IdIsNotUnique(Exception):
     pass
 
-
 class ParameterExistsAlready(Exception):
     pass
 
 class NoSuchParameter(Exception):
+    pass
+
+class WrongCollectionPath(Exception):
+    pass
+
+class NoSuchSystem(Exception):
+    pass
+
+class NoSuchSubsystem(Exception):
+    pass
+
+class WrongFunctionUse(Exception):
     pass
