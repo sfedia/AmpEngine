@@ -2,6 +2,7 @@
 
 
 class universal:
+    # inherit for 2 subelements?
     def __init__(self, obj):
         self.object = obj
 
