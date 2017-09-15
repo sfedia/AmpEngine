@@ -148,9 +148,13 @@ class LinkSentence:
             good_afs = self.container.get_actions_declaring(param_pair.key, element)
             if len(good_afs) > 0:
                 self.container.make_apply(good_afs[0][1], good_afs[0][0])
-            else:
-                resources.get_parameter(param_pair.key, element)
-            is_good = element.get_parameter(param_pair.key) == param_pair.value
+                is_good = element.get_parameter(param_pair.key) == param_pair.value
+            elif self.allow_resources:
+                parameter = resources.get_parameter(param_pair.key, element)
+                if parameter:
+                    is_good = parameter == param_pair.value
+                else:
+                    raise CannotGetParameter()
 
 
     class ParameterPair:
@@ -195,4 +199,7 @@ class NoSuchSubsystem(Exception):
     pass
 
 class WrongFunctionUse(Exception):
+    pass
+
+class CannotGetParameter(Exception):
     pass
