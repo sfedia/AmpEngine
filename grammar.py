@@ -4,6 +4,7 @@ import structures_collection as collection
 import resource_handler as resources
 import convertation_handler as converter
 
+
 class Container:
     def __init__(self):
         pass
@@ -29,7 +30,8 @@ class Container:
                     if len(af.actions) == 0:
                         for action in af.actions:
                             # allow resources ?
-                            if parameter in action.edit_affected_parameters and LinkSentence(af.link).check(element):
+                            check_results = LinkSentence(af.link, self).check(element)
+                            if parameter in action.edit_affected_parameters and check_results:
                                 afs.append((row.get_id(), af))
         return afs
 
@@ -42,7 +44,7 @@ class Container:
     def make_apply(self, link_action_pair, element_id):
         coll_handler = CollectionHandler()
         for row in self.rows:
-            if LinkSentence(link_action_pair.link).check(row):
+            if LinkSentence(link_action_pair.link, self).check(row):
                 # is it possible to make a variable?
                 self.get_by_id(row.get_id()).add_applied(element_id)
 
@@ -80,7 +82,7 @@ class CollectionHandler:
 
         return subsystem
 
-    def run_function(self, path, args = []):
+    def run_function(self, path, args = ()):
         function = self.if_exists(path)
         try:
             return function(args)
@@ -132,6 +134,7 @@ class ContainerElement:
 
 
 class LinkSentence:
+
     def __init__(self, link_string, container, from_list = (), allow_resources = True):
         self.link = link_string
         self.container = container
@@ -159,7 +162,6 @@ class LinkSentence:
                 raise CannotGetParameter()
 
         return is_good
-
 
     class ParameterPair:
         def __init__(self, key, value = True):
@@ -192,7 +194,7 @@ class LinkSentence:
             elif len(f_seq) == GroupEq.sector_op:
                 fs_extracted = f_seq[0].strip()
                 if fs_extracted[0] == '[':
-                    parsed_list.append(self.parse_sector(fs_extracted[1:-1]))
+                    parsed_list.append(self.parse_sector(fs_extracted[1:-1].strip(), element))
                 elif fs_extracted in ['&', '|']:
                     parsed_list.append(fs_extracted)
                 else:
@@ -201,6 +203,37 @@ class LinkSentence:
                 raise WrongLinkSentence()
 
         return parsed_list
+
+    def is_good(self, link_slice, element):
+        len_link_slice = len(link_slice)
+        complete_list = []
+
+        for i in range(len_link_slice):
+            if link_slice[i] in ('&', '|'):
+                complete_list.append(link_slice[i])
+            else:
+                complete_list.append(self.check_element(element, link_slice[i]))
+
+        if '&' in complete_list and '|' in complete_list:
+            raise WrongLinkSentence()
+
+        common_operator = '&' if '&' in complete_list else '|' if '|' in complete_list else False
+
+        if not common_operator and (len(link_slice) > 1 or len(link_slice) == 0):
+            raise WrongLinkSentence()
+
+        if not common_operator:
+            return link_slice[0]
+        elif common_operator == '&':
+            return not False in link_slice
+        elif common_operator == '|':
+            return True in link_slice
+        else:
+            raise WrongLinkSentence()
+
+    def check(self, element):
+        parsed_list = self.parse_sector(self.link, element)
+        return self.is_good(parsed_list, element)
 
 
 class IdIsNotUnique(Exception):
