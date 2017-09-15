@@ -155,15 +155,20 @@ class LinkSentence:
                     is_good = parameter == param_pair.value
                 else:
                     raise CannotGetParameter()
+            else:
+                raise CannotGetParameter()
+
+        return is_good
 
 
     class ParameterPair:
-        def __init__(self, key, value=True):
+        def __init__(self, key, value = True):
             self.key = key
             self.value = value
             self.prop = 'ParameterPair'
 
-    def parse_sector(self, sector):
+    def parse_sector(self, sector, element):
+        sector = sector.strip()
         sector_rx = r'([\w:]+)(\*?=)\(([^\)]*)\)|\s*([&\|])\s*|(\[[^\]]*\])'
 
         class GroupEq:
@@ -172,34 +177,63 @@ class LinkSentence:
 
         parsed_sector = re.findall(sector_rx, sector)
 
+        parsed_list = []
+
         for seq in parsed_sector:
             f_seq = list(set(seq))
             if len(f_seq) == GroupEq.comparison:
+                if f_seq == '=':
+                    parameter_pair = self.ParameterPair(f_seq[0], f_seq[2])
+                elif f_seq == '*=':
+                    parameter_pair = self.ParameterPair(f_seq[0], element.get_parameter(f_seq[2]))
+                else:
+                    raise WrongLinkSentence()
+                parsed_list.append(parameter_pair)
+            elif len(f_seq) == GroupEq.sector_op:
+                fs_extracted = f_seq[0].strip()
+                if fs_extracted[0] == '[':
+                    parsed_list.append(self.parse_sector(fs_extracted[1:-1]))
+                elif fs_extracted in ['&', '|']:
+                    parsed_list.append(fs_extracted)
+                else:
+                    raise WrongLinkSentence()
+            else:
+                raise WrongLinkSentence()
 
+        return parsed_list
 
-        return parsed_sector
-        #len([x for x in parsed_sector if x[0] == 'subpattern'])
 
 class IdIsNotUnique(Exception):
     pass
 
+
 class ParameterExistsAlready(Exception):
     pass
+
 
 class NoSuchParameter(Exception):
     pass
 
+
 class WrongCollectionPath(Exception):
     pass
+
 
 class NoSuchSystem(Exception):
     pass
 
+
 class NoSuchSubsystem(Exception):
     pass
+
 
 class WrongFunctionUse(Exception):
     pass
 
+
 class CannotGetParameter(Exception):
+    pass
+
+
+class WrongLinkSentence(Exception):
     pass
