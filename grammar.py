@@ -211,8 +211,10 @@ class LinkSentence:
         for i in range(len_link_slice):
             if link_slice[i] in ('&', '|'):
                 complete_list.append(link_slice[i])
-            else:
+            elif type(link_slice[i]) == list:
                 complete_list.append(self.check_element(element, link_slice[i]))
+            else:
+                complete_list.append(self.is_good(link_slice[i], element))
 
         if '&' in complete_list and '|' in complete_list:
             raise WrongLinkSentence()
