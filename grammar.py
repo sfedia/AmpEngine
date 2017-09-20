@@ -162,7 +162,7 @@ class LinkSentence:
                 if parameter:
                     is_good = parameter == param_pair.value
                 elif not block_converter:
-                    conv_variants = converter.param_pair_convert(param_pair.key, param_pair.value)
+                    conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
                     if len(conv_variants) == 0:
                         raise CannotGetParameter()
                     else:
