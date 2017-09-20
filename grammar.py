@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import re
+import inspect
 import structures_collection as collection
 import resource_handler as resources
 import convertation_handler as converter
@@ -52,6 +53,7 @@ class Container:
                     for action in link_action_pair.actions:
                         coll_handler.run_function(action.path, action.arguments)
 
+
 class CollectionHandler:
 
     def __init__(self):
@@ -91,7 +93,10 @@ class CollectionHandler:
 
     def get_static(self, path):
         static = self.if_exists(path)
-        return static
+        if inspect.isclass(static):
+            return static
+        else:
+            raise TypeIsNotStatic()
 
 
 class ContainerElement:
@@ -114,7 +119,7 @@ class ContainerElement:
         if not class_name in self.class_names:
             self.class_names.append(class_name)
 
-    def edit_parameter(self, key, value=True):
+    def edit_parameter(self, key, value = True):
         self.parameters[key] = value
 
     def set_parameter(self, key, value = True):
@@ -271,4 +276,8 @@ class CannotGetParameter(Exception):
 
 
 class WrongLinkSentence(Exception):
+    pass
+
+
+class TypeIsNotStatic(Exception):
     pass
