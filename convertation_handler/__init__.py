@@ -5,12 +5,20 @@ class RelativeDatabase:
 
     references = {}
 
-    def undirected(self, function, st_a, st_b):
-        self.references[(st_a, st_b)] = function
-        self.references[(st_b, st_a)] = function
+    def undirected(self, st_a, st_b):
+        def wrapper(function):
+            def wrapped(*args):
+                self.references[(st_a, st_b)] = function
+                self.references[(st_b, st_a)] = function
+            return wrapped
+        return wrapper
 
-    def directed(self, function, st_a, st_b):
-        self.references[(st_a, st_b)] = function
+    def directed(self, st_a, st_b):
+        def wrapper(function):
+            def wrapped(*args):
+                self.references[(st_a, st_b)] = function
+            return wrapped
+        return wrapper
 
 
 def convertible(st_a, st_b):
