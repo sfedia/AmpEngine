@@ -149,7 +149,7 @@ class LinkSentence:
             self.checked_list = from_list
         self.allow_resources = allow_resources
 
-    def check_element(self, element, param_pair, block_converter = False):
+    def check_element(self, element, param_pair, block_converter=False):
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:
@@ -168,7 +168,7 @@ class LinkSentence:
                     else:
                         for variant in conv_variants:
                             try:
-                                return self.check_element(element, variant, block_converter = True)
+                                return self.check_element(element, variant, block_converter=True)
                             except CannotGetParameter:
                                 pass
                         raise CannotGetParameter()
@@ -180,7 +180,7 @@ class LinkSentence:
         return is_good
 
     class ParameterPair:
-        def __init__(self, key, value = True):
+        def __init__(self, key, value=True):
             self.key = key
             self.value = value
             self.prop = 'ParameterPair'
