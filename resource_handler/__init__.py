@@ -3,14 +3,6 @@
 marked_functions = {}
 
 
-def mark_as(identifiers):
-    def wrapper(cl):
-        def wrapped(*args):
-            marked_classes[tuple(identifiers)] = cl
-        return wrapped
-    return wrapper
-
-
 class Prepare:
 
     def __init__(self, *args):
@@ -47,19 +39,27 @@ def tag(strings):
         return wrapped
     return wrapper
 
+
 def provides(parameters):
     def wrapper(fn):
         def wrapped(*args):
-            #for
+            for key in marked_functions:
+                if fn in marked_functions[key]:
+                    if len(key) == 0:
+                        raise BadProvidingDecorator()
+                    if type(key[0]) != tuple:
+                        new_key = (tuple(parameters), tuple(key))
+                        if new_key in marked_functions:
+                            if fn not in marked_functions[fn]:
+                                marked_functions[new_key].append(fn)
+                        else:
+                            marked_functions[new_key] = fn
 
-
-def makeitalic(fn):
-    def wrapper(fn):
-        return "<i>" + fn() + "</i>"
-
-    return wrapped
 
 
 class NoCalledClassesFound(Exception):
     pass
 
+
+class BadProvidingDecorator(Exception):
+    pass
