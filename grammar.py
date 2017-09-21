@@ -188,7 +188,7 @@ class LinkSentence:
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
-        sector_rx = r'([\w:]+)(\*?=)\(([^\)]*)\)|\s*([&\|])\s*|(\[[^\]]*\])'
+        sector_rx = r'([\w:]+)((\*?=|\?))\(([^\)]*)\)|\s*([&\|])\s*|(\[[^\]]*\])'
 
         class GroupEq:
             comparison = 3
