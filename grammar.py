@@ -254,6 +254,22 @@ class LinkSentence:
         return self.is_good(parsed_list, element)
 
 
+class Action:
+
+	def __init__(self, path, arguments=False):
+		self.path = path
+		self.arguments = arguments if arguments else []
+
+	def get_path(self):
+		return self.path
+
+	def get_arguments(self):
+		return self.path
+
+	def get_args(self):
+		return self.get_arguments()
+
+
 class IdIsNotUnique(Exception):
     pass
 
