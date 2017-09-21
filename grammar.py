@@ -41,6 +41,7 @@ class Container:
             raise IdIsNotUnique()
         element = ContainerElement(element_type, element_content, element_id)
         self.rows.append(element)
+	return self.get_by_id(element_id)
 
     def make_apply(self, link_action_pair, element_id):
         coll_handler = CollectionHandler()
