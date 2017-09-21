@@ -112,28 +112,34 @@ class ContainerElement:
 
     def apply(self, link_act_pair):
         self.apply_for += link_act_pair
+	return self
 
     def add_applied(self, applied_id):
         self.applied_ids.append(applied_id)
+	return self
 
     def add_class(self, class_name):
         if not class_name in self.class_names:
             self.class_names.append(class_name)
+	return self
 
     def edit_parameter(self, key, value = True):
         self.parameters[key] = value
+	return self
 
     def set_parameter(self, key, value = True):
         if not key in self.parameters:
             self.edit_parameter(key, value)
         else:
             raise ParameterExistsAlready()
+	return self
 
     def get_parameter(self, key):
         if key in self.parameters:
             return self.parameters[key]
         else:
             raise NoSuchParameter()
+	return self
 
     def get_id(self):
         return self.id
