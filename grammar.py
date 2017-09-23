@@ -121,7 +121,7 @@ class ContainerElement:
         return self
 
     def add_class(self, class_name):
-        if not class_name in self.class_names:
+        if class_name not in self.class_names:
             self.class_names.append(class_name)
             return self
 
@@ -130,7 +130,7 @@ class ContainerElement:
         return self
 
     def set_parameter(self, key, value = True):
-        if not key in self.parameters:
+        if key not in self.parameters:
             self.edit_parameter(key, value)
         else:
             raise ParameterExistsAlready()
