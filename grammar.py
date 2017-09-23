@@ -139,8 +139,7 @@ class ContainerElement:
     def get_parameter(self, key):
         if key in self.parameters:
             return self.parameters[key]
-        else:
-            raise NoSuchParameter()
+        raise NoSuchParameter()
 
     def get_id(self):
         return self.id
