@@ -21,7 +21,7 @@ class Container:
                 return row
         return False
 
-    def get_actions_declaring(self, parameter, element, from_list = ()):
+    def get_actions_declaring(self, parameter, element, from_list=()):
         afs = []
         if len(from_list) == 0:
             for row in self.rows:
@@ -41,6 +41,7 @@ class Container:
             raise IdIsNotUnique()
         element = ContainerElement(element_type, element_content, element_id)
         self.rows.append(element)
+        return self.get_by_id(element_id)
 
     def make_apply(self, link_action_pair, element_id):
         coll_handler = CollectionHandler()
@@ -59,7 +60,8 @@ class CollectionHandler:
     def __init__(self):
         pass
 
-    def if_exists(self, path):
+    @staticmethod
+    def if_exists(path):
         if not re.search(r'^[\w_:]+$', path):
             raise WrongCollectionPath()
 
@@ -85,9 +87,10 @@ class CollectionHandler:
         return subsystem
 
     def run_function(self, path, args = ()):
-        function = self.if_exists(path)
+        func = self.if_exists(path)
         try:
-            return function(args)
+            return func(args)
+        # too broad!
         except:
             raise WrongFunctionUse()
 
@@ -111,28 +114,32 @@ class ContainerElement:
 
     def apply(self, link_act_pair):
         self.apply_for += link_act_pair
+        return self
 
     def add_applied(self, applied_id):
         self.applied_ids.append(applied_id)
+        return self
 
     def add_class(self, class_name):
-        if not class_name in self.class_names:
+        if class_name not in self.class_names:
             self.class_names.append(class_name)
+            return self
 
     def edit_parameter(self, key, value = True):
         self.parameters[key] = value
+        return self
 
     def set_parameter(self, key, value = True):
-        if not key in self.parameters:
+        if key not in self.parameters:
             self.edit_parameter(key, value)
         else:
             raise ParameterExistsAlready()
+        return self
 
     def get_parameter(self, key):
         if key in self.parameters:
             return self.parameters[key]
-        else:
-            raise NoSuchParameter()
+        raise NoSuchParameter()
 
     def get_id(self):
         return self.id
@@ -187,7 +194,7 @@ class LinkSentence:
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
-        sector_rx = r'([\w:]+)(\*?=)\(([^\)]*)\)|\s*([&\|])\s*|(\[[^\]]*\])'
+        sector_rx = r'([\w:]+)((\*?=|\?))\(([^\)]*)\)|\s*([&\|])\s*|(\[[^\]]*\])'
 
         class GroupEq:
             comparison = 3
@@ -243,7 +250,7 @@ class LinkSentence:
         if not common_operator:
             return link_slice[0]
         elif common_operator == '&':
-            return not False in link_slice
+            return False not in link_slice
         elif common_operator == '|':
             return True in link_slice
         else:
@@ -252,6 +259,21 @@ class LinkSentence:
     def check(self, element):
         parsed_list = self.parse_sector(self.link, element)
         return self.is_good(parsed_list, element)
+
+
+class Action:
+    def __init__(self, path, arguments=False):
+        self.path = path
+        self.arguments = arguments if arguments else []
+
+    def get_path(self):
+        return self.path
+
+    def get_arguments(self):
+        return self.path
+
+    def get_args(self):
+        return self.get_arguments()
 
 
 class IdIsNotUnique(Exception):
