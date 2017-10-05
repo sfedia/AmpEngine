@@ -17,7 +17,7 @@ class Prepare:
 
     def get_parameter(self, key, element):
         for called in self.called:
-            pass
+
 
 
 class Void:
