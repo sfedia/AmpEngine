@@ -21,6 +21,22 @@ class Container:
                 return row
         return False
 
+    def get_by_class_name(self, class_name):
+        elements = []
+        for row in self.rows:
+            if class_name in row.get_class_names():
+                elements.append(row)
+
+        return elements
+
+    def get_by_type(self, element_type):
+        elements = []
+        for row in self.rows:
+            if element_type == row.get_type():
+                elements.append(row)
+
+        return elements
+
     def get_actions_declaring(self, parameter, element, from_list=()):
         afs = []
         if len(from_list) == 0:
@@ -143,6 +159,12 @@ class ContainerElement:
 
     def get_id(self):
         return self.id
+
+    def get_class_names(self):
+        return self.class_names
+
+    def get_type(self):
+        return self.type
 
 
 class LinkSentence:
