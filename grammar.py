@@ -165,6 +165,11 @@ class ContainerElement:
 
     def get_type(self):
         return self.type
+    
+    def set_child_type(self, child_type):
+        if ':' in child_type:
+            raise WrongChildType()
+        self.type += ':' + child_type
 
 
 class LinkSentence:
@@ -335,4 +340,8 @@ class WrongLinkSentence(Exception):
 
 
 class TypeIsNotStatic(Exception):
+    pass
+
+
+class WrongChildType(Exception):
     pass
