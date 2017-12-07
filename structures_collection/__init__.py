@@ -1,3 +1,5 @@
 #!/usr/bin/python3
 
-from universal import *
+import structures_collection.auto_segmentation as auto_segmentation
+import structures_collection.dependency as dependency
+import structures_collection.auto_parameter_extraction as auto_parameter_extraction
