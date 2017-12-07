@@ -52,6 +52,9 @@ class InputContainer:
     def add_element(self, element):
         self.elements.append(element)
 
+    def get_all(self):
+        return self.elements
+
 
 class InputContainerElement:
     def __init__(self, system_name, content, params={}, parent=None):
@@ -110,20 +113,20 @@ class Container:
 
         return elements
 
-    def get_actions_declaring(self, parameter, element, from_list=()):
-        afs = []
-        if len(from_list) == 0:
-            for row in self.rows:
-                if len(row.apply_for) == 0:
-                    continue
-                for af in row.apply_for:
-                    if len(af.actions) == 0:
-                        for action in af.actions:
-                            # allow resources ?
-                            check_results = LinkSentence(af.link, self).check(element)
-                            if parameter in action.edit_affected_parameters and check_results:
-                                afs.append((row.get_id(), af))
-        return afs
+    def get_elems_providing_param(self, param, element, input_container):
+        aprp = []
+        for row in self.rows:
+            if len(row.apply_for) == 0:
+                continue
+            af_link = row.apply_for[0]
+            af_funcs = row.apply_for[1]
+            if len(af_funcs) == 0:
+                continue
+            for func in af_funcs:
+                check_results = LinkSentence(af_link, input_container).check(element)
+                if param in collection.static.Handler.get_func_params(func) and check_results:
+                    aprp.append(row.get_id())
+        return aprp
 
     def add_element(self, element_type, element_content, element_id):
         if self.get_by_id(element_id):
@@ -247,9 +250,10 @@ class ContainerElement:
 
 class LinkSentence:
 
-    def __init__(self, link_string, container, from_list = (), allow_resources = True):
+    def __init__(self, link_string, container, input_container, from_list = (), allow_resources = True):
         self.link = link_string
         self.container = container
+        self.input_container = input_container
         if len(from_list) == 0:
             self.checked_list = container.get_all()
         else:
@@ -260,8 +264,10 @@ class LinkSentence:
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:
+            good_afs = collection.static.Handler.params_affected(param_pair.key)
             good_afs = self.container.get_actions_declaring(param_pair.key, element)
-            if len(good_afs) > 0:
+            good_aprp = self.container.get_elems_providing_param(param_pair.key, element, self.input_container)
+            if len(good_aprp) > 0:
                 self.container.make_apply(good_afs[0][1], good_afs[0][0])
                 is_good = element.get_parameter(param_pair.key) == param_pair.value
             elif self.allow_resources:
@@ -370,7 +376,7 @@ class Action:
         return self.path
 
     def get_arguments(self):
-        return self.path
+        return self.arguments
 
     def get_args(self):
         return self.get_arguments()

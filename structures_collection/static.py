@@ -6,7 +6,7 @@ class HandlerStart:
         self.funcs = {}
         self.params_affected = {}
 
-    def get_funcs(self, func_name):
+    def get_func(self, func_name):
         if func_name in self.funcs:
             return self.funcs[func_name]
         else:
@@ -15,6 +15,19 @@ class HandlerStart:
     def add_func(self, func_name, params_affected, value):
         self.funcs[func_name] = value
         self.params_affected[func_name] = params_affected
+
+    def get_funcs_declaring(self, param):
+        returned = []
+        for pa_el in self.params_affected:
+            if param in self.params_affected[pa_el]:
+                returned.append(pa_el)
+        return returned
+
+    def get_all_funcs(self):
+        return self.funcs.values()
+
+    def get_func_params(self, func_name):
+        return self.params_affected[func_name]
 
 
 # every function should return List
@@ -36,7 +49,7 @@ def new_func(func_name, params_affected):
     return segm_decorator
 
 
-@new_func('gram:case:set_loc')
+@new_func('gram:case:set_loc', params_affected=['gram:case'])
 def gram_case_set_loc(element):
     element.set_parameter('gram:case', 'loc')
     return element
