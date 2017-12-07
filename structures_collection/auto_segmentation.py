@@ -39,9 +39,5 @@ def input_to_tokens(content, metadata=None):
     return content.split()
 
 
-a = Handler.segment('universal:input', 'universal:token')('foo bar abc')
-print(a)
-
-
 class NoSuchSegmentTemplate(Exception):
     pass
