@@ -26,8 +26,8 @@ def segmentation(from_, to_):
     def segm_decorator(func):
         Handler.add_segment(from_, to_, func)
 
-        def wrapped(function_arg1, function_arg2):
-            return func(function_arg1, function_arg2)
+        def wrapped(function_arg1):
+            return func(function_arg1)
 
         return wrapped
 
@@ -38,10 +38,6 @@ def segmentation(from_, to_):
 def input_to_tokens(content, metadata=None):
     return content.split()
 
-
-@segmentation('universal:token', 'universal:morpheme')
-def token_to_morphemes(morphemes, metadata=None):
-    return morphemes
 
 class NoSuchSegmentTemplate(Exception):
     pass

@@ -19,7 +19,7 @@ class InputContainer:
     def segment_into_childs(self, system_name):
         if system_name not in collection.dependency:
             return
-        for child_system in collection.dependency[system_name]:
+        for child_system in collection.dependency.systems[system_name]:
             for element in self.get_by_system_name(system_name):
                 self.segment_element(
                     element,
@@ -27,6 +27,11 @@ class InputContainer:
                     collection.auto_segmentation.Handler().segment(system_name, child_system)
                 )
             self.segment_into_childs(child_system)
+
+    def remove_childs_of(self, parent_id):
+        for element in self.elements:
+            if element.get_parent_ic_id() == parent_id:
+                self.elements.remove(element)
 
     def get_by_ic_id(self, ic_id):
         returned = []
@@ -75,6 +80,9 @@ class InputContainerElement:
     def get_ic_id(self):
         return self.ic_id
 
+    def get_parent_ic_id(self):
+        return self.parent_ic_id
+
     def get_system_name(self):
         return self.system_name
 
@@ -113,7 +121,7 @@ class Container:
 
         return elements
 
-    def get_elems_providing_param(self, param, element, input_container):
+    def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
             if len(row.apply_for) == 0:
@@ -123,7 +131,7 @@ class Container:
             if len(af_funcs) == 0:
                 continue
             for func in af_funcs:
-                check_results = LinkSentence(af_link, input_container).check(element)
+                check_results = LinkSentence(af_link, self, input_container, scanned_system).check(element)
                 if param in collection.static.Handler.get_func_params(func) and check_results:
                     aprp.append(row.get_id())
         return aprp
@@ -250,28 +258,34 @@ class ContainerElement:
 
 class LinkSentence:
 
-    def __init__(self, link_string, container, input_container, from_list = (), allow_resources = True):
+    def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources = True):
         self.link = link_string
         self.container = container
         self.input_container = input_container
         if len(from_list) == 0:
-            self.checked_list = container.get_all()
+            self.checked_list = container.get_by_system_name(scanned_system)
         else:
             self.checked_list = from_list
         self.allow_resources = allow_resources
+        self.scanned_system = scanned_system
 
     def check_element(self, element, param_pair, block_converter=False):
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:
-            good_afs = collection.static.Handler.params_affected(param_pair.key)
-            good_afs = self.container.get_actions_declaring(param_pair.key, element)
-            good_aprp = self.container.get_elems_providing_param(param_pair.key, element, self.input_container)
+            #good_afs = collection.static.Handler.params_affected(param_pair.key)
+            #good_afs = self.container.get_actions_declaring(param_pair.key, element)
+            good_aprp = self.container.get_elems_providing_param(
+                param_pair.key,
+                element,
+                self.input_container,
+                self.scanned_system
+            )
             if len(good_aprp) > 0:
                 self.container.make_apply(good_afs[0][1], good_afs[0][0])
                 is_good = element.get_parameter(param_pair.key) == param_pair.value
             elif self.allow_resources:
-                parameter = resources.get_parameter(param_pair.key, element)
+                parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
                 if parameter:
                     is_good = parameter == param_pair.value
                 elif not block_converter:
