@@ -268,6 +268,7 @@ class LinkSentence:
                 if parameter:
                     is_good = parameter == param_pair.value
                 elif not block_converter:
+                    # is not ready yet
                     conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
                     if len(conv_variants) == 0:
                         raise CannotGetParameter()
@@ -286,10 +287,12 @@ class LinkSentence:
         return is_good
 
     class ParameterPair:
-        def __init__(self, key, value=True):
+        def __init__(self, key, value=True, sharp=False):
             self.key = key
             self.value = value
             self.prop = 'ParameterPair'
+            if sharp:
+                self.prop = 'Sharp'
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
