@@ -19,9 +19,6 @@ class HandlerStart:
         self.segments[(parent_system, child_system)] = func
 
 
-# every function should return List
-
-
 Handler = HandlerStart()
 
 

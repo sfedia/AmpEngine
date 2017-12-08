@@ -22,9 +22,6 @@ class HandlerStart:
         self.param_extractors[(system_name, param_name)] = func
 
 
-# every function should return List
-
-
 Handler = HandlerStart()
 
 

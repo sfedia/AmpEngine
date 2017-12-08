@@ -4,6 +4,7 @@ import inspect
 import structures_collection as collection
 import resource_handler as resources
 import convertation_handler as converter
+import log_handler as logs
 import random
 import string
 
@@ -20,13 +21,16 @@ class InputContainer:
         if system_name not in collection.dependency:
             return
         for child_system in collection.dependency.systems[system_name]:
-            for element in self.get_by_system_name(system_name):
-                self.segment_element(
-                    element,
-                    child_system,
-                    collection.auto_segmentation.Handler().segment(system_name, child_system)
-                )
-            self.segment_into_childs(child_system)
+            try:
+                for element in self.get_by_system_name(system_name):
+                    self.segment_element(
+                        element,
+                        child_system,
+                        collection.auto_segmentation.Handler().segment(system_name, child_system)
+                    )
+                self.segment_into_childs(child_system)
+            except collection.auto_segmentation.NoSuchSegmentTemplate:
+                continue
 
     def remove_childs_of(self, parent_id):
         for element in self.elements:
@@ -51,8 +55,12 @@ class InputContainer:
 
     def segment_element(self, element, child_system, child_list):
         parent_ic = element.get_ic_id()
+        ices = []
         for child in child_list:
-            self.add_element(InputContainerElement(child_system, child, parent=parent_ic))
+            ice = InputContainerElement(child_system, child, parent=parent_ic)
+            ices.append(ice.get_ic_id())
+            self.add_element(ice)
+        return ices
 
     def add_element(self, element):
         self.elements.append(element)
@@ -60,13 +68,39 @@ class InputContainer:
     def get_all(self):
         return self.elements
 
+    def make_apply(self, main_container_element_id, main_container, scanned_system):
+        main_container_element = main_container.get_by_id(main_container_element_id)
+        link_sentence = main_container_element.apply_for[0]
+        actions = main_container_element.apply_for[1]
+        rows = self.get_by_system_name(scanned_system)
+        for row in rows:
+            if LinkSentence(link_sentence, main_container, self, scanned_system).check(row):
+                # get ic_id
+                if not collection.auto_segmentation.Handler.can_segment(scanned_system, main_container_element.get_type()):
+                    extracted_ic_id = collection.layer_extraction.Handler.extract(
+                        scanned_system, main_container_element.get_type()
+                    )(row, main_container_element.get_content())
+                else:
+                    # ???
+                    # a request to logger can be done
+                    for x in self.get_by_system_name(scanned_system):
+                        if x.get_content() == main_container_element.get_content():
+                            extracted_ic_id = x.get_ic_id()
+                            break
+                for action in actions:
+                    args = action.get_arguments()
+                    if args:
+                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id, args)
+                    else:
+                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id)
+
 
 class InputContainerElement:
     def __init__(self, system_name, content, params={}, parent=None):
         self.system_name = system_name
         self.content = content
         self.params = params
-        for param, func in collection.auto_parameter_extraction.Handler().get_param_lambdas(self.system_name):
+        for param, func in collection.auto_parameter_extraction.Handler().get_param_extractors(self.system_name):
             self.params[param] = func(content)
         self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
         self.parent_ic_id = parent
@@ -143,64 +177,6 @@ class Container:
         self.rows.append(element)
         return self.get_by_id(element_id)
 
-    def make_apply(self, link_action_pair, element_id):
-        coll_handler = CollectionHandler()
-        for row in self.rows:
-            if LinkSentence(link_action_pair.link, self).check(row):
-                # is it possible to make a variable?
-                self.get_by_id(row.get_id()).add_applied(element_id)
-
-                if len(link_action_pair.actions) > 0:
-                    for action in link_action_pair.actions:
-                        coll_handler.run_function(action.path, action.arguments)
-
-
-class CollectionHandler:
-
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def if_exists(path):
-        if not re.search(r'^[\w_:]+$', path):
-            raise WrongCollectionPath()
-
-        s_path = path.split(':')
-
-        if len(s_path) < 2:
-            raise WrongCollectionPath()
-
-        if not hasattr(collection, s_path[0]):
-            raise NoSuchSystem()
-
-        system = getattr(collection, s_path[0])()
-        if not hasattr(system, s_path[1]):
-            raise NoSuchSubsystem()
-        else:
-            subsystem = getattr(system, s_path[1])
-
-        for step in s_path[2:]:
-            if not hasattr(subsystem, step):
-                raise NoSuchSubsystem()
-            subsystem = getattr(subsystem, step)
-
-        return subsystem
-
-    def run_function(self, path, args = ()):
-        func = self.if_exists(path)
-        try:
-            return func(args)
-        # too broad!
-        except:
-            raise WrongFunctionUse()
-
-    def get_static(self, path):
-        static = self.if_exists(path)
-        if inspect.isclass(static):
-            return static
-        else:
-            raise TypeIsNotStatic()
-
 
 class ContainerElement:
     def __init__(self, element_type, element_content, element_id):
@@ -249,6 +225,9 @@ class ContainerElement:
 
     def get_type(self):
         return self.type
+
+    def get_content(self):
+        return self.element_content
     
     def set_child_type(self, child_type):
         if ':' in child_type:
@@ -282,7 +261,7 @@ class LinkSentence:
                 self.scanned_system
             )
             if len(good_aprp) > 0:
-                self.container.make_apply(good_afs[0][1], good_afs[0][0])
+                self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
                 is_good = element.get_parameter(param_pair.key) == param_pair.value
             elif self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)

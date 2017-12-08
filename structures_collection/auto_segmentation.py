@@ -14,6 +14,15 @@ class HandlerStart:
     def add_segment(self, from_, to_, func):
         self.segments[(from_, to_)] = func
 
+    def can_segment(self, from_, to_):
+        return (from_, to_) in self.segments
+
+    def to_values(self, to_):
+        to_val = []
+        for key in self.segments:
+            to_val.append(key[1])
+        return to_val
+
 
 # every function should return List
 
@@ -38,10 +47,6 @@ def segmentation(from_, to_):
 def input_to_tokens(content, metadata=None):
     return content.split()
 
-
-@segmentation('universal:token', 'universal:morpheme')
-def token_to_morphemes(morphemes, metadata=None):
-    return morphemes
 
 class NoSuchSegmentTemplate(Exception):
     pass

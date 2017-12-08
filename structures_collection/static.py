@@ -30,9 +30,6 @@ class HandlerStart:
         return self.params_affected[func_name]
 
 
-# every function should return List
-
-
 Handler = HandlerStart()
 
 

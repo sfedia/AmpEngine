@@ -1,30 +1,32 @@
 #!/usr/bin/python3
 
+'''
+Layer extraction functions should require parent `element` and new `content` arguments
+Return: ic_id of extracted input container element
+'''
+
 
 class HandlerStart:
     def __init__(self):
-        self.segments = {}
+        self.extracts = {}
 
-    def segment(self, from_, to_):
-        if (from_, to_) in self.segments:
-            return self.segments[(from_, to_)]
+    def extract(self, from_, to_):
+        if (from_, to_) in self.extracts:
+            return self.extracts[(from_, to_)]
         else:
             raise NoSuchSegmentTemplate()
 
-    def add_segment(self, from_, to_, func):
-        self.segments[(from_, to_)] = func
-
-
-# every function should return List
+    def add_extract(self, from_, to_, func):
+        self.extracts[(from_, to_)] = func
 
 
 Handler = HandlerStart()
 
 
-def segmentation(from_, to_):
+def extraction(from_, to_):
 
     def segm_decorator(func):
-        Handler.add_segment(from_, to_, func)
+        Handler.add_extract(from_, to_, func)
 
         def wrapped(function_arg1):
             return func(function_arg1)
@@ -34,9 +36,12 @@ def segmentation(from_, to_):
     return segm_decorator
 
 
-@segmentation('universal:input', 'universal:token')
-def input_to_tokens(content, metadata=None):
-    return content.split()
+@extraction('universal:token', 'universal:morpheme')
+def token_to_morphemes(parent_element, content):
+    # remove all elements that are childs of parent_element (ic_id)
+    # get parent ic_id logs and sort the positions
+    # segment_element with the new `content` again
+    pass
 
 
 class NoSuchSegmentTemplate(Exception):
