@@ -249,6 +249,7 @@ class LinkSentence:
         self.scanned_system = scanned_system
 
     def check_element(self, element, param_pair, block_converter=False):
+        # SHARP SUPPORT
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:
