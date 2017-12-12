@@ -237,7 +237,7 @@ class ContainerElement:
 
 class LinkSentence:
 
-    def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources = True):
+    def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources=True):
         self.link = link_string
         self.container = container
         self.input_container = input_container
@@ -249,7 +249,8 @@ class LinkSentence:
         self.scanned_system = scanned_system
 
     def check_element(self, element, param_pair, block_converter=False):
-        # SHARP SUPPORT
+        if param_pair.sharp:
+            return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(True)
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:

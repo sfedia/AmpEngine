@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from log_handler import LogData
+
 '''
 Sharp function should return a Bool
 '''
@@ -8,6 +10,7 @@ Sharp function should return a Bool
 class HandlerStart:
     def __init__(self):
         self.segments = {}
+        self.log = LogData()
 
     def get_sharp(self, parent_system, child_system):
         if (parent_system, child_system) in self.segments:
