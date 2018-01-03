@@ -10,8 +10,10 @@ import string
 
 
 class InputContainer:
-    def __init__(self, content, metadata):
+    def __init__(self, content, metadata=None):
         self.metadata = {}
+        if metadata is not None:
+            self.metadata = metadata
         self.elements = []
         self.INPUT = 'universal:input'
         self.add_element(InputContainerElement(self.INPUT, content))
@@ -227,7 +229,7 @@ class ContainerElement:
         return self.type
 
     def get_content(self):
-        return self.element_content
+        return self.content
     
     def set_child_type(self, child_type):
         if ':' in child_type:
@@ -250,7 +252,11 @@ class LinkSentence:
 
     def check_element(self, element, param_pair, block_converter=False):
         if param_pair.sharp:
-            return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(True)
+            return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(
+                element,
+                self.container,
+                self.input_container
+            )
         try:
             is_good = element.get_parameter(param_pair.key) == param_pair.value
         except NoSuchParameter:

@@ -39,7 +39,11 @@ def new_sharp(parent_system, child_system):
 
 
 @new_sharp(parent_system='universal:token', child_system='universal:morpheme')
-def token_to_morpheme(**kwargs):
+def morpheme_in_token(element, container, input_container):
+    pass
+
+@new_sharp(parent_system='universal:token', child_system='universal:morpheme')
+def morpheme_in_token(element, container, input_container):
     pass
 
 
