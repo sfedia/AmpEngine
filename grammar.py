@@ -325,7 +325,7 @@ class LinkSentence:
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
-        sector_rx = r'([\w:]+)((\*?=|\?))\(([^\)]*)\)|\s*([&\|])\s*|(\[.*\])'
+        sector_rx = r'([\w:]+)(\*?([<>!=]+|\?))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[.*\])'
 
         class GroupEq:
             comparison = 3
@@ -341,9 +341,11 @@ class LinkSentence:
 
         for seq in parsed_sector:
             f_seq = [x for x in seq if x != '']
+            # remove duplicates
             for op in ('=', '*='):
                 if op in f_seq:
                     f_seq.remove(op)
+            ### def __init__(self, key, value='', sharp=False, operator="=", bool_check=False):
             if len(f_seq) == GroupEq.comparison:
                 if f_seq == '=':
                     parameter_pair = self.ParameterPair(f_seq[0], f_seq[2])
