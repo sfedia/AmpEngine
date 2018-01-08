@@ -295,12 +295,33 @@ class LinkSentence:
         return is_good
 
     class ParameterPair:
-        def __init__(self, key, value=True, sharp=False):
+        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False):
             self.key = key
+            self.bool_check = bool_check
+            if value == '':
+                self.bool_check = True
             self.value = value
             self.prop = 'ParameterPair'
+            self.operator = operator
             if sharp:
                 self.prop = 'Sharp'
+
+        def compare(self, value):
+            self.operator = self.operator.replace('*', '')
+            if self.operator == "=":
+                return self.value == value
+            elif self.operator == "!=":
+                return self.value != value
+            elif self.operator == "<":
+                return int(self.value) < int(value)
+            elif self.operator == "<=":
+                return int(self.value) <= int(value)
+            elif self.operator == ">":
+                return int(self.value) > int(value)
+            elif self.operator == ">=":
+                return int(self.value) >= int(value)
+            else:
+                raise WrongOperatorLinkSentence()
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
@@ -426,6 +447,10 @@ class CannotGetParameter(Exception):
 
 
 class WrongLinkSentence(Exception):
+    pass
+
+
+class WrongOperatorLinkSentence(Exception):
     pass
 
 
