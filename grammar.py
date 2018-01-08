@@ -191,8 +191,7 @@ class ContainerElement:
         self.parameters = {}
 
     def applied(self, link_sentence, actions):
-        link_act_pair = [link_sentence, actions]
-        self.apply_for += link_act_pair
+        self.apply_for = [link_sentence, actions]
         return self
 
     def add_applied(self, applied_id):
