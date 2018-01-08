@@ -20,7 +20,7 @@ class InputContainer:
         self.segment_into_childs(self.INPUT)
 
     def segment_into_childs(self, system_name):
-        if system_name not in collection.dependency:
+        if system_name not in collection.dependency.systems:
             return
         for child_system in collection.dependency.systems[system_name]:
             try:
@@ -102,7 +102,7 @@ class InputContainerElement:
         self.system_name = system_name
         self.content = content
         self.params = params
-        for param, func in collection.auto_parameter_extraction.Handler().get_param_extractors(self.system_name):
+        for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
             self.params[param] = func(content)
         self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
         self.parent_ic_id = parent
@@ -160,11 +160,11 @@ class Container:
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
-            if len(row.apply_for) == 0:
+            if not len(row.apply_for):
                 continue
             af_link = row.apply_for[0]
             af_funcs = row.apply_for[1]
-            if len(af_funcs) == 0:
+            if not len(af_funcs):
                 continue
             for func in af_funcs:
                 check_results = LinkSentence(af_link, self, input_container, scanned_system).check(element)
@@ -190,7 +190,8 @@ class ContainerElement:
         self.applied_ids = []
         self.parameters = {}
 
-    def apply(self, link_act_pair):
+    def applied(self, link_sentence, actions):
+        link_act_pair = [link_sentence, actions]
         self.apply_for += link_act_pair
         return self
 
@@ -244,7 +245,7 @@ class LinkSentence:
         self.container = container
         self.input_container = input_container
         if len(from_list) == 0:
-            self.checked_list = container.get_by_system_name(scanned_system)
+            self.checked_list = self.input_container.get_by_system_name(scanned_system)
         else:
             self.checked_list = from_list
         self.allow_resources = allow_resources
