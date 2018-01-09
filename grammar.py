@@ -275,7 +275,7 @@ class LinkSentence:
                 self.input_container,
                 self.scanned_system
             )
-            if len(good_aprp) > 0:
+            if good_aprp:
                 self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
                 if not param_pair.is_bool_check():
                     is_good = param_pair.compare(element.get_parameter(param_pair.key))
