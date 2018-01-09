@@ -243,7 +243,7 @@ class LinkSentence:
         self.link = link_string
         self.container = container
         self.input_container = input_container
-        if len(from_list) == 0:
+        if not from_list:
             self.checked_list = self.input_container.get_by_system_name(scanned_system)
         else:
             self.checked_list = from_list
@@ -393,7 +393,7 @@ class LinkSentence:
 
         common_operator = '&' if '&' in complete_list else '|' if '|' in complete_list else False
 
-        if not common_operator and (len(link_slice) > 1 or len(link_slice) == 0):
+        if not common_operator and (not link_slice or len(link_slice) > 1):
             raise WrongLinkSentence()
 
         if not common_operator:
