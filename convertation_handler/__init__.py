@@ -6,17 +6,17 @@ class RelativeDatabase:
     references = {}
 
     def undirected(self, st_a, st_b):
-        def wrapper(function):
+        def wrapper(fn):
             def wrapped(*args):
-                self.references[(st_a, st_b)] = function
-                self.references[(st_b, st_a)] = function
+                self.references[(st_a, st_b)] = fn
+                self.references[(st_b, st_a)] = fn
             return wrapped
         return wrapper
 
     def directed(self, st_a, st_b):
-        def wrapper(function):
+        def wrapper(fn):
             def wrapped(*args):
-                self.references[(st_a, st_b)] = function
+                self.references[(st_a, st_b)] = fn
             return wrapped
         return wrapper
 
