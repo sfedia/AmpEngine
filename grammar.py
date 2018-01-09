@@ -290,7 +290,11 @@ class LinkSentence:
                         is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
                 elif not block_converter:
                     # is not ready yet
-                    conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
+                    conv_variants = []
+                    try:
+                        conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
+                    except converter.CannotConvertSystemTypes:
+                        pass
                     if not conv_variants:
                         raise CannotGetParameter()
                     else:
