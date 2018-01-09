@@ -160,11 +160,11 @@ class Container:
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
-            if not len(row.apply_for):
+            if not row.apply_for:
                 continue
             af_link = row.apply_for[0]
             af_funcs = row.apply_for[1]
-            if not len(af_funcs):
+            if not af_funcs:
                 continue
             for func in af_funcs:
                 check_results = LinkSentence(af_link, self, input_container, scanned_system).check(element)
@@ -291,7 +291,7 @@ class LinkSentence:
                 elif not block_converter:
                     # is not ready yet
                     conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
-                    if len(conv_variants) == 0:
+                    if not conv_variants:
                         raise CannotGetParameter()
                     else:
                         for variant in conv_variants:
