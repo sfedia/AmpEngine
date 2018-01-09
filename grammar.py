@@ -321,17 +321,11 @@ class LinkSentence:
             elif self.operator == ">=":
                 return int(self.value) >= int(value)
             else:
-                raise WrongOperatorLinkSentence()
+                raise WrongLinkSentence()
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
         sector_rx = r'([\w:]+)(\*?([<>!=]+|\?))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
-        # & universal:entity=(token) & mansi:basic_pos=(verb) & universal:reg_match>=([СОГЛАСНЫЙ_ТВЁРД]$){pre=()} & universal:syl_count:odd!=(){pre=()}
-
-        class GroupEq:
-            comparison = 3
-            sector_op = 1
-
         parsed_list = []
         RE_SHARP = r"^#\s*"
         if re.search(RE_SHARP, sector):
@@ -342,45 +336,24 @@ class LinkSentence:
         for seq in parsed_sector:
             # AND/OR operators
             if re.search(r'[&\|]', seq.group(0)):
-                pass
+                parsed_list.append(seq.group(1))
             # bracket group
             elif re.search(r'^\[.*\]$', seq.group(0)):
-                pass
+                parsed_list.append(self.parse_sector(seq.group(1), element))
             # parameter checking
-            elif re.search(r'=\s*\(', seq.group(0)):
-                pass
-            # operators of comparison
-            elif re.search(r'[<>!=]+', seq.group(0)):
-                pass
-
-        parsed_sector = re.findall(sector_rx, sector)
-
-        for seq in parsed_sector:
-            f_seq = [x for x in seq if x != '']
-            # remove duplicates
-            for op in ('=', '*='):
-                if op in f_seq:
-                    f_seq.remove(op)
-            ### def __init__(self, key, value='', sharp=False, operator="=", bool_check=False):
-            if len(f_seq) == GroupEq.comparison:
-                if f_seq == '=':
-                    parameter_pair = self.ParameterPair(f_seq[0], f_seq[2])
-                elif f_seq == '*=':
-                    parameter_pair = self.ParameterPair(f_seq[0], element.get_parameter(f_seq[2]))
+            elif re.search(r'[<>!=\?]\s*\(', seq.group(0)):
+                par_name = seq.group(1)
+                operator = seq.group(2)
+                value = seq.group(4)
+                if '*' not in operator:
+                    parameter_pair = self.ParameterPair(par_name, value, operator=operator)
                 else:
-                    raise WrongLinkSentence()
+                    parameter_pair = self.ParameterPair(par_name, element.get_parameter(value), operator=operator)
                 parsed_list.append(parameter_pair)
-            elif len(f_seq) == GroupEq.sector_op:
-                fs_extracted = f_seq[0].strip()
-                if fs_extracted[0] == '[':
-                    parsed_list.append(self.parse_sector(fs_extracted[1:-1].strip(), element))
-                elif fs_extracted in ['&', '|']:
-                    parsed_list.append(fs_extracted)
-                else:
-                    raise WrongLinkSentence()
             else:
                 raise WrongLinkSentence()
 
+        parsed_sector = re.findall(sector_rx, sector)
         return parsed_list
 
     def is_good(self, link_slice, element):
@@ -465,10 +438,6 @@ class CannotGetParameter(Exception):
 
 
 class WrongLinkSentence(Exception):
-    pass
-
-
-class WrongOperatorLinkSentence(Exception):
     pass
 
 
