@@ -250,6 +250,10 @@ class LinkSentence:
         self.allow_resources = allow_resources
         self.scanned_system = scanned_system
 
+    @staticmethod
+    def get_parameter_void(*args):
+        return True
+
     def check_element(self, element, param_pair, block_converter=False):
         if param_pair.sharp:
             return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(
@@ -258,7 +262,10 @@ class LinkSentence:
                 self.input_container
             )
         try:
-            is_good = element.get_parameter(param_pair.key) == param_pair.value
+            if not param_pair.is_bool_check():
+                is_good = param_pair.compare(element.get_parameter(param_pair.key))
+            else:
+                is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
         except NoSuchParameter:
             #good_afs = collection.static.Handler.params_affected(param_pair.key)
             #good_afs = self.container.get_actions_declaring(param_pair.key, element)
@@ -270,11 +277,17 @@ class LinkSentence:
             )
             if len(good_aprp) > 0:
                 self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
-                is_good = element.get_parameter(param_pair.key) == param_pair.value
+                if not param_pair.is_bool_check():
+                    is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                else:
+                    is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
             elif self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
                 if parameter:
-                    is_good = parameter == param_pair.value
+                    if not param_pair.is_bool_check():
+                        is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                    else:
+                        is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
                 elif not block_converter:
                     # is not ready yet
                     conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
@@ -323,9 +336,12 @@ class LinkSentence:
             else:
                 raise WrongLinkSentence()
 
+        def is_bool_check(self):
+            return self.bool_check
+
     def parse_sector(self, sector, element):
         sector = sector.strip()
-        sector_rx = r'([\w:]+)(\*?([<>!=]+|\?))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
+        sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
         parsed_list = []
         RE_SHARP = r"^#\s*"
         if re.search(RE_SHARP, sector):
