@@ -38,9 +38,10 @@ def new_sharp(parent_system, child_system):
     return sharp_decorator
 
 
-@new_sharp(parent_system='universal:token', child_system='universal:morpheme')
-def morpheme_in_token(element, container, input_container):
+@new_sharp(parent_system='universal:input', child_system='universal:token')
+def token_in_input(element, container, input_container):
     pass
+
 
 @new_sharp(parent_system='universal:token', child_system='universal:morpheme')
 def morpheme_in_token(element, container, input_container):

@@ -325,7 +325,8 @@ class LinkSentence:
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
-        sector_rx = r'([\w:]+)(\*?([<>!=]+|\?))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[.*\])'
+        sector_rx = r'([\w:]+)(\*?([<>!=]+|\?))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
+        # & universal:entity=(token) & mansi:basic_pos=(verb) & universal:reg_match>=([СОГЛАСНЫЙ_ТВЁРД]$){pre=()} & universal:syl_count:odd!=(){pre=()}
 
         class GroupEq:
             comparison = 3
@@ -336,6 +337,21 @@ class LinkSentence:
         if re.search(RE_SHARP, sector):
             parsed_list.append(self.ParameterPair('#', sharp=True))
             sector = re.sub(RE_SHARP, '', sector)
+
+        parsed_sector = re.finditer(sector_rx, sector)
+        for seq in parsed_sector:
+            # AND/OR operators
+            if re.search(r'[&\|]', seq.group(0)):
+                pass
+            # bracket group
+            elif re.search(r'^\[.*\]$', seq.group(0)):
+                pass
+            # parameter checking
+            elif re.search(r'=\s*\(', seq.group(0)):
+                pass
+            # operators of comparison
+            elif re.search(r'[<>!=]+', seq.group(0)):
+                pass
 
         parsed_sector = re.findall(sector_rx, sector)
 
