@@ -98,7 +98,7 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, params={}, parent=None):
+    def __init__(self, system_name, content, params=dict(), parent=None):
         self.system_name = system_name
         self.content = content
         self.params = params
