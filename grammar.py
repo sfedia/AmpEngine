@@ -215,7 +215,7 @@ class ContainerEntity:
         self.level = level
         self.identifier = identifier
         self.subcl_orders = []
-        self.added_bhvr = None
+        self.added_bhvr = 'standard'
 
     def get_level(self):
         return self.level
