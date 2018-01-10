@@ -246,6 +246,7 @@ class ContainerElement:
         self.class_names = []
         self.apply_for = []
         self.applied_ids = []
+        self.mutation_links = []
         self.parameters = {}
 
     def applied(self, link_sentence, actions):
@@ -294,6 +295,9 @@ class ContainerElement:
         if ':' in child_type:
             raise WrongChildType()
         self.type += ':' + child_type
+
+    def provide_mutation_links(self, links):
+        self.mutation_links += links
 
 
 class LinkSentence:
@@ -477,6 +481,10 @@ class Action:
 
     def get_args(self):
         return self.get_arguments()
+
+
+class Temp:
+    NULL = '$__NULL__'
 
 
 class IdIsNotUnique(Exception):
