@@ -130,7 +130,8 @@ class Container:
     def __init__(self):
         self.rows = []
         self.entities = []
-
+        for system in collection.dependency.systems:
+            self.add_entity(ContainerEntity('system', system))
 
     def add_entity(self, entity_object):
         if entity_object not in self.entities:
