@@ -21,7 +21,7 @@ class InputContainer:
 
     def segment_into_childs(self, system_name):
         if system_name not in collection.dependency.systems:
-            return
+            raise UndefinedSystem()
         for child_system in collection.dependency.systems[system_name]:
             try:
                 for element in self.get_by_system_name(system_name):
@@ -128,9 +128,13 @@ class InputContainerElement:
 
 class Container:
     def __init__(self):
-        pass
+        self.rows = []
+        self.entities = []
 
-    rows = []
+
+    def add_entity(self, entity_object):
+        if entity_object not in self.entities:
+            self.entities.append(entity_object)
 
     def get_all(self):
         return self.rows
@@ -175,15 +179,28 @@ class Container:
     def add_element(self, element_type, element_content, element_id):
         if self.get_by_id(element_id):
             raise IdIsNotUnique()
-        element = ContainerElement(element_type, element_content, element_id)
+        element = ContainerElement(element_type, element_content, element_id, self)
         self.rows.append(element)
         return self.get_by_id(element_id)
 
 
+class ContainerEntity:
+    def __init__(self, level, identifier):
+        self.level = level
+        self.identifier = identifier
+
+    def get_level(self):
+        return self.level
+
+    def get_identifier(self):
+        return self.identifier
+
+
 class ContainerElement:
-    def __init__(self, element_type, element_content, element_id):
+    def __init__(self, element_type, element_content, element_id, container):
         self.type = element_type
         self.content = element_content
+        self.container = container
         self.id = element_id
         self.class_names = []
         self.apply_for = []
@@ -201,13 +218,14 @@ class ContainerElement:
     def add_class(self, class_name):
         if class_name not in self.class_names:
             self.class_names.append(class_name)
+            self.container.add_entity(ContainerEntity('class', class_name))
             return self
 
-    def edit_parameter(self, key, value = True):
+    def edit_parameter(self, key, value=True):
         self.parameters[key] = value
         return self
 
-    def set_parameter(self, key, value = True):
+    def set_parameter(self, key, value=True):
         if key not in self.parameters:
             self.edit_parameter(key, value)
         else:
@@ -238,7 +256,6 @@ class ContainerElement:
 
 
 class LinkSentence:
-
     def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources=True):
         self.link = link_string
         self.container = container
@@ -249,10 +266,6 @@ class LinkSentence:
             self.checked_list = from_list
         self.allow_resources = allow_resources
         self.scanned_system = scanned_system
-
-    @staticmethod
-    def get_parameter_void(*args):
-        return True
 
     def check_element(self, element, param_pair, block_converter=False):
         if param_pair.sharp:
@@ -265,7 +278,7 @@ class LinkSentence:
             if not param_pair.is_bool_check():
                 is_good = param_pair.compare(element.get_parameter(param_pair.key))
             else:
-                is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
+                is_good = True if element.get_parameter(param_pair.key) else False
         except NoSuchParameter:
             #good_afs = collection.static.Handler.params_affected(param_pair.key)
             #good_afs = self.container.get_actions_declaring(param_pair.key, element)
@@ -280,14 +293,14 @@ class LinkSentence:
                 if not param_pair.is_bool_check():
                     is_good = param_pair.compare(element.get_parameter(param_pair.key))
                 else:
-                    is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
+                    is_good = True if element.get_parameter(param_pair.key) else False
             elif self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
                 if parameter:
                     if not param_pair.is_bool_check():
                         is_good = param_pair.compare(element.get_parameter(param_pair.key))
                     else:
-                        is_good = self.get_parameter_void(element.get_parameter(param_pair.key))
+                        is_good = True if element.get_parameter(param_pair.key) else False
                 elif not block_converter:
                     # is not ready yet
                     conv_variants = []
@@ -466,4 +479,8 @@ class TypeIsNotStatic(Exception):
 
 
 class WrongChildType(Exception):
+    pass
+
+
+class UndefinedSystem(Exception):
     pass

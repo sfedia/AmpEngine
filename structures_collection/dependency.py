@@ -5,6 +5,9 @@ systems = {
         'universal:token',
         'universal:collocation'
     ],
+    'universal:collocation': [
+        'universal:token'
+    ],
     'universal:token': [
         'universal:morpheme',
         'mansi:morphemeYU',
@@ -17,5 +20,7 @@ systems = {
         'universal:char_regex'
     ],
     'mansi:VowMorpheme': ['universal:morpheme'],
-    'mansi:morphemeYU': ['universal:morpheme']
+    'mansi:morphemeYU': ['universal:morpheme'],
+    'universal:char': [],
+    'universal:char_regex': ['universal:char']
 }
