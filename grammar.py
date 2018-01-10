@@ -299,6 +299,12 @@ class ContainerElement:
     def provide_mutation_links(self, links):
         self.mutation_links += links
 
+    def get_mutation_links(self):
+        return self.mutation_links
+
+    def get_applied(self):
+        return self.apply_for
+
 
 class LinkSentence:
     def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources=True):
