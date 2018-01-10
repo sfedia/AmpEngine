@@ -171,7 +171,7 @@ class Container:
             for row in self.rows:
                 if class_name in row.get_class_names():
                     class_func(row)
-                    
+
             def wrapped(fa1, fa2):
                 return class_func(fa1, fa2)
 
@@ -214,12 +214,27 @@ class ContainerEntity:
     def __init__(self, level, identifier):
         self.level = level
         self.identifier = identifier
+        self.subcl_orders = []
 
     def get_level(self):
         return self.level
 
     def get_identifier(self):
         return self.identifier
+
+    def subclasses_order(self, order_string, parent_filter=None, select_into=None, strict=False):
+        if self.level != 'system':
+            raise SubclassesOrderNotSupported()
+
+        self.subcl_orders.append({
+            'order': order_string,
+            'parent_filter': parent_filter,
+            'select_into': select_into,
+            'strict': strict
+        })
+
+    def get_subcl_orders(self):
+        return self.subcl_orders
 
 
 class ContainerElement:
@@ -517,4 +532,8 @@ class NoSuchClassEntity(Exception):
 
 
 class NoSuchSystemEntity(Exception):
+    pass
+
+
+class SubclassesOrderNotSupported(Exception):
     pass
