@@ -166,6 +166,19 @@ class Container:
 
         return elements
 
+    def foreach_in_class(self, class_name):
+        def fic_decor(class_func):
+            for row in self.rows:
+                if class_name in row.get_class_names():
+                    class_func(row)
+                    
+            def wrapped(fa1, fa2):
+                return class_func(fa1, fa2)
+
+            return wrapped
+
+        return fic_decor
+
     def get_by_type(self, element_type):
         elements = []
         for row in self.rows:
