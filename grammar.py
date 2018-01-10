@@ -137,6 +137,18 @@ class Container:
         if entity_object not in self.entities:
             self.entities.append(entity_object)
 
+    def get_class(self, identifier):
+        for entity in self.entities:
+            if entity.get_level() == 'class' and entity.get_identifier == identifier:
+                return entity
+        raise NoSuchClassEntity()
+
+    def get_system(self, identifier):
+        for entity in self.entities:
+            if entity.get_level() == 'system' and entity.get_identifier == identifier:
+                return entity
+        raise NoSuchSystemEntity()
+
     def get_all(self):
         return self.rows
 
@@ -484,4 +496,12 @@ class WrongChildType(Exception):
 
 
 class UndefinedSystem(Exception):
+    pass
+
+
+class NoSuchClassEntity(Exception):
+    pass
+
+
+class NoSuchSystemEntity(Exception):
     pass
