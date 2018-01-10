@@ -215,12 +215,18 @@ class ContainerEntity:
         self.level = level
         self.identifier = identifier
         self.subcl_orders = []
+        self.added_bhvr = None
 
     def get_level(self):
         return self.level
 
     def get_identifier(self):
         return self.identifier
+
+    def added_behaviour(self, pattern):
+        if self.level != 'class':
+            raise AddedBehaviourNotSupported()
+        self.added_bhvr = pattern
 
     def subclasses_order(self, order_string, parent_filter=None, select_into=None, strict=False):
         if self.level != 'system':
@@ -550,4 +556,7 @@ class NoSuchSystemEntity(Exception):
 
 
 class SubclassesOrderNotSupported(Exception):
+    pass
+
+class AddedBehaviourNotSupported(Exception):
     pass
