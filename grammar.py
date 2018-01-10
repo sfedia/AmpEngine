@@ -443,7 +443,6 @@ class LinkSentence:
             else:
                 raise WrongLinkSentence()
 
-        parsed_sector = re.findall(sector_rx, sector)
         return parsed_list
 
     def is_good(self, link_slice, element):
