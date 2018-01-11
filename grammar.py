@@ -283,10 +283,16 @@ class ContainerElement:
             raise ParameterExistsAlready()
         return self
 
-    def get_parameter(self, key):
+    def get_parameter(self, key, args=[]):
+        try:
+            extractor = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
+            self.parameters[key] = extractor(self.content, args)
+        except collection.auto_parameter_extraction.NoSuchExtractor:
+            pass
         if key in self.parameters:
             return self.parameters[key]
-        raise NoSuchParameter()
+        else:
+            raise NoSuchParameter()
 
     def get_id(self):
         return self.id
@@ -336,9 +342,9 @@ class LinkSentence:
             )
         try:
             if not param_pair.is_bool_check():
-                is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
             else:
-                is_good = True if element.get_parameter(param_pair.key) else False
+                is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
         except NoSuchParameter:
             #good_afs = collection.static.Handler.params_affected(param_pair.key)
             #good_afs = self.container.get_actions_declaring(param_pair.key, element)
@@ -351,16 +357,16 @@ class LinkSentence:
             if good_aprp:
                 self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
                 if not param_pair.is_bool_check():
-                    is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                    is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
                 else:
-                    is_good = True if element.get_parameter(param_pair.key) else False
+                    is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
             elif self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
                 if parameter:
                     if not param_pair.is_bool_check():
-                        is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                        is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
                     else:
-                        is_good = True if element.get_parameter(param_pair.key) else False
+                        is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
                 elif not block_converter:
                     # is not ready yet
                     conv_variants = []
@@ -385,7 +391,7 @@ class LinkSentence:
         return is_good
 
     class ParameterPair:
-        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False):
+        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False, arguments=[]):
             self.key = key
             self.bool_check = bool_check
             if value == '':
@@ -393,6 +399,7 @@ class LinkSentence:
             self.value = value
             self.prop = 'ParameterPair'
             self.operator = operator
+            self.arguments = arguments
             if sharp:
                 self.prop = 'Sharp'
 
@@ -416,6 +423,17 @@ class LinkSentence:
         def is_bool_check(self):
             return self.bool_check
 
+    @staticmethod
+    def parse_args(arg_string):
+        argument_rx = r'([\w:]+)=\(([^\)]*)\)'
+        arguments_struct = []
+        for arg in re.finditer(argument_rx, arg_string):
+            arguments_struct.append({
+                'name': arg.group(1),
+                'value': arg.group(2)
+            })
+        return arguments_struct
+
     def parse_sector(self, sector, element):
         sector = sector.strip()
         sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
@@ -438,10 +456,14 @@ class LinkSentence:
                 par_name = seq.group(1)
                 operator = seq.group(2)
                 value = seq.group(4)
+                arguments = self.parse_args(seq.group(5)) if seq.group(5) is not None else []
                 if '*' not in operator:
-                    parameter_pair = self.ParameterPair(par_name, value, operator=operator)
+                    parameter_pair = self.ParameterPair(par_name, value, operator=operator, arguments=arguments)
                 else:
-                    parameter_pair = self.ParameterPair(par_name, element.get_parameter(value), operator=operator)
+                    parameter_pair = self.ParameterPair(
+                        par_name, element.get_parameter(value),
+                        operator=operator, arguments=arguments
+                    )
                 parsed_list.append(parameter_pair)
             else:
                 raise WrongLinkSentence()

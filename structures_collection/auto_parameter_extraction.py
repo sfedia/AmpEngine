@@ -39,7 +39,7 @@ def extract_parameter(system_name, param_name):
 
 
 @extract_parameter('universal:token', 'universal:length')
-def length_of_token(content):
+def length_of_token(content, arguments=[]):
     return len(content)
 
 
