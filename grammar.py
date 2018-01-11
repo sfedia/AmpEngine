@@ -241,6 +241,9 @@ class ContainerEntity:
 
     def get_subcl_orders(self):
         return self.subcl_orders
+    
+    def inspect_added_behaviour(self):
+        return self.added_bhvr
 
 
 class ContainerElement:
@@ -556,6 +559,7 @@ class NoSuchSystemEntity(Exception):
 
 class SubclassesOrderNotSupported(Exception):
     pass
+
 
 class AddedBehaviourNotSupported(Exception):
     pass
