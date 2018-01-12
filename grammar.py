@@ -94,9 +94,14 @@ class InputContainer:
                     for action in actions:
                         args = action.get_arguments()
                         if args:
-                            collection.static.Handler.get_func(action.get_path())(extracted_ic_id, args)
+                            collection.static.Handler.get_func(action.get_path())(
+                                extracted_ic_id, args, action.branching_allowed()
+                            )
                         else:
-                            collection.static.Handler.get_func(action.get_path())(extracted_ic_id)
+                            collection.static.Handler.get_func(action.get_path())(
+                                extracted_ic_id,
+                                branching=action.branching_allowed()
+                            )
                     break
 
 
@@ -536,9 +541,10 @@ class LinkSentence:
 
 
 class Action:
-    def __init__(self, path, arguments=False):
+    def __init__(self, path, arguments=False, branching=False):
         self.path = path
         self.arguments = arguments if arguments else []
+        self.branching = branching
 
     def get_path(self):
         return self.path
@@ -548,6 +554,9 @@ class Action:
 
     def get_args(self):
         return self.get_arguments()
+
+    def branching_allowed(self):
+        return self.branching
 
 
 class Temp:

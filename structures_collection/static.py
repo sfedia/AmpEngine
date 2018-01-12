@@ -47,7 +47,7 @@ def new_func(func_name, params_affected):
 
 
 @new_func('gram:case:set_loc', params_affected=['gram:case'])
-def gram_case_set_loc(element):
+def gram_case_set_loc(element, arguments=[], branching=[]):
     element.set_parameter('gram:case', 'loc')
     return element
 
