@@ -72,29 +72,32 @@ class InputContainer:
 
     def make_apply(self, main_container_element_id, main_container, scanned_system):
         main_container_element = main_container.get_by_id(main_container_element_id)
-        link_sentence = main_container_element.apply_for[0]
-        actions = main_container_element.apply_for[1]
+        get_applied = main_container_element.get_applied()
+        link_sentences = get_applied['links']
+        actions = get_applied['actions']
         rows = self.get_by_system_name(scanned_system)
         for row in rows:
-            if LinkSentence(link_sentence, main_container, self, scanned_system).check(row):
-                # get ic_id
-                if not collection.auto_segmentation.Handler.can_segment(scanned_system, main_container_element.get_type()):
-                    extracted_ic_id = collection.layer_extraction.Handler.extract(
-                        scanned_system, main_container_element.get_type()
-                    )(row, main_container_element.get_content())
-                else:
-                    # ???
-                    # a request to logger can be done
-                    for x in self.get_by_system_name(scanned_system):
-                        if x.get_content() == main_container_element.get_content():
-                            extracted_ic_id = x.get_ic_id()
-                            break
-                for action in actions:
-                    args = action.get_arguments()
-                    if args:
-                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id, args)
+            for link_sentence in link_sentences:
+                if link_sentence.check(row):
+                    # get ic_id
+                    if not collection.auto_segmentation.Handler.can_segment(scanned_system, main_container_element.get_type()):
+                        extracted_ic_id = collection.layer_extraction.Handler.extract(
+                            scanned_system, main_container_element.get_type()
+                        )(row, main_container_element.get_content())
                     else:
-                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id)
+                        # ???
+                        # a request to logger can be done
+                        for x in self.get_by_system_name(scanned_system):
+                            if x.get_content() == main_container_element.get_content():
+                                extracted_ic_id = x.get_ic_id()
+                                break
+                    for action in actions:
+                        args = action.get_arguments()
+                        if args:
+                            collection.static.Handler.get_func(action.get_path())(extracted_ic_id, args)
+                        else:
+                            collection.static.Handler.get_func(action.get_path())(extracted_ic_id)
+                    break
 
 
 class InputContainerElement:
@@ -190,16 +193,19 @@ class Container:
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
-            if not row.apply_for:
+            get_applied = row.get_applied()
+            if not get_applied['links']:
                 continue
-            af_link = row.apply_for[0]
-            af_funcs = row.apply_for[1]
-            if not af_funcs:
+            link_sentences = get_applied['links']
+            actions = get_applied['actions']
+            if not actions:
                 continue
-            for func in af_funcs:
-                check_results = LinkSentence(af_link, self, input_container, scanned_system).check(element)
-                if param in collection.static.Handler.get_func_params(func) and check_results:
-                    aprp.append(row.get_id())
+            for action in actions:
+                for link_sentence in link_sentences:
+                    check_results = link_sentence.check(element)
+                    if param in collection.static.Handler.get_func_params(action) and check_results:
+                        aprp.append(row.get_id())
+                        break
         return aprp
 
     def add_element(self, element_type, element_content, element_id):
@@ -209,6 +215,16 @@ class Container:
         self.rows.append(element)
         return self.get_by_id(element_id)
 
+    def intrusion(self, link_sentence, whitelist=None):
+        if whitelist is None:
+            raise IntrusionIsEmpty()
+        supported_types = ['classes']
+        for type_ in whitelist:
+            if whitelist not in supported_types:
+                raise IntrusionUnsupportedType()
+            if type_ == 'classes':
+                self.get_class(whitelist[type_]).subelems_intrusion(link_sentence)
+
 
 class ContainerEntity:
     def __init__(self, level, identifier):
@@ -216,6 +232,7 @@ class ContainerEntity:
         self.identifier = identifier
         self.subcl_orders = []
         self.added_bhvr = 'standard'
+        self.subelems_intrusion = []
 
     def get_level(self):
         return self.level
@@ -239,11 +256,17 @@ class ContainerEntity:
             'strict': strict
         })
 
+    def subelements_intrusion(self, link_sentence):
+        self.subelems_intrusion.append(link_sentence)
+
     def get_subcl_orders(self):
         return self.subcl_orders
     
     def inspect_added_behaviour(self):
         return self.added_bhvr
+
+    def get_subelems_intrusion(self):
+        return self.subelems_intrusion
 
 
 class ContainerElement:
@@ -318,7 +341,15 @@ class ContainerElement:
         return self.mutation_links
 
     def get_applied(self):
-        return self.apply_for
+        applied_object = {
+            'links': self.apply_for[0],
+            'actions': self.apply_for[1]
+        }
+        for class_name in self.class_names:
+            for link_sentence in self.container.get_class(class_name).get_subelems_intrusion():
+                applied_object['links'].append(link_sentence)
+
+        return applied_object
 
 
 class LinkSentence:
@@ -584,4 +615,12 @@ class SubclassesOrderNotSupported(Exception):
 
 
 class AddedBehaviourNotSupported(Exception):
+    pass
+
+
+class IntrusionIsEmpty(Exception):
+    pass
+
+
+class IntrusionUnsupportedType(Exception):
     pass
