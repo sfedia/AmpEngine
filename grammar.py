@@ -31,7 +31,7 @@ class InputContainer:
                         collection.auto_segmentation.Handler().segment(system_name, child_system)
                     )
                 self.segment_into_childs(child_system)
-            except collection.auto_segmentation.NoSuchSegmentTemplate:
+            except collection.auto_segmentation.SegmentTemplateNotFound:
                 continue
 
     def remove_childs_of(self, parent_id):
@@ -149,13 +149,13 @@ class Container:
         for entity in self.entities:
             if entity.get_level() == 'class' and entity.get_identifier == identifier:
                 return entity
-        raise NoSuchClassEntity()
+        raise ClassEntityNotFound()
 
     def get_system(self, identifier):
         for entity in self.entities:
             if entity.get_level() == 'system' and entity.get_identifier == identifier:
                 return entity
-        raise NoSuchSystemEntity()
+        raise SystemEntityNotFound()
 
     def get_all(self):
         return self.rows
@@ -266,7 +266,7 @@ class ContainerEntity:
 
     def get_subcl_orders(self):
         return self.subcl_orders
-    
+
     def inspect_added_behaviour(self):
         return self.added_bhvr
 
@@ -315,12 +315,12 @@ class ContainerElement:
         try:
             extractor = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
             self.parameters[key] = extractor(self.content, args)
-        except collection.auto_parameter_extraction.NoSuchExtractor:
+        except collection.auto_parameter_extraction.ExtractorNotFound:
             pass
         if key in self.parameters:
             return self.parameters[key]
         else:
-            raise NoSuchParameter()
+            raise ParameterNotFound()
 
     def get_id(self):
         return self.id
@@ -333,7 +333,7 @@ class ContainerElement:
 
     def get_content(self):
         return self.content
-    
+
     def set_child_type(self, child_type):
         if ':' in child_type:
             raise WrongChildType()
@@ -381,7 +381,7 @@ class LinkSentence:
                 is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
             else:
                 is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
-        except NoSuchParameter:
+        except ParameterNotFound:
             #good_afs = collection.static.Handler.params_affected(param_pair.key)
             #good_afs = self.container.get_actions_declaring(param_pair.key, element)
             good_aprp = self.container.get_elems_providing_param(
@@ -571,7 +571,7 @@ class ParameterExistsAlready(Exception):
     pass
 
 
-class NoSuchParameter(Exception):
+class ParameterNotFound(Exception):
     pass
 
 
@@ -579,11 +579,11 @@ class WrongCollectionPath(Exception):
     pass
 
 
-class NoSuchSystem(Exception):
+class SystemNotFound(Exception):
     pass
 
 
-class NoSuchSubsystem(Exception):
+class SubsystemNotFound(Exception):
     pass
 
 
@@ -611,11 +611,11 @@ class UndefinedSystem(Exception):
     pass
 
 
-class NoSuchClassEntity(Exception):
+class ClassEntityNotFound(Exception):
     pass
 
 
-class NoSuchSystemEntity(Exception):
+class SystemEntityNotFound(Exception):
     pass
 
 
