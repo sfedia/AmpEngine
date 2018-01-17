@@ -10,7 +10,7 @@ class HandlerStart:
             if (system_name, param_name) in self.param_extractors:
                 return param_name, self.param_extractors[(system_name, param_name)]
             else:
-                raise NoSuchExtractor()
+                raise ExtractorNotFound()
         else:
             selected_extractors = []
             for key in self.param_extractors:
@@ -43,5 +43,5 @@ def length_of_token(content, arguments=[]):
     return len(content)
 
 
-class NoSuchExtractor(Exception):
+class ExtractorNotFound(Exception):
     pass

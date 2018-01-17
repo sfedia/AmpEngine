@@ -21,7 +21,7 @@ class HandlerStart:
         if func_name in self.funcs:
             return self.funcs[func_name]
         else:
-            raise NoSuchFunction()
+            raise FunctionNotFound()
 
     def add_func(self, func_name, value, params=None):
         self.funcs[func_name] = value
@@ -69,5 +69,5 @@ def mansi_get_basic_pos(**kwargs):
     pass
 
 
-class NoSuchFunction(Exception):
+class FunctionNotFound(Exception):
     pass

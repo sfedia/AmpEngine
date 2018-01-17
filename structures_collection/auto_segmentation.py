@@ -9,7 +9,7 @@ class HandlerStart:
         if (from_, to_) in self.segments:
             return self.segments[(from_, to_)]
         else:
-            raise NoSuchSegmentTemplate()
+            raise SegmentTemplateNotFound()
 
     def add_segment(self, from_, to_, func):
         self.segments[(from_, to_)] = func
@@ -48,5 +48,5 @@ def input_to_tokens(content, metadata=None):
     return content.split()
 
 
-class NoSuchSegmentTemplate(Exception):
+class SegmentTemplateNotFound(Exception):
     pass
