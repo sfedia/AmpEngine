@@ -10,7 +10,7 @@ class HandlerStart:
         if func_name in self.funcs:
             return self.funcs[func_name]
         else:
-            raise NoSuchFunction()
+            raise FunctionNotFound()
 
     def add_func(self, func_name, params_affected, value):
         self.funcs[func_name] = value
@@ -47,10 +47,10 @@ def new_func(func_name, params_affected):
 
 
 @new_func('gram:case:set_loc', params_affected=['gram:case'])
-def gram_case_set_loc(element):
+def gram_case_set_loc(element, arguments=[], branching=[]):
     element.set_parameter('gram:case', 'loc')
     return element
 
 
-class NoSuchFunction(Exception):
+class FunctionNotFound(Exception):
     pass

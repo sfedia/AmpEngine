@@ -31,7 +31,7 @@ class InputContainer:
                         collection.auto_segmentation.Handler().segment(system_name, child_system)
                     )
                 self.segment_into_childs(child_system)
-            except collection.auto_segmentation.NoSuchSegmentTemplate:
+            except collection.auto_segmentation.SegmentTemplateNotFound:
                 continue
 
     def remove_childs_of(self, parent_id):
@@ -72,29 +72,37 @@ class InputContainer:
 
     def make_apply(self, main_container_element_id, main_container, scanned_system):
         main_container_element = main_container.get_by_id(main_container_element_id)
-        link_sentence = main_container_element.apply_for[0]
-        actions = main_container_element.apply_for[1]
+        get_applied = main_container_element.get_applied()
+        link_sentences = get_applied['links']
+        actions = get_applied['actions']
         rows = self.get_by_system_name(scanned_system)
         for row in rows:
-            if LinkSentence(link_sentence, main_container, self, scanned_system).check(row):
-                # get ic_id
-                if not collection.auto_segmentation.Handler.can_segment(scanned_system, main_container_element.get_type()):
-                    extracted_ic_id = collection.layer_extraction.Handler.extract(
-                        scanned_system, main_container_element.get_type()
-                    )(row, main_container_element.get_content())
-                else:
-                    # ???
-                    # a request to logger can be done
-                    for x in self.get_by_system_name(scanned_system):
-                        if x.get_content() == main_container_element.get_content():
-                            extracted_ic_id = x.get_ic_id()
-                            break
-                for action in actions:
-                    args = action.get_arguments()
-                    if args:
-                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id, args)
+            for link_sentence in link_sentences:
+                if link_sentence.check(row):
+                    # get ic_id
+                    if not collection.auto_segmentation.Handler.can_segment(scanned_system, main_container_element.get_type()):
+                        extracted_ic_id = collection.layer_extraction.Handler.extract(
+                            scanned_system, main_container_element.get_type()
+                        )(row, main_container_element.get_content())
                     else:
-                        collection.static.Handler.get_func(action.get_path())(extracted_ic_id)
+                        # ???
+                        # a request to logger can be done
+                        for x in self.get_by_system_name(scanned_system):
+                            if x.get_content() == main_container_element.get_content():
+                                extracted_ic_id = x.get_ic_id()
+                                break
+                    for action in actions:
+                        args = action.get_arguments()
+                        if args:
+                            collection.static.Handler.get_func(action.get_path())(
+                                extracted_ic_id, args, action.branching_allowed()
+                            )
+                        else:
+                            collection.static.Handler.get_func(action.get_path())(
+                                extracted_ic_id,
+                                branching=action.branching_allowed()
+                            )
+                    break
 
 
 class InputContainerElement:
@@ -141,13 +149,13 @@ class Container:
         for entity in self.entities:
             if entity.get_level() == 'class' and entity.get_identifier == identifier:
                 return entity
-        raise NoSuchClassEntity()
+        raise ClassEntityNotFound()
 
     def get_system(self, identifier):
         for entity in self.entities:
             if entity.get_level() == 'system' and entity.get_identifier == identifier:
                 return entity
-        raise NoSuchSystemEntity()
+        raise SystemEntityNotFound()
 
     def get_all(self):
         return self.rows
@@ -190,16 +198,19 @@ class Container:
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
-            if not row.apply_for:
+            get_applied = row.get_applied()
+            if not get_applied['links']:
                 continue
-            af_link = row.apply_for[0]
-            af_funcs = row.apply_for[1]
-            if not af_funcs:
+            link_sentences = get_applied['links']
+            actions = get_applied['actions']
+            if not actions:
                 continue
-            for func in af_funcs:
-                check_results = LinkSentence(af_link, self, input_container, scanned_system).check(element)
-                if param in collection.static.Handler.get_func_params(func) and check_results:
-                    aprp.append(row.get_id())
+            for action in actions:
+                for link_sentence in link_sentences:
+                    check_results = link_sentence.check(element)
+                    if param in collection.static.Handler.get_func_params(action) and check_results:
+                        aprp.append(row.get_id())
+                        break
         return aprp
 
     def add_element(self, element_type, element_content, element_id):
@@ -209,6 +220,16 @@ class Container:
         self.rows.append(element)
         return self.get_by_id(element_id)
 
+    def intrusion(self, link_sentence, whitelist=None):
+        if whitelist is None:
+            raise IntrusionIsEmpty()
+        supported_types = ['classes']
+        for type_ in whitelist:
+            if whitelist not in supported_types:
+                raise IntrusionUnsupportedType()
+            if type_ == 'classes':
+                self.get_class(whitelist[type_]).subelems_intrusion(link_sentence)
+
 
 class ContainerEntity:
     def __init__(self, level, identifier):
@@ -216,6 +237,7 @@ class ContainerEntity:
         self.identifier = identifier
         self.subcl_orders = []
         self.added_bhvr = 'standard'
+        self.subelems_intrusion = []
 
     def get_level(self):
         return self.level
@@ -239,8 +261,17 @@ class ContainerEntity:
             'strict': strict
         })
 
+    def subelements_intrusion(self, link_sentence):
+        self.subelems_intrusion.append(link_sentence)
+
     def get_subcl_orders(self):
         return self.subcl_orders
+
+    def inspect_added_behaviour(self):
+        return self.added_bhvr
+
+    def get_subelems_intrusion(self):
+        return self.subelems_intrusion
 
 
 class ContainerElement:
@@ -280,10 +311,16 @@ class ContainerElement:
             raise ParameterExistsAlready()
         return self
 
-    def get_parameter(self, key):
+    def get_parameter(self, key, args=[]):
+        try:
+            extractor = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
+            self.parameters[key] = extractor(self.content, args)
+        except collection.auto_parameter_extraction.ExtractorNotFound:
+            pass
         if key in self.parameters:
             return self.parameters[key]
-        raise NoSuchParameter()
+        else:
+            raise ParameterNotFound()
 
     def get_id(self):
         return self.id
@@ -296,7 +333,7 @@ class ContainerElement:
 
     def get_content(self):
         return self.content
-    
+
     def set_child_type(self, child_type):
         if ':' in child_type:
             raise WrongChildType()
@@ -309,7 +346,15 @@ class ContainerElement:
         return self.mutation_links
 
     def get_applied(self):
-        return self.apply_for
+        applied_object = {
+            'links': self.apply_for[0],
+            'actions': self.apply_for[1]
+        }
+        for class_name in self.class_names:
+            for link_sentence in self.container.get_class(class_name).get_subelems_intrusion():
+                applied_object['links'].append(link_sentence)
+
+        return applied_object
 
 
 class LinkSentence:
@@ -333,10 +378,10 @@ class LinkSentence:
             )
         try:
             if not param_pair.is_bool_check():
-                is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
             else:
-                is_good = True if element.get_parameter(param_pair.key) else False
-        except NoSuchParameter:
+                is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
+        except ParameterNotFound:
             #good_afs = collection.static.Handler.params_affected(param_pair.key)
             #good_afs = self.container.get_actions_declaring(param_pair.key, element)
             good_aprp = self.container.get_elems_providing_param(
@@ -348,16 +393,16 @@ class LinkSentence:
             if good_aprp:
                 self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
                 if not param_pair.is_bool_check():
-                    is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                    is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
                 else:
-                    is_good = True if element.get_parameter(param_pair.key) else False
+                    is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
             elif self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
                 if parameter:
                     if not param_pair.is_bool_check():
-                        is_good = param_pair.compare(element.get_parameter(param_pair.key))
+                        is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
                     else:
-                        is_good = True if element.get_parameter(param_pair.key) else False
+                        is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
                 elif not block_converter:
                     # is not ready yet
                     conv_variants = []
@@ -382,7 +427,7 @@ class LinkSentence:
         return is_good
 
     class ParameterPair:
-        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False):
+        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False, arguments=[]):
             self.key = key
             self.bool_check = bool_check
             if value == '':
@@ -390,6 +435,7 @@ class LinkSentence:
             self.value = value
             self.prop = 'ParameterPair'
             self.operator = operator
+            self.arguments = arguments
             if sharp:
                 self.prop = 'Sharp'
 
@@ -413,6 +459,17 @@ class LinkSentence:
         def is_bool_check(self):
             return self.bool_check
 
+    @staticmethod
+    def parse_args(arg_string):
+        argument_rx = r'([\w:]+)=\(([^\)]*)\)'
+        arguments_struct = []
+        for arg in re.finditer(argument_rx, arg_string):
+            arguments_struct.append({
+                'name': arg.group(1),
+                'value': arg.group(2)
+            })
+        return arguments_struct
+
     def parse_sector(self, sector, element):
         sector = sector.strip()
         sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
@@ -435,10 +492,14 @@ class LinkSentence:
                 par_name = seq.group(1)
                 operator = seq.group(2)
                 value = seq.group(4)
+                arguments = self.parse_args(seq.group(5)) if seq.group(5) is not None else []
                 if '*' not in operator:
-                    parameter_pair = self.ParameterPair(par_name, value, operator=operator)
+                    parameter_pair = self.ParameterPair(par_name, value, operator=operator, arguments=arguments)
                 else:
-                    parameter_pair = self.ParameterPair(par_name, element.get_parameter(value), operator=operator)
+                    parameter_pair = self.ParameterPair(
+                        par_name, element.get_parameter(value),
+                        operator=operator, arguments=arguments
+                    )
                 parsed_list.append(parameter_pair)
             else:
                 raise WrongLinkSentence()
@@ -480,9 +541,10 @@ class LinkSentence:
 
 
 class Action:
-    def __init__(self, path, arguments=False):
+    def __init__(self, path, arguments=False, branching=False):
         self.path = path
         self.arguments = arguments if arguments else []
+        self.branching = branching
 
     def get_path(self):
         return self.path
@@ -492,6 +554,9 @@ class Action:
 
     def get_args(self):
         return self.get_arguments()
+
+    def branching_allowed(self):
+        return self.branching
 
 
 class Temp:
@@ -506,7 +571,7 @@ class ParameterExistsAlready(Exception):
     pass
 
 
-class NoSuchParameter(Exception):
+class ParameterNotFound(Exception):
     pass
 
 
@@ -514,11 +579,11 @@ class WrongCollectionPath(Exception):
     pass
 
 
-class NoSuchSystem(Exception):
+class SystemNotFound(Exception):
     pass
 
 
-class NoSuchSubsystem(Exception):
+class SubsystemNotFound(Exception):
     pass
 
 
@@ -546,16 +611,25 @@ class UndefinedSystem(Exception):
     pass
 
 
-class NoSuchClassEntity(Exception):
+class ClassEntityNotFound(Exception):
     pass
 
 
-class NoSuchSystemEntity(Exception):
+class SystemEntityNotFound(Exception):
     pass
 
 
 class SubclassesOrderNotSupported(Exception):
     pass
 
+
 class AddedBehaviourNotSupported(Exception):
+    pass
+
+
+class IntrusionIsEmpty(Exception):
+    pass
+
+
+class IntrusionUnsupportedType(Exception):
     pass

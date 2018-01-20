@@ -1,0 +1,262 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\title{AmpEngine: sharp and make\_apply for morphemes}
+\author{Fyodor Sizov {\textless}prodotiscus at github.com{\textgreater}}
+\date{January 2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Sharp (universal:token $\rightarrow$ universal:morpheme)}
+
+\begin{itemize}
+    \item \textsc{universal:token} ={\textgreater} \textsc{xyym}
+    \item Set of container elements from \textit{universal:morpheme} which have at least one \textit{universal:char} (char sublayer) in common and have appropriate \textit{LinkSentence} patterns:
+    \\ \\ $\left.
+          \begin{array}{ccc}
+             \textsc{1$_{s}$) universal:morpheme/suffix$_{spec}$} & => & \textsc{ym} & props: B, C
+             \\
+             \textsc{2$_{s}$) universal:morpheme/suffix$_{spec}$} & => & \textsc{m} & props: D, E
+             \\
+             \textsc{3$_{s}$) universal:morpheme/suffix$_{spec}$} & => & \textsc{y} & props: A, F
+             \\
+          \end{array}
+        \right]$
+    \item List of stems found with the \textit{resource handler}:
+    \\ \\ $\left.
+          \begin{array}{ccc}
+             \textsc{1$_{r}$) universal:morpheme/root$_{spec}$} & => & \textsc{x} & props: \emptyset
+             \\
+             \textsc{2$_{r}$) universal:morpheme/root$_{spec}$} & => & \textsc{xy} & props: \emptyset
+             \\
+          \end{array}
+        \right]$
+    \item Log $\rightarrow$ \textsc{all\_positions\{element\}} := \{0, 1, 2, 3\}:
+    \\
+    %\begin{center}
+        \begin{tabular}{ |c|c|c|c| } 
+         \hline
+         x & y & y & m \\ 
+         \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\ 
+         \hline
+        \end{tabular}
+    %\end{center}
+    \item Log $\rightarrow$ \textsc{pos\_prohib\{element\}} := \{\}
+    \item Log $\rightarrow$ \textsc{pos\_prohib\_in\_spec\{element\}} := \{\}
+    \item $\left.
+          \begin{array}{ccc}
+             \textsc{1$_{r}$) root} = \textsc{1$_{r}$} = \textsc{x} => Log.\textsc{pos\_prohib}\{element\}\{\textsc{1$_{r}$}\} \leftarrow \{0\}
+             \\
+             \textsc{2$_{r}$) root} = \textsc{2$_{r}$} = \textsc{xy} => Log.\textsc{pos\_prohib}\{element\}\{\textsc{2$_{r}$}\} \leftarrow \{0, 1\}
+             \\
+          \end{array}
+        \right]$
+    \item \# returns \textsc{true} if at least one of Log.\textsc{pos\_prohib}\{element\}\{\textsc{n$_{r}$}\} is not equal to Log.\textsc{all\_positions}\{element\}
+    \item $n_r$ (\textsc{ROOT}) set is an example \textit{spec} set which can be extracted from the parent layer without having to use container data, but via resource handler, i. e.
+\end{itemize}
+
+\section{\textit{make\_apply} (universal:token $\rightarrow$ universal:morpheme)}
+
+\begin{itemize}
+    \item SPEC := suffixes, so we use the $n_s$ set
+    \item non-SPEC elements of \textit{universal:morpheme} (found) are: ROOT ($n_r$ set); \textit{(PREFIX not found)}
+    \item \textit{INSIDE\_SPEC} := $n_s$ set =\textgreater ~ $[ 1_s \| 2_s \| 3_s ]$ =\textgreater ~ $[ \textit{ym} \| \textit{m} \| \textit{y} ]$ 
+    \item \textit{OUT\_OF\_SPEC} := $n_r$ set =\textgreater ~ $[ 1_r \| 2_r ]$ =\textgreater ~ $[ \textit{x} \| \textit{xy} ]$
+    \item for each in OUT\_OF\_SPEC ($n_r$):
+    \begin{itemize}
+        \item $1_r$)
+        \begin{enumerate}
+            \item Exclude positions from Log.\textsc{pos\_prohib}\{element\}\{\textsc{1$_{r}$}\} =\textgreater ~\{0\}:
+            \\
+            \begin{tabular}{ |c|c|c|c| } 
+             \hline
+             x & y & y & m \\ 
+             \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\ 
+             \hline
+            \end{tabular}
+            =\textgreater~
+            \begin{tabular}{ |c|c|c| } 
+             \hline
+             y & y & m \\ 
+             \textbf{1} & \textbf{2} & \textbf{3} \\ 
+             \hline
+            \end{tabular}
+            \item permutations: for each in INSIDE\_SPEC:
+            \begin{itemize}
+                \item $1_s$)
+                \item yym = ... + \textbf{ym} ($1_s$)
+                \item  Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$1_s$}\} $\leftarrow$ \{2, 3\}
+                \\ ~~~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y & m \\ 
+                 \textbf{1} & \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y \\ 
+                 \textbf{1} \\ 
+                 \hline
+                \end{tabular}
+                \item $2_s$)
+                \item yym = (\textbf{y} + ...) OR (... + \textbf{y} + ...) OR (\textbf{y} + \textbf{y} + ...)
+                \\ \\
+                Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$2_s$}\} $\leftarrow$ \{1\}
+                \\
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y & m \\ 
+                 \textbf{1} & \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+               \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & m \\ 
+                 \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular} \\
+                
+                OR \\
+                Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$2_s$}\} $\leftarrow$ \{2\}
+                \\
+                
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y & m \\ 
+                 \textbf{1} & \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+               \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & m \\ 
+                 \textbf{1} & \textbf{3} \\ 
+                 \hline
+                \end{tabular} \\
+                
+                OR \\
+                Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$2_s$}\} $\leftarrow$ \{1, 2\}
+                \\
+                
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y & m \\ 
+                 \textbf{1} & \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+               \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 m \\ 
+                 \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                \\
+                \item $3_s$)
+                \item yym = ... + \textbf{m}
+                \item  Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$3_s$}\} $\leftarrow$ \{1, 2\}
+                \\ ~~~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y & m \\ 
+                 \textbf{1} & \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & y \\ 
+                 \textbf{1} & \textbf{2} \\ 
+                 \hline
+                \end{tabular}
+                
+            \end{itemize}
+        \end{enumerate}
+        \item $2_r$)
+        \begin{enumerate}
+            \item Exclude positions from Log.\textsc{pos\_prohib}\{element\}\{\textsc{2$_{r}$}\} =\textgreater ~\{0, 1\}:
+            \\
+            \begin{tabular}{ |c|c|c|c| } 
+             \hline
+             x & y & y & m \\ 
+             \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\ 
+             \hline
+            \end{tabular}
+            =\textgreater~
+            \begin{tabular}{ |c|c|c| } 
+             \hline
+             y & m \\ 
+             \textbf{2} & \textbf{3} \\ 
+             \hline
+            \end{tabular}
+            \item permutations: for each in INSIDE\_SPEC:
+            \begin{itemize}
+                \item $1_s$)
+                \item ym = \textbf{ym} ($1_s$)
+                \item  Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$1_s$}\} $\leftarrow$ \{2, 3\}
+                \\ ~~~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & m \\ 
+                 \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 \emptyset \\ 
+                 %\textbf{1} \\ 
+                 \hline
+                \end{tabular}
+                \item $2_s$)
+                \item ym = ... + \textbf{m}
+                \\ \\
+                Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$2_s$}\} $\leftarrow$ \{3\}
+                \\
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & m \\ 
+                 \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+               \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y \\ 
+                 \textbf{2} \\ 
+                 \hline
+                \end{tabular}
+                \\
+                \item $3_s$)
+                \item ym = \textbf{y} + ...
+                \item  Log.\textsc{pos\_prohib}\{element\}\{\textsc{$1_r$}\}\{\textsc{$3_s$}\} $\leftarrow$ \{1, 2\}
+                \\ ~~~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 y & m \\ 
+                 \textbf{2} & \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                =\textgreater~
+                \begin{tabular}{ |c|c|c| } 
+                 \hline
+                 m \\ 
+                 \textbf{3} \\ 
+                 \hline
+                \end{tabular}
+                
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
+
+\end{document}

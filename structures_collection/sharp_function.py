@@ -16,7 +16,7 @@ class HandlerStart:
         if (parent_system, child_system) in self.segments:
             return self.segments[(parent_system, child_system)]
         else:
-            raise NoSuchSharpFunction()
+            raise SharpFunctionNotFound()
 
     def add_sharp(self, parent_system, child_system, func):
         self.segments[(parent_system, child_system)] = func
@@ -48,6 +48,6 @@ def morpheme_in_token(element, container, input_container):
     pass
 
 
-class NoSuchSharpFunction(Exception):
+class SharpFunctionNotFound(Exception):
     pass
 

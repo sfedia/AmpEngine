@@ -14,7 +14,7 @@ class HandlerStart:
         if (from_, to_) in self.extracts:
             return self.extracts[(from_, to_)]
         else:
-            raise NoSuchSegmentTemplate()
+            raise SegmentTemplateNotFound()
 
     def add_extract(self, from_, to_, func):
         self.extracts[(from_, to_)] = func
@@ -44,5 +44,5 @@ def token_to_morphemes(parent_element, content):
     pass
 
 
-class NoSuchSegmentTemplate(Exception):
+class SegmentTemplateNotFound(Exception):
     pass
