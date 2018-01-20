@@ -33,6 +33,7 @@ class New:
                 continue
             else:
                 logs_found.append(log)
+        return logs_found
 
     def get_all_keys(self):
         return self.log_sectors.keys()
