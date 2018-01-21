@@ -17,7 +17,9 @@ class New:
     def add_log(self, purpose_key, **props):
         if purpose_key not in self.log_sectors:
             raise LogSectorNotFound()
-        self.log_sectors[purpose_key].append(props)
+        log_document = LogDocument(props)
+        log_document.set_sector_name(purpose_key)
+        self.log_sectors[purpose_key].append(log_document)
 
     def get_sector(self, purpose_key):
         if purpose_key not in self.log_sectors:
@@ -32,7 +34,7 @@ class New:
         for log in self.log_sectors[purpose_key]:
             props_cnc = True
             for prop in props:
-                if prop not in log or (prop in log and props[prop] != log[prop]):
+                if not log.prop_in_log(prop) or (log.prop_in_log(prop) and props[prop] != log.get_prop(prop)):
                     props_cnc = False
                     break
             if not props_cnc:
@@ -40,6 +42,13 @@ class New:
             else:
                 logs_found.append(log)
         return logs_found
+
+    def edit_log_document(self, purpose_key, filter_props, index, props2edit):
+        sector_logs = self.get_log_sequence(purpose_key, **filter_props)
+        if index >= len(sector_logs):
+            raise WrongLogIndex()
+        for prop in props2edit:
+            sector_logs[index].set_prop(prop, props2edit[prop])
 
     def get_all_keys(self):
         return self.log_sectors.keys()
@@ -57,9 +66,42 @@ class New:
         return json_dumps(backup_object)
 
 
+class LogDocument:
+    def __init__(self, props):
+        self.props = props
+        self.sector_name = None
+
+    def get_all_props(self):
+        return self.props
+
+    def prop_in_log(self, prop_name):
+        return prop_name in self.props
+
+    def get_prop(self, prop_name):
+        if prop_name not in self.props:
+            raise PropNotFound()
+        return self.props[prop_name]
+
+    def set_prop(self, prop_name, prop_value):
+        if prop_name not in self.props:
+            raise PropNotFound()
+        self.props[prop_name] = prop_value
+
+    def set_sector_name(self, sector_name):
+        self.sector_name = sector_name
+
+
 class LogSectorExistsAlready(Exception):
     pass
 
 
 class LogSectorNotFound(Exception):
+    pass
+
+
+class PropNotFound(Exception):
+    pass
+
+
+class WrongLogIndex(Exception):
     pass
