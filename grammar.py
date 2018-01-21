@@ -16,6 +16,7 @@ class InputContainer:
             self.metadata = metadata
         self.elements = []
         self.INPUT = 'universal:input'
+        self.ic_log = logs.log_object.New()
         self.add_element(InputContainerElement(self.INPUT, content))
         self.segment_into_childs(self.INPUT)
 
@@ -138,6 +139,7 @@ class Container:
     def __init__(self):
         self.rows = []
         self.entities = []
+        self.cont_log = logs.log_object.New()
         for system in collection.dependency.systems:
             self.add_entity(ContainerEntity('system', system))
 
