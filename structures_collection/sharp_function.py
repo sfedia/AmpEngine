@@ -38,12 +38,62 @@ def new_sharp(parent_system, child_system):
 
 
 @new_sharp(parent_system='universal:input', child_system='universal:token')
-def token_in_input(element, container, input_container):
-    pass
+def token_in_input(element, container_element, container, input_container):
+    if not input_container.ic_log.get_sector("ALL_POSITIONS"):
+        input_container.ic_log.add_sector("ALL_POSITIONS")
+    if not input_container.ic_log.get_sector("DEAD_POSITIONS"):
+        input_container.ic_log.add_sector("DEAD_POSITIONS")
+    positions = input_container.ic_log.get_log_sequence("ALL_POSITIONS",
+                                                        element_id=element.get_ic_id(),
+                                                        child_system='universal:token',
+                                                        parent_system='universal:input')
+
+    token_sequence = input_container.get_by_system_name('universal:input')[0].get_content().split()
+    if not positions:
+        position_numbers = [pos for pos, token in enumerate(token_sequence)]
+        input_container.ic_log.add_log(
+            "ALL_POSITIONS",
+            element_id=element.get_ic_id(),
+            child_system='universal:token',
+            parent_system='universal:input',
+            pos_list=position_numbers
+        )
+        input_container.ic_log.add_log(
+            "DEAD_POSITIONS",
+            element_id=element.get_ic_id(),
+            child_system='universal:token',
+            parent_system='universal:input',
+            pos_list=[]
+        )
+
+    dead_pos = input_container.ic_log.get_log_sequence(
+        "DEAD_POSITIONS",
+        element_id=element.get_ic_id(),
+        child_system='universal:token',
+        parent_system='universal:input'
+    )[0].get_prop('pos_list')
+
+    sharp_return = False
+    for n, token in enumerate(token_sequence):
+        if n not in dead_pos and token == container_element.get_content():
+            sharp_return = True
+            dead_pos.append(n)
+            input_container.ic_log.edit_log_document(
+                "DEAD_POSITIONS",
+                {
+                    'element_id': element.get_ic_id(),
+                    'child_system': 'universal:token',
+                    'parent_system': 'universal:input'
+                },
+                0,
+                dead_pos
+            )
+    return sharp_return
+
 
 
 @new_sharp(parent_system='universal:token', child_system='universal:morpheme')
-def morpheme_in_token(element, container, input_container):
+def morpheme_in_token(element, container_element, container, input_container):
     pass
 
 
