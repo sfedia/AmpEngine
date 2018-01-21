@@ -290,6 +290,7 @@ class ContainerElement:
 
     def applied(self, link_sentence, actions):
         self.apply_for = [link_sentence, actions]
+        self.apply_for[0].add_inherit_element(self)
         return self
 
     def add_applied(self, applied_id):
@@ -310,7 +311,7 @@ class ContainerElement:
         if key not in self.parameters:
             self.edit_parameter(key, value)
         else:
-            raise ParameterExistsAlready()
+            raise ParameterAlreadyExists()
         return self
 
     def get_parameter(self, key, args=[]):
@@ -364,6 +365,7 @@ class LinkSentence:
         self.link = link_string
         self.container = container
         self.input_container = input_container
+        self.inherit_element = None
         if not from_list:
             self.checked_list = self.input_container.get_by_system_name(scanned_system)
         else:
@@ -371,10 +373,16 @@ class LinkSentence:
         self.allow_resources = allow_resources
         self.scanned_system = scanned_system
 
+    def add_inherit_element(self, container_element):
+        if self.inherit_element is not None:
+            raise InheritElementAlreadyExists()
+        self.inherit_element = container_element
+
     def check_element(self, element, param_pair, block_converter=False):
         if param_pair.sharp:
             return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(
                 element,
+                self.inherit_element,
                 self.container,
                 self.input_container
             )
@@ -569,7 +577,7 @@ class IdIsNotUnique(Exception):
     pass
 
 
-class ParameterExistsAlready(Exception):
+class ParameterAlreadyExists(Exception):
     pass
 
 
@@ -634,4 +642,8 @@ class IntrusionIsEmpty(Exception):
 
 
 class IntrusionUnsupportedType(Exception):
+    pass
+
+
+class InheritElementAlreadyExists(Exception):
     pass
