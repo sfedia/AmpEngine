@@ -19,6 +19,12 @@ class New:
             raise LogSectorNotFound()
         self.log_sectors[purpose_key].append(props)
 
+    def get_sector(self, purpose_key):
+        if purpose_key not in self.log_sectors:
+            return None
+        else:
+            return self.log_sectors[purpose_key]
+
     def get_log_sequence(self, purpose_key, **props):
         if purpose_key not in self.log_sectors:
             raise LogSectorNotFound()
