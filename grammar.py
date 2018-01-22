@@ -204,7 +204,7 @@ class Container:
         elements = []
         content_table = dict()
         i = 0
-        
+
         for row in self.rows:
             if filter_func(row.get_content()):
                 elements.append(row)
