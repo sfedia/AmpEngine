@@ -91,7 +91,6 @@ def token_in_input(element, container_element, container, input_container):
     return sharp_return
 
 
-
 @new_sharp(parent_system='universal:token', child_system='universal:morpheme')
 def morpheme_in_token(element, container_element, container, input_container):
     pass
