@@ -71,6 +71,9 @@ class InputContainer:
     def get_all(self):
         return self.elements
 
+    def backward_parse(self, input_container_element, scanned_system):
+        pass
+
     def make_apply(self, main_container_element_id, main_container, scanned_system):
         main_container_element = main_container.get_by_id(main_container_element_id)
         get_applied = main_container_element.get_applied()
@@ -197,11 +200,29 @@ class Container:
 
         return elements
 
-    def iter_content_filter(self, filter_func):
+    def iter_content_filter(self, filter_func, sort_by_length=False, sort_desc=False):
         elements = []
+        content_table = dict()
+        i = 0
+        
         for row in self.rows:
             if filter_func(row.get_content()):
                 elements.append(row)
+                if sort_by_length:
+                    if row.get_content() not in content_table:
+                        content_table[row.get_content()] = []
+                    content_table[row.get_content()].append(i)
+                i += 1
+
+        if sort_by_length:
+            sorted_elements = []
+            content_list = list(content_table.keys())
+            content_list.sort(key=len, reverse=sort_desc)
+            for s in content_list:
+                for element_index in content_table[s]:
+                    sorted_elements.append(elements[element_index])
+            return sorted_elements
+
         return elements
 
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
