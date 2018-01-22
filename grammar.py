@@ -12,7 +12,7 @@ import string
 class InputContainer:
     def __init__(self, content, metadata=None):
         self.metadata = {}
-        if metadata is not None:
+        if metadata:
             self.metadata = metadata
         self.elements = []
         self.INPUT = 'universal:input'
@@ -374,7 +374,7 @@ class LinkSentence:
         self.scanned_system = scanned_system
 
     def add_inherit_element(self, container_element):
-        if self.inherit_element is not None:
+        if self.inherit_element:
             raise InheritElementAlreadyExists()
         self.inherit_element = container_element
 
@@ -502,7 +502,7 @@ class LinkSentence:
                 par_name = seq.group(1)
                 operator = seq.group(2)
                 value = seq.group(4)
-                arguments = self.parse_args(seq.group(5)) if seq.group(5) is not None else []
+                arguments = self.parse_args(seq.group(5)) if seq.group(5) else []
                 if '*' not in operator:
                     parameter_pair = self.ParameterPair(par_name, value, operator=operator, arguments=arguments)
                 else:
