@@ -12,7 +12,7 @@ class New:
         if purpose_key not in self.log_sectors:
             self.log_sectors[purpose_key] = []
         else:
-            raise LogSectorExistsAlready()
+            raise LogSectorAlreadyExists()
 
     def add_log(self, purpose_key, **props):
         if purpose_key not in self.log_sectors:
@@ -91,7 +91,7 @@ class LogDocument:
         self.sector_name = sector_name
 
 
-class LogSectorExistsAlready(Exception):
+class LogSectorAlreadyExists(Exception):
     pass
 
 
