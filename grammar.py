@@ -197,6 +197,13 @@ class Container:
 
         return elements
 
+    def iter_content_filter(self, filter_func):
+        elements = []
+        for row in self.rows:
+            if filter_func(row.get_content()):
+                elements.append(row)
+        return elements
+
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
         aprp = []
         for row in self.rows:
