@@ -51,9 +51,10 @@ def morpheme_in_token(input_container_element, container, input_container):
             child_system='universal:morpheme',
             parent_system='universal:token',
             spec_name='stem',
-            option_number=n
+            option_number=n,
+            positions=stem.get_prop('positions')
         )
-
+    
 
 
 
