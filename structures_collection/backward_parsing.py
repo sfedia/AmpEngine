@@ -54,8 +54,31 @@ def morpheme_in_token(input_container_element, container, input_container):
             option_number=n,
             positions=stem.get_prop('positions')
         )
-    
 
+    def segment_forward(chars, start, dead_pos):
+        if start >= len(chars):
+            return False
+        morphemes = container.iter_content_filter(lambda x: x.startswith(chars[start]), sort_desc=True)
+        if not morphemes:
+            return False
+        for morpheme in morphemes:
+            morpheme_pos = []
+            catch_pos = []
+            for j in range(start, len(chars)):
+                if j in dead_pos:
+                    continue
+                if chars[j] == chars[start] and len(catch_pos) < len(morpheme):
+                    catch_pos.append(j)
+                elif len(catch_pos) < len(morpheme):
+                    catch_pos = []
+                elif len(catch_pos) == len(morpheme):
+                    morpheme_pos.append(catch_pos)
+                    dead_pos += catch_pos
+                    catch_pos = []
+                else:
+                    raise InternalParserException()
+            if not morpheme_pos:
+                continue
 
 
 class ParserNotFound(Exception):
