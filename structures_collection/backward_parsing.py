@@ -62,7 +62,7 @@ def morpheme_in_token(input_container_element, container, input_container):
         if not morphemes:
             return False
         morpheme_found = False
-        results = []
+        new_morpheme_map = []
         for morpheme_object in morphemes:
             morpheme_pos = []
             catch_pos = []
@@ -99,15 +99,17 @@ def morpheme_in_token(input_container_element, container, input_container):
                     if not start_integer:
                         start_integer = local_dead_pos[-1] + 1
                     try:
-                        results.append(segment_forward(chars, start_integer, local_dead_pos, local_morpheme_map))
+                        new_morpheme_map.append(
+                            segment_forward(chars, start_integer, local_dead_pos, local_morpheme_map)
+                        )
                     except InternalParserException:
                         pass
         if not morpheme_found:
             raise InternalParserException()
-        if not results:
+        if not new_morpheme_map:
             raise InternalParserException()
 
-        return results
+        return new_morpheme_map
 
 
 class ParserNotFound(Exception):
