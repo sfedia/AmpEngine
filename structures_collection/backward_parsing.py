@@ -21,7 +21,6 @@ Handler = HandlerStart()
 
 
 def new_parser(parent_system, child_system):
-
     def parser_decorator(func):
         Handler.add_parser(parent_system, child_system, func)
 
@@ -29,7 +28,6 @@ def new_parser(parent_system, child_system):
             return func(function_arg1)
 
         return wrapped
-
     return parser_decorator
 
 
@@ -54,7 +52,6 @@ def morpheme_in_token(input_container_element, container, input_container):
     morpheme_maps = {}
     
     def segment_forward(chars, start, dead_pos, position):
-        
         if start >= len(chars):
             raise InternalParserException()
         
@@ -84,7 +81,6 @@ def morpheme_in_token(input_container_element, container, input_container):
                 elif len(catch_pos) == len(morph_object.get_content()):
                     morpheme_pos.append(catch_pos)
                     catch_pos = []
-
                 else:
                     raise InternalParserException()
 

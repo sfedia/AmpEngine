@@ -222,7 +222,6 @@ class Container:
                 for element_index in content_table[s]:
                     sorted_elements.append(elements[element_index])
             return sorted_elements
-
         return elements
 
     def get_elems_providing_param(self, param, element, input_container, scanned_system):
@@ -283,7 +282,6 @@ class ContainerEntity:
     def subclasses_order(self, order_string, parent_filter=None, select_into=None, strict=False):
         if self.level != 'system':
             raise SubclassesOrderNotSupported()
-
         self.subcl_orders.append({
             'order': order_string,
             'parent_filter': parent_filter,
@@ -384,7 +382,6 @@ class ContainerElement:
         for class_name in self.class_names:
             for link_sentence in self.container.get_class(class_name).get_subelems_intrusion():
                 applied_object['links'].append(link_sentence)
-
         return applied_object
 
 
@@ -420,8 +417,6 @@ class LinkSentence:
             else:
                 is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
         except ParameterNotFound:
-            #good_afs = collection.static.Handler.params_affected(param_pair.key)
-            #good_afs = self.container.get_actions_declaring(param_pair.key, element)
             good_aprp = self.container.get_elems_providing_param(
                 param_pair.key,
                 element,
@@ -512,10 +507,9 @@ class LinkSentence:
         sector = sector.strip()
         sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
         parsed_list = []
-        RE_SHARP = r"^#\s*"
-        if re.search(RE_SHARP, sector):
+        if re.search(r'^#\s*', sector):
             parsed_list.append(self.ParameterPair('#', sharp=True))
-            sector = re.sub(RE_SHARP, '', sector)
+            sector = re.sub(r'^#\s*', '', sector)
 
         parsed_sector = re.finditer(sector_rx, sector)
         for seq in parsed_sector:
