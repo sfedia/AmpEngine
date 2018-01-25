@@ -55,40 +55,59 @@ def morpheme_in_token(input_container_element, container, input_container):
             positions=stem.get_prop('positions')
         )
 
-    def segment_forward(chars, start, dead_pos, morpheme_map):
+    morpheme_maps = {}
+    
+    def segment_forward(chars, start, dead_pos, position):
+        
         if start >= len(chars):
-            return False
+            raise InternalParserException()
+        
         morphemes = container.iter_content_filter(lambda x: x.startswith(chars[start]), sort_desc=True)
         if not morphemes:
-            return False
+            raise InternalParserException()
+        
         morpheme_found = False
-        new_morpheme_map = []
-        for morpheme_object in morphemes:
+        position_index = 0
+        
+        for morph_object in morphemes:
             morpheme_pos = []
             catch_pos = []
+
             for j in range(start, len(chars)):
                 if j in dead_pos:
                     continue
-                if chars[j] == chars[start + j] and len(catch_pos) < len(morpheme_object.get_content()):
+                if (j - start) == len(morph_object.get_content()):
+                    break
+
+                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(morph_object.get_content()):
                     catch_pos.append(j)
-                elif len(catch_pos) < len(morpheme_object.get_content()):
+                elif len(catch_pos) < len(morph_object.get_content()):
                     catch_pos = []
-                elif len(catch_pos) == len(morpheme_object.get_content()):
+                elif len(catch_pos) == len(morph_object.get_content()):
                     morpheme_pos.append(catch_pos)
                     catch_pos = []
+
                 else:
                     raise InternalParserException()
+
+            if len(catch_pos) == len(morph_object.get_content()):
+                morpheme_pos.append(catch_pos)
+
             if not morpheme_pos:
                 continue
+            morpheme_found = True
+
             for e, _ in enumerate(morpheme_pos):
                 perms = list(itertools.permutations(morpheme_pos, e + 1))
                 for perm in perms:
-                    local_morpheme_map = morpheme_map
-                    local_morpheme_map[morpheme_object.get_id()] = list(perm)
-                    local_dead_pos = dead_pos
-                    local_dead_pos += itertools.chain(*local_morpheme_map[morpheme_object.get_id()])
+                    local_new_key = tuple(list(position) + [position_index])
+                    morpheme_maps[local_new_key] = {morph_object.get_id(): perm}
+
+                    local_dead_pos = dead_pos[:]
+                    local_dead_pos += itertools.chain(*perm)
                     local_dead_pos = list(set(local_dead_pos))
                     local_dead_pos.sort()
+
                     start_integer = None
                     for ii, i in enumerate(local_dead_pos):
                         if not ii:
@@ -96,20 +115,18 @@ def morpheme_in_token(input_container_element, container, input_container):
                         if local_dead_pos[ii - 1] - local_dead_pos[ii] > 1:
                             start_integer = local_dead_pos[ii - 1] + 1
                             break
+
                     if not start_integer:
                         start_integer = local_dead_pos[-1] + 1
+
                     try:
-                        new_morpheme_map.append(
-                            segment_forward(chars, start_integer, local_dead_pos, local_morpheme_map)
-                        )
+                        segment_forward(chars, start_integer, local_dead_pos, local_new_key)
                     except InternalParserException:
-                        pass
+                        morpheme_maps[tuple(list(local_new_key) + [0])] = None
+                    position_index += 1
+                    
         if not morpheme_found:
             raise InternalParserException()
-        if not new_morpheme_map:
-            raise InternalParserException()
-
-        return new_morpheme_map
 
 
 class ParserNotFound(Exception):
