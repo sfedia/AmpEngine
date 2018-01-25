@@ -58,7 +58,9 @@ def morpheme_in_token(input_container_element, container, input_container):
         if start >= len(chars):
             raise InternalParserException()
         
-        morphemes = container.iter_content_filter(lambda x: x.startswith(chars[start]), sort_desc=True)
+        morphemes = container.iter_content_filter(
+            lambda x: x.startswith(chars[start]), sort_desc=True, system_filter='universal:morpheme'
+        )
         if not morphemes:
             raise InternalParserException()
         
