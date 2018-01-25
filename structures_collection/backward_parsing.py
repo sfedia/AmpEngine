@@ -91,7 +91,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                 continue
             morpheme_found = True
 
-            for e, _ in enumerate(morpheme_pos):
+            for e in range(len(morpheme_pos)):
                 perms = list(itertools.permutations(morpheme_pos, e + 1))
                 for perm in perms:
                     local_new_key = tuple(list(position) + [position_index])
