@@ -200,13 +200,13 @@ class Container:
 
         return elements
 
-    def iter_content_filter(self, filter_func, sort_by_length=False, sort_desc=False):
+    def iter_content_filter(self, filter_func, sort_by_length=False, sort_desc=False, system_filter=None):
         elements = []
         content_table = dict()
         i = 0
 
         for row in self.rows:
-            if filter_func(row.get_content()):
+            if filter_func(row.get_content()) and (row.get_type() == system_filter if system_filter else True):
                 elements.append(row)
                 if sort_by_length:
                     if row.get_content() not in content_table:
