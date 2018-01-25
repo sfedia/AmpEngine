@@ -69,7 +69,7 @@ def morpheme_in_token(input_container_element, container, input_container):
             for j in range(start, len(chars)):
                 if j in dead_pos:
                     continue
-                if chars[j] == chars[start] and len(catch_pos) < len(morpheme_object.get_content()):
+                if chars[j] == chars[start + j] and len(catch_pos) < len(morpheme_object.get_content()):
                     catch_pos.append(j)
                 elif len(catch_pos) < len(morpheme_object.get_content()):
                     catch_pos = []
