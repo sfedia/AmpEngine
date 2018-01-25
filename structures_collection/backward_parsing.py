@@ -2,10 +2,6 @@
 
 import itertools
 
-'''
-Sharp function should return a Bool
-'''
-
 
 class HandlerStart:
     def __init__(self):
@@ -124,7 +120,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                     except InternalParserException:
                         morpheme_maps[tuple(list(local_new_key) + [0])] = None
                     position_index += 1
-                    
+
         if not morpheme_found:
             raise InternalParserException()
 
