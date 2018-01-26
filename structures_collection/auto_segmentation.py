@@ -31,7 +31,6 @@ Handler = HandlerStart()
 
 
 def segmentation(from_, to_):
-
     def segm_decorator(func):
         Handler.add_segment(from_, to_, func)
 
@@ -39,7 +38,6 @@ def segmentation(from_, to_):
             return func(function_arg1, function_arg2)
 
         return wrapped
-
     return segm_decorator
 
 
