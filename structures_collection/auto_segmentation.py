@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import structures_collection.input_container
 
 
 class HandlerStart:
@@ -43,7 +44,21 @@ def segmentation(from_, to_):
 
 @segmentation('universal:input', 'universal:token')
 def input_to_tokens(content, metadata=None):
-    return content.split()
+    """
+    :param content: IC element content
+    :param metadata: incidental metadata (optional)
+    :return: Array of CharOutline object (with attachment)
+    """
+
+    start = 0
+    extracted_tokens = []
+    for e, char in enumerate(content):
+        if e > 0 and char == " ":
+            extracted_tokens.append(
+                structures_collection.input_container.CharOutline([start, e - 1], attachment=content[start:e])
+            )
+            start = e + 1
+    return extracted_tokens
 
 
 class SegmentTemplateNotFound(Exception):
