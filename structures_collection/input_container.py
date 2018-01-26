@@ -2,9 +2,10 @@
 
 
 class CharOutline:
-    def __init__(self, char_indices):
+    def __init__(self, char_indices, attachment=None):
         self.simple_sequence = True
         self.index_groups = [list()]
+        self.atcm = attachment
         for e, index in enumerate(char_indices):
             if type(index) != int:
                 raise ValueError('Int expected, but {} found'.format(type(index)))
@@ -29,6 +30,12 @@ class CharOutline:
 
     def end(self):
         return self.index_groups[-1][-1]
+
+    def attachment(self, att_string):
+        self.atcm = att_string
+
+    def get_attachment(self):
+        return self.atcm
 
 
 class CharOutlineIsEmpty(Exception):
