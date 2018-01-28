@@ -110,7 +110,7 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, char_outline=None, params=dict(), parent=None, group=None, fork_id=None):
+    def __init__(self, system_name, content, input_container, char_outline=None, params=dict(), parent=None, group=None, fork_id=None):
         self.system_name = system_name
         self.content = content
         self.params = params
@@ -121,7 +121,8 @@ class InputContainerElement:
         self.parent_ic_id = parent
         self.group = group
         self.fork_id = fork_id
-
+        if fork_id and not input_container.get_by_ic_id(fork_id):
+            raise UnknownForkID()
 
     def set_parameter(self, param_name, param_value):
         self.params[param_name] = param_value
@@ -686,5 +687,5 @@ class InheritElementAlreadyExists(Exception):
     pass
 
 
-class IdIsNotUnique(Exception):
+class UnknownForkID(Exception):
     pass
