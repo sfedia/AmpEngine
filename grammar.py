@@ -41,12 +41,10 @@ class InputContainer:
                 self.elements.remove(element)
 
     def get_by_ic_id(self, ic_id):
-        returned = []
         for element in self.elements:
             if element.get_ic_id() == ic_id:
-                returned.append(element)
-
-        return returned
+                return element
+        return None
 
     def get_by_system_name(self, system_name):
         returned = []
@@ -112,7 +110,7 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, char_outline=None, params=dict(), parent=None):
+    def __init__(self, system_name, content, char_outline=None, params=dict(), parent=None, group=None, fork_id=None):
         self.system_name = system_name
         self.content = content
         self.params = params
@@ -121,6 +119,9 @@ class InputContainerElement:
             self.params[param] = func(content)
         self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
         self.parent_ic_id = parent
+        self.group = group
+        self.fork_id = fork_id
+
 
     def set_parameter(self, param_name, param_value):
         self.params[param_name] = param_value
@@ -142,6 +143,15 @@ class InputContainerElement:
 
     def get_char_outline(self):
         return self.char_outline
+
+    def get_group(self):
+        """
+        :return: (Int; >0 because None should not confuse group number) number of group the element belongs to
+        """
+        return self.group
+
+    def get_fork_id(self):
+        return self.fork_id
 
 
 class Container:
@@ -369,7 +379,7 @@ class ContainerElement:
     def get_content(self):
         return self.content
 
-    def set_child_type(self, child_type):
+    def append_child_type(self, child_type):
         if ':' in child_type:
             raise WrongChildType()
         self.type += ':' + child_type
@@ -673,4 +683,8 @@ class IntrusionUnsupportedType(Exception):
 
 
 class InheritElementAlreadyExists(Exception):
+    pass
+
+
+class IdIsNotUnique(Exception):
     pass
