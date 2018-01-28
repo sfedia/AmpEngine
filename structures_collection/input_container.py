@@ -6,7 +6,7 @@ class CharOutline:
         self.index_groups = [list()]
         self.is_range = is_range
         self.__attachment = attachment
-        self.error_se = 'CharOutline: .start()/end() is only avaliable for ranges'
+        self.error_se = 'CharOutline: .start()/end() is only available for ranges'
 
         if self.is_range and len(char_indices) != 2:
             raise ValueError('CharOutline: indices range should contain two integers')
