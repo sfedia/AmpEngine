@@ -2,40 +2,38 @@
 
 
 class CharOutline:
-    def __init__(self, char_indices, attachment=None):
-        self.simple_sequence = True
+    def __init__(self, char_indices, is_range=False, range_strict=False, attachment=None):
         self.index_groups = [list()]
-        self.atcm = attachment
-        for e, index in enumerate(char_indices):
-            if type(index) != int:
-                raise ValueError('Int expected, but {} found'.format(type(index)))
-            if e > 0:
-                if char_indices[e - 1] > char_indices[e]:
-                    raise ValueError('Sorted list expected')
-                if self.simple_sequence and char_indices[e] - char_indices[e - 1] > 1:
-                    self.simple_sequence = False
-                if char_indices[e] == char_indices[e - 1]:
-                    raise ValueError('Char indices list should not contain duplicates')
-                if char_indices[e] - char_indices[e - 1] > 1:
-                    self.index_groups.append([char_indices[e]])
-                else:
-                    self.index_groups[-1].append(char_indices[e])
-            else:
-                self.index_groups[-1].append(char_indices[e])
+        self.is_range = is_range
+        self.__attachment = attachment
+        self.error_se = 'CharOutline: .start()/end() is only avaliable for ranges'
+
+        if self.is_range and len(char_indices) != 2:
+            raise ValueError('CharOutline: indices range should contain two integers')
+        elif self.is_range:
+            for n in range(char_indices[0], char_indices[1] + int(range_strict)):
+                self.index_groups[0].append(n)
+        else:
+            self.index_groups[0] = char_indices
+
         if not self.index_groups[0]:
             raise CharOutlineIsEmpty()
 
     def start(self):
+        if not self.is_range:
+            raise ValueError(self.error_se)
         return self.index_groups[0][0]
 
     def end(self):
+        if not self.is_range:
+            raise ValueError(self.error_se)
         return self.index_groups[-1][-1]
 
-    def attachment(self, att_string):
-        self.atcm = att_string
+    def add_attachment(self, attachment_string):
+        self.__attachment = attachment_string
 
     def get_attachment(self):
-        return self.atcm
+        return self.__attachment
 
 
 class CharOutlineIsEmpty(Exception):
