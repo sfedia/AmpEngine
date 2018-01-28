@@ -15,6 +15,15 @@ class CharOutline:
                 self.index_groups[0].append(n)
         else:
             self.index_groups[0] = char_indices
+            self.is_range = True
+            for e, n in self.index_groups[0]:
+                if not e:
+                    continue
+                if self.index_groups[0][e] - self.index_groups[0][e - 1] > 1:
+                    self.is_range = False
+                    break
+                elif not self.index_groups[0][e] - self.index_groups[0][e - 1]:
+                    raise ValueError('CharOutline: char indices should not repeat each other')
 
         if not self.index_groups[0]:
             raise CharOutlineIsEmpty()
