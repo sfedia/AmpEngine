@@ -18,11 +18,11 @@ class HandlerStart:
     def can_segment(self, from_, to_):
         return (from_, to_) in self.segments
 
-    def to_values(self, to_):
+    def to_values(self):
         to_val = []
         for key in self.segments:
             to_val.append(key[1])
-        return to_val
+        return list(set(to_val))
 
 
 # every function should return List
