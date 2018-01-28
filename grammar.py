@@ -424,7 +424,6 @@ class LinkSentence:
             good_aprp = self.container.get_elems_providing_param(
                 param_pair.key,
                 element,
-                self.input_container,
                 self.scanned_system
             )
             if good_aprp:
