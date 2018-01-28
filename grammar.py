@@ -56,11 +56,13 @@ class InputContainer:
 
         return returned
 
-    def segment_element(self, element, child_system, child_list):
+    def segment_element(self, element, child_system, c_outlines):
         parent_ic = element.get_ic_id()
         ices = []
-        for child in child_list:
-            ice = InputContainerElement(child_system, child, parent=parent_ic)
+        for outline_object in c_outlines:
+            ice = InputContainerElement(
+                child_system, outline_object.get_attachment(), char_outline=outline_object, parent=parent_ic
+            )
             ices.append(ice.get_ic_id())
             self.add_element(ice)
         return ices
