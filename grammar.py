@@ -110,10 +110,11 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, params=dict(), parent=None):
+    def __init__(self, system_name, content, char_outline=None, params=dict(), parent=None):
         self.system_name = system_name
         self.content = content
         self.params = params
+        self.char_outline = char_outline
         for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
             self.params[param] = func(content)
         self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
@@ -136,6 +137,9 @@ class InputContainerElement:
 
     def get_content(self):
         return self.content
+
+    def get_char_outline(self):
+        return self.char_outline
 
 
 class Container:
