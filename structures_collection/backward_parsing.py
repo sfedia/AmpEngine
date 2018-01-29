@@ -97,8 +97,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                     local_new_key = tuple(list(position) + [position_index])
                     morpheme_maps[local_new_key] = {morph_object.get_id(): perm}
 
-                    local_dead_pos = dead_pos[:]
-                    local_dead_pos += itertools.chain(*perm)
+                    local_dead_pos = dead_pos[:] + itertools.chain(*perm)
                     local_dead_pos = list(set(local_dead_pos))
                     local_dead_pos.sort()
 
