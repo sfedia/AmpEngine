@@ -128,6 +128,8 @@ class InputContainerElement:
         self.params[param_name] = param_value
 
     def get_parameter(self, param_name):
+        if param_name not in self.params:
+            raise ParameterNotFound()
         return self.params[param_name]
 
     def get_ic_id(self):
@@ -545,8 +547,7 @@ class LinkSentence:
                     parameter_pair = self.ParameterPair(par_name, value, operator=operator, arguments=arguments)
                 else:
                     parameter_pair = self.ParameterPair(
-                        par_name, element.get_parameter(value),
-                        operator=operator, arguments=arguments
+                        par_name, element.get_parameter(value), operator=operator, arguments=arguments
                     )
                 parsed_list.append(parameter_pair)
             else:
@@ -569,7 +570,7 @@ class LinkSentence:
         if '&' in complete_list and '|' in complete_list:
             raise WrongLinkSentence()
 
-        common_operator = '&' if '&' in complete_list else '|' if '|' in complete_list else False
+        common_operator = '&' if '&' in complete_list else '|' if '|' in complete_list else None
 
         if not common_operator and (not link_slice or len(link_slice) > 1):
             raise WrongLinkSentence()
