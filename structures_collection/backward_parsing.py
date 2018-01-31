@@ -121,6 +121,13 @@ def morpheme_in_token(input_container_element, container, input_container):
         if not morpheme_found:
             raise InternalParserException()
 
+    def create_morpho_sequence(key):
+        sequence = []
+        while len(key) >= 2:
+            sequence.insert(0, morpheme_maps[key])
+            key = tuple(x for x in key[:-1])
+        return sequence
+
 
 class ParserNotFound(Exception):
     pass
