@@ -50,6 +50,7 @@ def morpheme_in_token(input_container_element, container, input_container):
         )
 
     morpheme_maps = {}
+    graph = {}
     
     def segment_forward(chars, start, dead_pos, position):
         if start >= len(chars):
@@ -96,7 +97,9 @@ def morpheme_in_token(input_container_element, container, input_container):
                 for perm in perms:
                     local_new_key = tuple(list(position) + [position_index])
                     morpheme_maps[local_new_key] = {morph_object.get_id(): perm}
-
+                    if position not in graph:
+                        graph[position] = []
+                    graph[position].append(local_new_key)
                     local_dead_pos = dead_pos[:] + list(itertools.chain(*perm))
                     local_dead_pos = list(set(local_dead_pos))
                     local_dead_pos.sort()
@@ -116,6 +119,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                         segment_forward(chars, start_integer, local_dead_pos, local_new_key)
                     except InternalParserException:
                         morpheme_maps[tuple(list(local_new_key) + [0])] = None
+                        graph[local_new_key] = [tuple(list(local_new_key) + [0])]
                     position_index += 1
 
         if not morpheme_found:
