@@ -314,6 +314,9 @@ class ContainerEntity:
     def get_subcl_orders(self):
         return self.subcl_orders
 
+    def get_subclasses_affecting_id(self, id_name):
+        return [so for so in self.subcl_orders if id_name in so.get_affected_ids()]
+
     def inspect_added_behaviour(self):
         return self.added_bhvr
 
@@ -322,8 +325,9 @@ class ContainerEntity:
 
 
 class SubclassesOrder:
-    def __init__(self, order_string):
+    def __init__(self, order_string, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
+        self.strict = strict
         sp_string = order_string.split()
         for substr in sp_string:
             if substr == '?':
