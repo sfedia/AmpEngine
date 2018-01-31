@@ -343,18 +343,21 @@ class SubclassesOrder:
                     'subtype': 'id',
                     'value': substr[1:]
                 })
-            elif substr.startswith('>'):
-                self.scheme.append({
-                    'type': 'operator',
-                    'subtype': 'lookahead',
-                    'value': 'optional' if len(substr) == 2 else 'required'
-                })
-            elif substr.startswith('<'):
-                self.scheme.append({
-                    'type': 'operator',
-                    'subtype': 'lookbehind',
-                    'value': 'optional' if len(substr) == 2 else 'required'
-                })
+            elif '<' in substr or '>' in substr:
+                lookbehind = ''.join([x for x in substr if x == '<'])
+                lookahead = ''.join([x for x in substr if x == '>'])
+                if lookbehind:
+                    self.scheme.append({
+                        'type': 'operator',
+                        'subtype': 'lookbehind',
+                        'value': 'optional' if len(lookbehind) == 2 else 'required'
+                    })
+                if lookahead:
+                    self.scheme.append({
+                        'type': 'operator',
+                        'subtype': 'lookahead',
+                        'value': 'optional' if len(lookahead) == 2 else 'required'
+                    })
             else:
                 raise MalformedSubOrder()
 
@@ -363,6 +366,14 @@ class SubclassesOrder:
 
     def get_affected_ids(self):
         return [x['value'] for x in self.scheme if x['subtype'] == 'id']
+
+    def check_sequence(self, sequence):
+        """
+        :param sequence: List[MC element id]
+        :return: Bool -> if the order matches the given sequence
+        """
+        pass
+
 
 
 class ContainerElement:
