@@ -321,6 +321,45 @@ class ContainerEntity:
         return self.subelems_intrusion
 
 
+class SubclassesOrder:
+    def __init__(self, order_string):
+        self.scheme = []
+        sp_string = order_string.split()
+        for substr in sp_string:
+            if substr == '?':
+                self.scheme.append({
+                    'type': 'pointer',
+                    'subtype': 'everything'
+                })
+            elif substr.startswith('.'):
+                self.scheme.append({
+                    'type': 'pointer',
+                    'subtype': 'class',
+                    'value': substr[1:]
+                })
+            elif substr.startswith('#'):
+                self.scheme.append({
+                    'type': 'pointer',
+                    'subtype': 'id',
+                    'value': substr[1:]
+                })
+            elif substr.startswith('>'):
+                self.scheme.append({
+                    'type': 'operator',
+                    'subtype': 'lookahead',
+                    'value': 'optional' if len(substr) == 2 else 'required'
+                })
+            elif substr.startswith('<'):
+                self.scheme.append({
+                    'type': 'operator',
+                    'subtype': 'lookbehind',
+                    'value': 'optional' if len(substr) == 2 else 'required'
+                })
+            else:
+                raise MalformedSubOrder()
+
+
+
 class ContainerElement:
     def __init__(self, element_type, element_content, element_id, container):
         self.type = element_type
@@ -689,4 +728,8 @@ class InheritElementAlreadyExists(Exception):
 
 
 class UnknownForkID(Exception):
+    pass
+
+
+class MalformedSubOrder(Exception):
     pass
