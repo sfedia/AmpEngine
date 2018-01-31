@@ -358,6 +358,11 @@ class SubclassesOrder:
             else:
                 raise MalformedSubOrder()
 
+    def get_affected_classes(self):
+        return [x['value'] for x in self.scheme if x['subtype'] == 'class']
+
+    def get_affected_ids(self):
+        return [x['value'] for x in self.scheme if x['subtype'] == 'id']
 
 
 class ContainerElement:
