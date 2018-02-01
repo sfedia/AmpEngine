@@ -8,15 +8,15 @@ class CharOutline:
         self.is_virtual = False
         self.v_margines = []
         self.__attachment = attachment
-        self.error_se = 'CharOutline: .start()/end() is only available for ranges'
+        self.error_se = '.start()/end() is only available for ranges'
 
         if virtual_margins:
             if len(virtual_margins) != 2:
-                raise ValueError('CharOutline: virtual margins should contain two integers')
+                raise MalformedCharOutline('virtual margins should contain two integers')
             self.v_margines = virtual_margins
         else:
             if self.is_range and len(char_indices) != 2:
-                raise ValueError('CharOutline: indices range should contain two integers')
+                raise MalformedCharOutline('indices range should contain two integers')
             elif self.is_range:
                 for n in range(char_indices[0], char_indices[1] + int(range_strict)):
                     self.index_groups[0].append(n)
@@ -30,7 +30,7 @@ class CharOutline:
                         self.is_range = False
                         break
                     elif not self.index_groups[0][e] - self.index_groups[0][e - 1]:
-                        raise ValueError('CharOutline: char indices should not repeat each other')
+                        raise MalformedCharOutline('char indices should not repeat each other')
 
             if not self.index_groups[0]:
                 raise CharOutlineIsEmpty()
@@ -42,7 +42,7 @@ class CharOutline:
 
     def end(self):
         if not self.is_range:
-            raise ValueError(self.error_se)
+            raise MalformedCharOutline(self.error_se)
         return self.index_groups[-1][-1]
 
     def add_attachment(self, attachment_string):
@@ -56,4 +56,8 @@ class CharOutline:
 
 
 class CharOutlineIsEmpty(Exception):
+    pass
+
+
+class MalformedCharOutline(Exception):
     pass
