@@ -378,7 +378,21 @@ class SubclassesOrder:
         :return: Bool -> if the order matches the given sequence
         """
         # self.null_elements
-        pass
+
+        def get_operator(n):
+            if n > 0:
+                if self.scheme[n - 1]['type'] == 'operator' and self.scheme[n - 1]['subtype'] == 'lookahead':
+                    return self.scheme[n - 1]['value']
+            elif n < len(self.scheme) - 1:
+                if self.scheme[n + 1]['type'] == 'operator' and self.scheme[n + 1]['subtype'] == 'lookbehind':
+                    return self.scheme[n + 1]['value']
+
+        ev_groups = []
+        check_regex = ''
+        for j, el in self.scheme:
+            if el['subtype'] == 'everything':
+                #
+                pass
 
 
 class ContainerElement:
