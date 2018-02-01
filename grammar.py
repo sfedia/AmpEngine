@@ -388,11 +388,26 @@ class SubclassesOrder:
                     return self.scheme[n + 1]['value']
 
         ev_groups = []
+        non_ev = []
         check_regex = ''
         for j, el in self.scheme:
-            if el['subtype'] == 'everything':
-                #
-                pass
+            if el['type'] == 'pointer' and el['subtype'] == 'everything':
+                if get_operator(j) == 'required':
+                    check_regex += r'((.+))'
+                else:
+                    check_regex += r'((.*)|)'
+                ev_groups.append(j)
+            elif el['type'] == 'pointer':
+                pointer_regex = r'(' + r'('
+                el_name = r'\*' + (r'\.' if el['subtype'] == 'class' else r'#') + el['value'] + r'\*'
+                non_ev.append(el_name)
+                pointer_regex += el_name
+                pointer_regex += r')'
+                if get_operator(j) == 'optional':
+                    pointer_regex += r'|'
+                pointer_regex += r')'
+            else:
+                continue
 
 
 class ContainerElement:
