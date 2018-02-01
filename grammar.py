@@ -325,9 +325,10 @@ class ContainerEntity:
 
 
 class SubclassesOrder:
-    def __init__(self, order_string, parent_filter=None, select_into=None, strict=True):
+    def __init__(self, order_string, null_elements, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
         self.strict = strict
+        self.null_elements = null_elements
         sp_string = order_string.split()
         for substr in sp_string:
             if substr == '?':
@@ -376,8 +377,8 @@ class SubclassesOrder:
         :param sequence: List[MC element id]
         :return: Bool -> if the order matches the given sequence
         """
+        # self.null_elements
         pass
-
 
 
 class ContainerElement:
@@ -406,6 +407,7 @@ class ContainerElement:
             self.class_names.append(class_name)
             self.container.add_entity(ContainerEntity('class', class_name))
             return self
+        raise RepeatedClassAssignment()
 
     def edit_parameter(self, key, value=True):
         self.parameters[key] = value
@@ -752,4 +754,8 @@ class UnknownForkID(Exception):
 
 
 class MalformedSubOrder(Exception):
+    pass
+
+
+class RepeatedClassAssignment(Exception):
     pass
