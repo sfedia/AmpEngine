@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import itertools
+import grammar
 
 
 class HandlerStart:
@@ -135,7 +136,8 @@ def morpheme_in_token(input_container_element, container, input_container):
             if group[-1] == len(input_container_element.get_content()) - 1:
                 morpho_seqs.append(create_morpho_sequence(morph_key))
                 break
-                
+    grammar_nulls = container.iter_content_filter(lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme')
+
 
 class ParserNotFound(Exception):
     pass
