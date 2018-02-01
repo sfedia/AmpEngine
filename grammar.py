@@ -5,6 +5,7 @@ import structures_collection as collection
 import resource_handler as resources
 import convertation_handler as converter
 import log_handler as logs
+import itertools
 import random
 import string
 
@@ -325,10 +326,13 @@ class ContainerEntity:
 
 
 class SubclassesOrder:
-    def __init__(self, order_string, null_elements, parent_filter=None, select_into=None, strict=True):
+    def __init__(self, order_string, null_elements, main_container, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
         self.strict = strict
+        self.main_container = main_container
         self.null_elements = null_elements
+        self.parent_filter = parent_filter
+        self.select_into = select_into
         sp_string = order_string.split()
         for substr in sp_string:
             if substr == '?':
@@ -393,21 +397,36 @@ class SubclassesOrder:
         for j, el in self.scheme:
             if el['type'] == 'pointer' and el['subtype'] == 'everything':
                 if get_operator(j) == 'required':
-                    check_regex += r'((.+))'
+                    check_regex += '((.+))'
                 else:
-                    check_regex += r'((.*)|)'
+                    check_regex += '((.*)|)'
                 ev_groups.append(j)
             elif el['type'] == 'pointer':
-                pointer_regex = r'(' + r'('
-                el_name = r'\*' + (r'\.' if el['subtype'] == 'class' else r'#') + el['value'] + r'\*'
+                pointer_regex = '(' + '('
+                el_name = r'\*' + (r'\.' if el['subtype'] == 'class' else '#') + el['value'] + r'\*'
                 non_ev.append(el_name)
                 pointer_regex += el_name
-                pointer_regex += r')'
+                pointer_regex += ')'
                 if get_operator(j) == 'optional':
-                    pointer_regex += r'|'
-                pointer_regex += r')'
+                    pointer_regex += '|'
+                pointer_regex += ')'
+                check_regex += pointer_regex
             else:
                 continue
+        non_ev_str = '|'.join(non_ev)
+        el_masks = [
+            [*['.' + x for x in self.main_container.get_by_id(el_id).get_class_names()], '#' + el_id]
+            for el_id in sequence
+        ]
+        for mask_product in [''.join(['*' + y + '*' for y in x]) for x in itertools.product(el_masks)]:
+            rx_grouping = re.compile(check_regex).match(mask_product)
+            if not rx_grouping:
+                continue
+            if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
+                continue
+            return True
+
+        return False
 
 
 class ContainerElement:
