@@ -51,6 +51,9 @@ class CharOutline:
     def get_attachment(self):
         return self.__attachment
 
+    def get_virtual_margins(self):
+        return self.v_margines
+
 
 class CharOutlineIsEmpty(Exception):
     pass
