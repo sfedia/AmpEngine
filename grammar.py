@@ -303,12 +303,16 @@ class ContainerEntity:
     def subclasses_order(self, order_string, parent_filter=None, select_into=None, strict=False):
         if self.level != 'system':
             raise SubclassesOrderNotSupported()
-        self.subcl_orders.append({
-            'order': order_string,
-            'parent_filter': parent_filter,
-            'select_into': select_into,
-            'strict': strict
-        })
+        self.subcl_orders.append(
+            SubclassesOrder(
+                order_string,
+                self.container,
+                self.container.iter_content_filter(lambda x: x == Temp.NULL, system_filter=self.identifier),
+                parent_filter,
+                select_into,
+                strict
+            )
+        )
 
     def subelements_intrusion(self, link_sentence):
         self.subelems_intrusion.append(link_sentence)
