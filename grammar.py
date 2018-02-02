@@ -315,7 +315,7 @@ class ContainerEntity:
     def get_subcl_orders(self):
         return self.subcl_orders
 
-    def get_subclasses_affecting_ids(self, id_names):
+    def get_subcl_orders_affecting_ids(self, id_names):
         found_orders = []
         for id_name in id_names:
             for order in self.subcl_orders:
