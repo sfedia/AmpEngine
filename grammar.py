@@ -316,18 +316,19 @@ class ContainerEntity:
     def get_subcl_orders(self):
         return self.subcl_orders
 
-    def get_subclasses_affecting_id(self, id_name):
+    def get_subclasses_affecting_ids(self, id_names):
         found_orders = []
-        for order in self.subcl_orders:
-            affected_ids = order.get_affected_ids()
-            if id_name in affected_ids:
-                found_orders.append(order)
-            else:
-                affected_classes = order.get_affected_classes()
-                for id_class in self.container.get_by_id(id_name).get_class_names():
-                    if id_class in affected_classes:
-                        found_orders.append(order)
-                        break
+        for id_name in id_names:
+            for order in self.subcl_orders:
+                affected_ids = order.get_affected_ids()
+                if id_name in affected_ids:
+                    found_orders.append(order)
+                else:
+                    affected_classes = order.get_affected_classes()
+                    for id_class in self.container.get_by_id(id_name).get_class_names():
+                        if id_class in affected_classes:
+                            found_orders.append(order)
+                            break
         return found_orders
 
     def inspect_added_behaviour(self):
