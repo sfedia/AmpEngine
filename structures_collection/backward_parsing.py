@@ -129,7 +129,7 @@ def morpheme_in_token(input_container_element, container, input_container):
             key = tuple(x for x in key[:-1])
         return sequence
 
-    segment_forward(input_container_element.get_content(), 0, [], tuple([0]))
+    segment_forward(input_container_element.get_content(), 0, [], (0,))
     morpho_seqs = []
     for morph_key in morpheme_maps:
         for group in reversed(morpheme_maps[morph_key][1]):

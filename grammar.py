@@ -426,7 +426,7 @@ class SubclassesOrder:
             return True
 
         return False
-    
+
 
 class ContainerElement:
     def __init__(self, element_type, element_content, element_id, container):
