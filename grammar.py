@@ -18,7 +18,7 @@ class InputContainer:
         self.elements = []
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
-        self.add_element(InputContainerElement(self.INPUT, content))
+        self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
 
     def segment_into_childs(self, system_name):
@@ -60,7 +60,7 @@ class InputContainer:
         ices = []
         for outline_object in c_outlines:
             ice = InputContainerElement(
-                child_system, outline_object.get_attachment(), char_outline=outline_object, parent=parent_ic
+                child_system, outline_object.get_attachment(), self, char_outline=outline_object, parent=parent_ic
             )
             ices.append(ice.get_ic_id())
             self.add_element(ice)
@@ -391,9 +391,46 @@ class SubclassesOrder:
     def is_strict(self):
         return self.strict
 
-    def check_sequence(self, sequence, available_nulls):
+    @staticmethod
+    def name_escape(str2esc, double=False):
+        str2esc_rep = {
+            '*': [r'\*', r'\\*'],
+            '$': [r'\$', r'\\$'],
+            '^': [r'\^', r'\\^'],
+            '(': [r'\(', r'\\('],
+            ')': [r'\)', r'\\)']
+        }
+        for match, rep in str2esc_rep:
+            str2esc = str2esc.replace(match, rep[int(double)])
+        return str2esc
+
+    def create_asterisk_pattern(self, p_type, p_value, double=False):
+        if not double:
+            return r'\*' + ('#' if p_type == 'id' else 'r\.') + self.name_escape(p_value) + r'\*'
+        else:
+            return r'\\*' + ('#' if p_type == 'id' else 'r\\.') + self.name_escape(p_value, double=True) + r'\\*'
+
+    @staticmethod
+    def null_substitution(pattern, subst_nulls):
+        for null in subst_nulls:
+            subst_made = False
+            if null['pre']:
+                for pre_ptrn in null['pre']:
+                    if re.search(pre_ptrn, pattern):
+                        pattern = re.sub(pre_ptrn, pre_ptrn + null['rx'], pattern)
+                        subst_made = True
+                        break
+            if not subst_made and null['post']:
+                for post_ptrn in null['post']:
+                    if re.search(post_ptrn, pattern):
+                        pattern = re.sub(post_ptrn, null['rx'] + post_ptrn, pattern)
+                        break
+        return pattern
+
+    def check_sequence(self, co_sequence, available_nulls):
         """
         :param sequence: List[List[MC element ID, CharOutline Object]]
+        :param available_nulls: MC container elements filtered by content (Temp.NULL) & by system (sys_identifier)
         :return: Bool -> if the order matches the given sequence
         """
         # self.null_elements
@@ -419,7 +456,7 @@ class SubclassesOrder:
                 ev_groups.append(j)
             elif el['type'] == 'pointer':
                 pointer_regex = '(' + '('
-                el_name = r'\*' + (r'\.' if el['subtype'] == 'class' else '#') + el['value'] + r'\*'
+                el_name = self.create_asterisk_pattern(el['subtype'], el['value'])
                 non_ev.append(el_name)
                 pointer_regex += el_name
                 pointer_regex += ')'
@@ -430,17 +467,45 @@ class SubclassesOrder:
             else:
                 continue
         non_ev_str = '|'.join(non_ev)
-        el_masks = [
-            [*['.' + x for x in self.main_container.get_by_id(el_id).get_class_names()], '#' + el_id]
-            for el_id in sequence
-        ]
-        for mask_product in [''.join(['*' + y + '*' for y in x]) for x in itertools.product(el_masks)]:
-            rx_grouping = re.compile(check_regex).match(mask_product)
-            if not rx_grouping:
-                continue
-            if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
-                continue
-            return True
+        subst_nulls = []
+        for null in [(x.get_id(), x.get_class_names()) for x in available_nulls]:
+            for j, el in enumerate(self.scheme):
+                if el['type'] != 'pointer' or el['subtype'] not in ('class', 'id'):
+                    continue
+                if (el['subtype'] == 'id' and el['value'] == null[0]) or (el['subtype'] == 'class' and el['value'] in null[1]):
+                    subst_nulls.append({
+                        'rx': self.create_asterisk_pattern(el['subtype'], el['value']),
+                        'pre': [],
+                        'post': []
+                    })
+                    if j > 0:
+                        for i in range(j - 1, -1, step=-1):
+                            if self.scheme[i]['type'] == 'pointer' and self.scheme[i]['subtype'] != 'everything':
+                                subst_nulls[-1]['pre'].append(
+                                    self.create_asterisk_pattern(
+                                        self.scheme[i]['subtype'], self.scheme[i]['value'], double=True
+                                    )
+                                )
+                    if j < len(self.scheme) - 1:
+                        for i in range(j + 1, len(self.scheme)):
+                            if self.scheme[i]['type'] == 'pointer' and self.scheme[i]['subtype'] != 'everything':
+                                subst_nulls[-1]['post'].append(
+                                    self.create_asterisk_pattern(
+                                        self.scheme[i]['subtype'], self.scheme[i]['value'], double=True
+                                    )
+                                )
+        for j, sequence in enumerate([co_sequence, self.null_substitution(co_sequence, subst_nulls)]):
+            el_masks = [
+                [*['.' + x for x in self.main_container.get_by_id(el_id).get_class_names()], '#' + el_id]
+                for el_id in sequence
+            ]
+            for mask_product in [''.join(['*' + y + '*' for y in x]) for x in itertools.product(el_masks)]:
+                rx_grouping = re.compile(check_regex).match(mask_product)
+                if not rx_grouping:
+                    continue
+                if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
+                    continue
+                return True
 
         return False
 
