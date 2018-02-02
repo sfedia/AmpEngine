@@ -467,6 +467,7 @@ class SubclassesOrder:
             else:
                 continue
         non_ev_str = '|'.join(non_ev)
+
         subst_nulls = []
         for null in [(x.get_id(), x.get_class_names()) for x in available_nulls]:
             for j, el in enumerate(self.scheme):
@@ -505,9 +506,15 @@ class SubclassesOrder:
                     continue
                 if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
                     continue
-                return True
+                return {
+                    "check": True,
+                    "nulls": subst_nulls
+                }
 
-        return False
+        return {
+            "check": False,
+            "nulls": subst_nulls
+        }
 
 
 class ContainerElement:
