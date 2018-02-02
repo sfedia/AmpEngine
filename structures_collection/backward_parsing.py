@@ -136,7 +136,17 @@ def morpheme_in_token(input_container_element, container, input_container):
             if group[-1] == len(input_container_element.get_content()) - 1:
                 morpho_seqs.append(create_morpho_sequence(morph_key))
                 break
+
+    filtered_seqs = []
     grammar_nulls = container.iter_content_filter(lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme')
+    for seq in morpho_seqs:
+        id_list = [x[0] for x in seq]
+        subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
+        strict_prohib = False
+        for order in subcl_orders:
+            # available nulls <- LinkSentence check
+            order_check = order.check_sequence(order)
+            ...
 
 
 class ParserNotFound(Exception):
