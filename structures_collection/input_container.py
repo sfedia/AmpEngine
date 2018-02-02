@@ -11,7 +11,7 @@ class CharOutline:
         self.error_se = '.start()/end() is only available for ranges'
 
         if virtual_margins:
-            if len(virtual_margins) != 2:
+            if virtual_margins != UNALLOCATED and len(virtual_margins) != 2:
                 raise MalformedCharOutline('virtual margins should contain two integers')
             self.v_margines = virtual_margins
         else:
@@ -53,6 +53,9 @@ class CharOutline:
 
     def get_virtual_margins(self):
         return self.v_margines
+
+
+UNALLOCATED = -1.5
 
 
 class CharOutlineIsEmpty(Exception):
