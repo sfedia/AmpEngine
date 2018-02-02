@@ -429,8 +429,8 @@ class SubclassesOrder:
 
     def check_sequence(self, co_sequence, available_nulls):
         """
-        :param sequence: List[List[MC element ID, CharOutline Object]]
-        :param available_nulls: MC container elements filtered by content (Temp.NULL) & by system (sys_identifier)
+        :param co_sequence: List[List[MC element ID, CharOutline Object]]
+        :param available_nulls: List; MC container elements filtered by content (Temp.NULL) & by system (sys_identifier)
         :return: Bool -> if the order matches the given sequence
         """
         # self.null_elements
