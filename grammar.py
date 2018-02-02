@@ -326,11 +326,10 @@ class ContainerEntity:
 
 
 class SubclassesOrder:
-    def __init__(self, order_string, null_elements, main_container, parent_filter=None, select_into=None, strict=True):
+    def __init__(self, order_string, main_container, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
         self.strict = strict
         self.main_container = main_container
-        self.null_elements = null_elements
         self.parent_filter = parent_filter
         self.select_into = select_into
         sp_string = order_string.split()
@@ -376,7 +375,7 @@ class SubclassesOrder:
     def get_affected_ids(self):
         return [x['value'] for x in self.scheme if x['subtype'] == 'id']
 
-    def check_sequence(self, sequence):
+    def check_sequence(self, sequence, null_elements):
         """
         :param sequence: List[MC element id]
         :return: Bool -> if the order matches the given sequence
@@ -427,7 +426,7 @@ class SubclassesOrder:
             return True
 
         return False
-
+    
 
 class ContainerElement:
     def __init__(self, element_type, element_content, element_id, container):
