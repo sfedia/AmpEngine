@@ -164,7 +164,7 @@ class Container:
         self.entities = []
         self.cont_log = logs.log_object.New()
         for system in collection.dependency.systems:
-            self.add_entity(ContainerEntity('system', system))
+            self.add_entity(ContainerEntity('system', system, self))
 
     def add_entity(self, entity_object):
         if entity_object not in self.entities:
@@ -281,12 +281,13 @@ class Container:
 
 
 class ContainerEntity:
-    def __init__(self, level, identifier):
+    def __init__(self, level, identifier, container):
         self.level = level
         self.identifier = identifier
         self.subcl_orders = []
         self.added_bhvr = 'standard'
         self.subelems_intrusion = []
+        self.container = container
 
     def get_level(self):
         return self.level
@@ -316,7 +317,18 @@ class ContainerEntity:
         return self.subcl_orders
 
     def get_subclasses_affecting_id(self, id_name):
-        return [so for so in self.subcl_orders if id_name in so.get_affected_ids()]
+        found_orders = []
+        for order in self.subcl_orders:
+            affected_ids = order.get_affected_ids()
+            if id_name in affected_ids:
+                found_orders.append(order)
+            else:
+                affected_classes = order.get_affected_classes()
+                for id_class in self.container.get_by_id(id_name).get_class_names():
+                    if id_class in affected_classes:
+                        found_orders.append(order)
+                        break
+        return found_orders
 
     def inspect_added_behaviour(self):
         return self.added_bhvr
@@ -453,7 +465,7 @@ class ContainerElement:
     def add_class(self, class_name):
         if class_name not in self.class_names:
             self.class_names.append(class_name)
-            self.container.add_entity(ContainerEntity('class', class_name))
+            self.container.add_entity(ContainerEntity('class', class_name, self.container))
             return self
         raise RepeatedClassAssignment()
 
