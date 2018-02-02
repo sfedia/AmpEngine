@@ -305,12 +305,7 @@ class ContainerEntity:
             raise SubclassesOrderNotSupported()
         self.subcl_orders.append(
             SubclassesOrder(
-                order_string,
-                self.container,
-                self.container.iter_content_filter(lambda x: x == Temp.NULL, system_filter=self.identifier),
-                parent_filter,
-                select_into,
-                strict
+                order_string, self.container, self.identifier, parent_filter, select_into, strict
             )
         )
 
@@ -343,12 +338,12 @@ class ContainerEntity:
 
 
 class SubclassesOrder:
-    def __init__(self, order_string, main_container, all_nulls, parent_filter=None, select_into=None, strict=True):
+    def __init__(self, order_string, main_container, sys_id, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
         self.strict = strict
         self.main_container = main_container
         self.parent_filter = parent_filter
-        self.nulls = all_nulls
+        self.sys_identifier = sys_id
         self.select_into = select_into
         sp_string = order_string.split()
         for substr in sp_string:
@@ -408,6 +403,7 @@ class SubclassesOrder:
                 if self.scheme[n + 1]['type'] == 'operator' and self.scheme[n + 1]['subtype'] == 'lookbehind':
                     return self.scheme[n + 1]['value']
 
+        all_nulls = self.main_container.iter_content_filter(lambda x: x == Temp.NULL, system_filter=self.sys_identifier)
         ev_groups = []
         non_ev = []
         check_regex = ''
