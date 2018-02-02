@@ -388,9 +388,12 @@ class SubclassesOrder:
     def get_affected_ids(self):
         return [x['value'] for x in self.scheme if x['subtype'] == 'id']
 
+    def is_strict(self):
+        return self.strict
+
     def check_sequence(self, sequence, available_nulls):
         """
-        :param sequence: List[MC element id]
+        :param sequence: List[List[MC element ID, CharOutline Object]]
         :return: Bool -> if the order matches the given sequence
         """
         # self.null_elements
