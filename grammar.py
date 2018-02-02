@@ -328,7 +328,7 @@ class ContainerEntity:
                         if id_class in affected_classes:
                             found_orders.append(order)
                             break
-        return found_orders
+        return list(set(found_orders))
 
     def inspect_added_behaviour(self):
         return self.added_bhvr
