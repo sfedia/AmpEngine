@@ -129,6 +129,10 @@ def morpheme_in_token(input_container_element, container, input_container):
             key = tuple(x for x in key[:-1])
         return sequence
 
+    def decode_asterisk_pattern(pattern):
+        pattern = pattern.replace('\\', '')
+        return 'class' if pattern[1] == '.' else 'id', pattern[2:-1]
+
     segment_forward(input_container_element.get_content(), start=0, dead_pos=[], position=(0,))
     morpho_seqs = []
     for morph_key in morpheme_maps:
@@ -146,7 +150,34 @@ def morpheme_in_token(input_container_element, container, input_container):
         for order in subcl_orders:
             # available nulls <- LinkSentence check
             order_check = order.check_sequence(order)
-            ...
+            if not order_check['check'] and order.is_strict():
+                strict_prohib = True
+            elif order.is_strict() and strict_prohib:
+                strict_prohib = False
+            if strict_prohib:
+                continue
+            if order_check['nulls']:
+                for null in order_check['nulls']:
+                    if null['pre']:
+                        for pre in null['pre']:
+                            dec_value = decode_asterisk_pattern(pre)
+                            for j, seq_el in enumerate(seq):
+                                if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
+                                (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
+                                    seq.insert(j + 1, decode_asterisk_pattern(null['rx'])[1])
+                    elif null['post']:
+                        for post in null['post']:
+                            dec_value = decode_asterisk_pattern(post)
+                            for j, seq_el in enumerate(seq):
+                                if j == 0:
+                                    continue
+                                if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
+                                (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
+                                    seq.insert(j - 1, decode_asterisk_pattern(null['rx'])[1])
+
+        if strict_prohib:
+            continue
+
 
 
 class ParserNotFound(Exception):
