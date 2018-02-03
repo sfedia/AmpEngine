@@ -411,19 +411,22 @@ class SubclassesOrder:
             return r'\\*' + ('#' if p_type == 'id' else 'r\\.') + self.name_escape(p_value, double=True) + r'\\*'
 
     @staticmethod
-    def null_substitution(pattern, subst_nulls):
+    def double_pattern_to_single(pattern):
+        return pattern.replace('\\\\', '\\')
+
+    def null_substitution(self, pattern, subst_nulls):
         for null in subst_nulls:
             subst_made = False
             if null['pre']:
                 for pre_ptrn in null['pre']:
                     if re.search(pre_ptrn, pattern):
-                        pattern = re.sub(pre_ptrn, pre_ptrn + null['rx'], pattern)
+                        pattern = re.sub(pre_ptrn, self.double_pattern_to_single(pre_ptrn) + null['rx'], pattern)
                         subst_made = True
                         break
             if not subst_made and null['post']:
                 for post_ptrn in null['post']:
                     if re.search(post_ptrn, pattern):
-                        pattern = re.sub(post_ptrn, null['rx'] + post_ptrn, pattern)
+                        pattern = re.sub(post_ptrn, null['rx'] + self.double_pattern_to_single(post_ptrn), pattern)
                         break
         return pattern
 
