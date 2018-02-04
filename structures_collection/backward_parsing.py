@@ -179,7 +179,6 @@ def morpheme_in_token(input_container_element, container, input_container):
             continue
 
 
-
 class ParserNotFound(Exception):
     pass
 
