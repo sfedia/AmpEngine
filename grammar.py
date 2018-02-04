@@ -605,8 +605,10 @@ class ContainerElement:
 
 
 class LinkSentence:
-    def __init__(self, link_string, container, input_container, scanned_system, from_list=(), allow_resources=True):
+    def __init__(self, link_string, transmitter=None, transmitter_local_index=None, allow_resources=True):
         self.link = link_string
+        self.transmitter = transmitter
+        self.transmitter_index = transmitter_local_index
         self.container = container
         self.input_container = input_container
         self.inherit_element = None
@@ -622,7 +624,47 @@ class LinkSentence:
             raise InheritElementAlreadyExists()
         self.inherit_element = container_element
 
-    def check_element(self, element, param_pair, block_converter=False):
+    def set_transmitter(self, transmitter):
+        self.transmitter = transmitter
+
+    class BSArray:
+        def __init__(self, simple_array, set_visited=None):
+            """
+            :param simple_array: List of IC container elements
+            :param set_visited: array indices which should be marked as visited
+            :return: [0, x] for x in simple_array
+            """
+            self.bs_array = [[0, x] for x in simple_array]
+            if set_visited:
+                for i in set_visited:
+                    self.bs_array[i][0] = 1
+
+        def set_visited(self, index):
+            self.bs_array[index][0] = 1
+
+        def set_unvisited(self, index):
+            self.bs_array[index][0] = 0
+
+        def toggle(self, index):
+            self.bs_array[index][0] = int(not bool(self.bs_array[index][0]))
+
+
+    def check_element(self, element, param_pair, elems_set, block_converter=False):
+        if type(elems_set) != self.BSArray:
+            elems_set = self.BSArray(
+                elems_set, set_visited=[self.transmitter_index] if self.transmitter_index else None
+            )
+        if param_pair.sharp:
+            return True
+        try:
+            if not param_pair.is_bool_check():
+                is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
+            else:
+                is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
+        except ParameterNotFound:
+            ...
+
+    def check_element(self, element, param_pair, elems_set, block_converter=False):
         if param_pair.sharp:
             return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(
                 element,
@@ -784,7 +826,7 @@ class LinkSentence:
         else:
             raise WrongLinkSentence()
 
-    def check(self, element):
+    def check(self, element, elems_set):
         parsed_list = self.parse_sector(self.link, element)
         return self.is_good(parsed_list, element)
 
