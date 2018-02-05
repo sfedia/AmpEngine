@@ -664,7 +664,6 @@ class LinkSentence:
                 continue
             for action in actions:
                 for link_sentence in link_sentences:
-                    # def check(self, element, elems_set):
                     check_results = link_sentence.check(element, bs_array, check_function)
                     if param in collection.static.Handler.get_func_params(action.get_path()) and check_results:
                         elems_found.append(j)
@@ -676,76 +675,54 @@ class LinkSentence:
             elems_set = self.BSArray(
                 elems_set, set_visited=[self.transmitter_index] if self.transmitter_index else None
             )
+        elems_set.set_visited(self.transmitter_index)
         if param_pair.sharp:
-            return True
+            return True, element
+
+        multiple_choice = []
+
         try:
-            if not param_pair.is_bool_check():
-                is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
-            else:
-                is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
+            parameter = element.get_parameter(param_pair.key, param_pair.arguments)
         except ParameterNotFound:
             need_elems = self.get_elems_providing_param(param_pair.key, elems_set, element, check_function)
-            for index in need_elems:
-                elems_set.set_visited(index)
-                for action in elems_set.bs_array[index][1].get_applied()['actions']:
-                    element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
 
+            if need_elems:
+                for index in need_elems:
+                    elems_set.set_visited(index)
+                    for action in elems_set.bs_array[index][1].get_applied()['actions']:
+                        element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
+                parameter = element.get_parameter(param_pair.key, param_pair.arguments)
 
-
-    def check_element(self, element, param_pair, elems_set, block_converter=False):
-        if param_pair.sharp:
-            return collection.sharp_function.Handler.get_sharp(self.scanned_system, element.get_type())(
-                element,
-                self.inherit_element,
-                self.container,
-                self.input_container
-            )
-        try:
-            if not param_pair.is_bool_check():
-                is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
-            else:
-                is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
-        except ParameterNotFound:
-            good_aprp = self.container.get_elems_providing_param(
-                param_pair.key,
-                element,
-                self.scanned_system
-            )
-            if good_aprp:
-                self.container.make_apply(good_aprp[0], self.container, self.scanned_system)
-                if not param_pair.is_bool_check():
-                    is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
-                else:
-                    is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
-            elif self.allow_resources:
+            elif not self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
-                if parameter:
-                    if not param_pair.is_bool_check():
-                        is_good = param_pair.compare(element.get_parameter(param_pair.key, param_pair.arguments))
-                    else:
-                        is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
-                elif not block_converter:
-                    # is not ready yet
-                    conv_variants = []
-                    try:
-                        conv_variants = converter.convert_param_pair(param_pair.key, param_pair.value)
-                    except converter.CannotConvertSystemTypes:
-                        pass
-                    if not conv_variants:
-                        raise CannotGetParameter()
-                    else:
-                        for variant in conv_variants:
-                            try:
-                                return self.check_element(element, variant, block_converter=True)
-                            except CannotGetParameter:
-                                pass
-                        raise CannotGetParameter()
-                else:
+
+            elif not block_converter:
+                # is not ready yet
+                parameter = None
+                try:
+                    multiple_choice = converter.convert_param_pair(param_pair.key, param_pair.value)
+                except converter.CannotConvertSystemTypes:
                     raise CannotGetParameter()
+
             else:
                 raise CannotGetParameter()
 
-        return is_good
+        param_set = (parameter,) if not multiple_choice else multiple_choice
+
+        if not param_set:
+            raise CannotGetParameter()
+
+        for parameter in param_set:
+            if not param_pair.is_bool_check():
+                result = param_pair.compare(parameter)
+            else:
+                result = True if parameter else False
+            if result:
+                for action in self.transmitter.get_applied()['actions']:
+                    element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
+                break
+
+        return result, element
 
     class ParameterPair:
         def __init__(self, key, value='', sharp=False, operator="=", bool_check=False, arguments=[]):
