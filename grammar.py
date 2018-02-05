@@ -797,7 +797,9 @@ class LinkSentence:
             if link_slice[i] in ('&', '|'):
                 complete_list.append(link_slice[i])
             elif type(link_slice[i]) == list:
-                complete_list.append(self.check_element(element, link_slice[i], elems_set, check_function))
+                ce_result = self.check_element(element, link_slice[i], elems_set, check_function)
+                complete_list.append(ce_result[0])
+                element = ce_result[1]
             else:
                 complete_list.append(self.is_good(link_slice[i], element, elems_set, check_function))
 
@@ -812,15 +814,15 @@ class LinkSentence:
         if not common_operator:
             return link_slice[0]
         elif common_operator == '&':
-            return False not in link_slice
+            return False not in link_slice, element
         elif common_operator == '|':
-            return True in link_slice
+            return True in link_slice, element
         else:
             raise WrongLinkSentence()
 
     def check(self, element, elems_set):
         parsed_list = self.parse_sector(self.link, element)
-        return self.is_good(parsed_list, element)
+        return self.is_good(parsed_list, element, elems_set, ...)
 
 
 class Action:
