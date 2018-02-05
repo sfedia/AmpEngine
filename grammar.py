@@ -648,8 +648,30 @@ class LinkSentence:
         def toggle(self, index):
             self.bs_array[index][0] = int(not bool(self.bs_array[index][0]))
 
+    @staticmethod
+    def get_elems_providing_param(param, bs_array, element, check_function):
+        elems_found = []
+        for j, elem in enumerate(bs_array.bs_array):
+            if elem[0]:
+                continue
+            row = elem[1]
+            get_applied = row.get_applied()
+            if not get_applied['links']:
+                continue
+            link_sentences = get_applied['links']
+            actions = get_applied['actions']
+            if not actions:
+                continue
+            for action in actions:
+                for link_sentence in link_sentences:
+                    # def check(self, element, elems_set):
+                    check_results = link_sentence.check(element, bs_array, check_function)
+                    if param in collection.static.Handler.get_func_params(action.get_path()) and check_results:
+                        elems_found.append(j)
+                        break
+        return elems_found
 
-    def check_element(self, element, param_pair, elems_set, block_converter=False):
+    def check_element(self, element, param_pair, elems_set, check_function, block_converter=False):
         if type(elems_set) != self.BSArray:
             elems_set = self.BSArray(
                 elems_set, set_visited=[self.transmitter_index] if self.transmitter_index else None
@@ -662,7 +684,13 @@ class LinkSentence:
             else:
                 is_good = True if element.get_parameter(param_pair.key, param_pair.arguments) else False
         except ParameterNotFound:
-            ...
+            need_elems = self.get_elems_providing_param(param_pair.key, elems_set, element, check_function)
+            for index in need_elems:
+                elems_set.set_visited(index)
+                for action in elems_set.bs_array[index][1].get_applied()['actions']:
+                    element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
+
+
 
     def check_element(self, element, param_pair, elems_set, block_converter=False):
         if param_pair.sharp:
@@ -797,7 +825,7 @@ class LinkSentence:
 
         return parsed_list
 
-    def is_good(self, link_slice, element):
+    def is_good(self, link_slice, element, elems_set, check_function):
         len_link_slice = len(link_slice)
         complete_list = []
 
@@ -805,9 +833,9 @@ class LinkSentence:
             if link_slice[i] in ('&', '|'):
                 complete_list.append(link_slice[i])
             elif type(link_slice[i]) == list:
-                complete_list.append(self.check_element(element, link_slice[i]))
+                complete_list.append(self.check_element(element, link_slice[i], elems_set, check_function))
             else:
-                complete_list.append(self.is_good(link_slice[i], element))
+                complete_list.append(self.is_good(link_slice[i], element, elems_set, check_function))
 
         if '&' in complete_list and '|' in complete_list:
             raise WrongLinkSentence()
