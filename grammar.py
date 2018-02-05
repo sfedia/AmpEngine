@@ -651,7 +651,7 @@ class LinkSentence:
                 continue
             for action in actions:
                 for link_sentence in link_sentences:
-                    check_results = link_sentence.check(element, bs_array, check_function)
+                    check_results, element = link_sentence.check(element, bs_array, check_function)
                     if param in collection.static.Handler.get_func_params(action.get_path()) and check_results:
                         elems_found.append(j)
                         break
