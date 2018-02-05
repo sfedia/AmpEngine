@@ -920,10 +920,6 @@ class IntrusionUnsupportedType(Exception):
     pass
 
 
-class InheritElementAlreadyExists(Exception):
-    pass
-
-
 class UnknownForkID(Exception):
     pass
 
