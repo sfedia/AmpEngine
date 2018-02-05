@@ -820,9 +820,9 @@ class LinkSentence:
         else:
             raise WrongLinkSentence()
 
-    def check(self, element, elems_set):
+    def check(self, element, elems_set, check_function):
         parsed_list = self.parse_sector(self.link, element)
-        return self.is_good(parsed_list, element, elems_set, ...)
+        return self.is_good(parsed_list, element, elems_set, check_function)
 
 
 class Action:
