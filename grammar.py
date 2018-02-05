@@ -609,20 +609,7 @@ class LinkSentence:
         self.link = link_string
         self.transmitter = transmitter
         self.transmitter_index = transmitter_local_index
-        self.container = container
-        self.input_container = input_container
-        self.inherit_element = None
-        if not from_list:
-            self.checked_list = self.input_container.get_by_system_name(scanned_system)
-        else:
-            self.checked_list = from_list
         self.allow_resources = allow_resources
-        self.scanned_system = scanned_system
-
-    def add_inherit_element(self, container_element):
-        if self.inherit_element:
-            raise InheritElementAlreadyExists()
-        self.inherit_element = container_element
 
     def set_transmitter(self, transmitter):
         self.transmitter = transmitter
