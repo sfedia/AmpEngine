@@ -133,6 +133,18 @@ def morpheme_in_token(input_container_element, container, input_container):
         pattern = pattern.replace('\\', '')
         return 'class' if pattern[1] == '.' else 'id', pattern[2:-1]
 
+    def get_null_id(decoded_value):
+        if decoded_value[0] == 'id':
+            return decoded_value[1]
+        elif decoded_value[0] == 'class':
+            class_elements = container.get_class(decoded_value[1])
+            for element in class_elements:
+                if element == grammar.Temp.NULL:
+                    return element.get_id()
+            return None
+        else:
+            raise ValueError()
+
     # dead_pos should be specified during an iteration
     segment_forward(input_container_element.get_content(), start=0, dead_pos=[], position=(0,))
     morpho_seqs = []
@@ -142,14 +154,15 @@ def morpheme_in_token(input_container_element, container, input_container):
                 morpho_seqs.append(create_morpho_sequence(morph_key))
                 break
 
+    # seq: List of Dict(a => b, c => d)
     filtered_seqs = []
     grammar_nulls = container.iter_content_filter(lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme')
     for seq in morpho_seqs:
-        id_list = [x[0] for x in seq]
+        id_list = [container.get_by_id(list(x.keys())[0]) for x in seq]
         available_nulls = []
         for null in grammar_nulls:
             for link in null.get_applied()['links']:
-                if link.check(input_container_element, id_list, lambda:True):
+                if link.check(input_container_element, id_list, lambda: True):
                     available_nulls.append(null)
 
         subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
@@ -170,7 +183,17 @@ def morpheme_in_token(input_container_element, container, input_container):
                             for j, seq_el in enumerate(seq):
                                 if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
                                 (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
-                                    seq.insert(j + 1, decode_asterisk_pattern(null['rx'])[1])
+                                    prev_elem_pos = list(seq[j].keys())[0]
+                                    virtual_list = [-1, (prev_elem_pos[0] if prev_elem_pos[0] != -1 else prev_elem_pos[1])]
+                                    if j < len(seq) - 1:
+                                        next_elem_pos = list(seq[j + 1].keys())[0]
+                                        virtual_list.append(next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])
+                                    seq.insert(
+                                        j + 1,
+                                        {
+                                            get_null_id(decode_asterisk_pattern(null['rx'])): virtual_list
+                                        }
+                                    )
                     elif null['post']:
                         for post in null['post']:
                             dec_value = decode_asterisk_pattern(post)
@@ -179,7 +202,17 @@ def morpheme_in_token(input_container_element, container, input_container):
                                     continue
                                 if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
                                 (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
-                                    seq.insert(j - 1, decode_asterisk_pattern(null['rx'])[1])
+                                    next_elem_pos = list(seq[j].keys())[0]
+                                    virtual_list = [-1, (next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])]
+                                    if j > 0:
+                                        prev_elem_pos = list(seq[j - 1].keys())[0]
+                                        virtual_list.append(prev_elem_pos[0] if prev_elem_pos[0] != -1 else prev_elem_pos[1])
+                                    seq.insert(
+                                        j - 1,
+                                        {
+                                            get_null_id(decode_asterisk_pattern(null['rx'])): virtual_list
+                                        }
+                                    )
 
         if strict_prohib:
             continue
@@ -189,16 +222,17 @@ def morpheme_in_token(input_container_element, container, input_container):
     lnk_filtered_seqs = []
     for seq in filtered_seqs:
         add_to_lfs = True
-        el_seq = [container.get_by_id(x) for x in seq]
+        el_seq = [container.get_by_id(list(x.keys())[0]) for x in seq]
         for mc_element in el_seq:
             for link in mc_element.get_applied()['links']:
-                if not link.check(input_container_element, el_seq, lambda:True):
+                if not link.check(input_container_element, el_seq, lambda: True):
                     add_to_lfs = False
                     break
             if not add_to_lfs:
                 break
         if add_to_lfs:
             lnk_filtered_seqs.append(seq)
+
 
 
 class ParserNotFound(Exception):
