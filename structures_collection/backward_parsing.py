@@ -155,7 +155,7 @@ def morpheme_in_token(input_container_element, container, input_container):
         subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
         strict_prohib = False
         for order in subcl_orders:
-            order_check = order.check_sequence(order)
+            order_check = order.check_sequence(order, available_nulls)
             if not order_check['check'] and order.is_strict():
                 strict_prohib = True
             elif order.is_strict() and strict_prohib:
