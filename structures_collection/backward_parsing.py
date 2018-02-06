@@ -186,6 +186,21 @@ def morpheme_in_token(input_container_element, container, input_container):
 
         filtered_seqs.append(seq)
 
+    lnk_filtered_seqs = []
+    for seq in filtered_seqs:
+        add_to_lfs = True
+        el_seq = [container.get_by_id(x) for x in seq]
+        for mc_element in el_seq:
+            for link in mc_element.get_applied()['links']:
+                if not link.check(input_container_element, el_seq, lambda:True):
+                    add_to_lfs = False
+                    break
+                if not add_to_lfs:
+                    break
+        if add_to_lfs:
+            lnk_filtered_seqs.append(seq)
+
+
 class ParserNotFound(Exception):
     pass
 
