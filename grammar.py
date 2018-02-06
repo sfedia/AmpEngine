@@ -605,14 +605,17 @@ class ContainerElement:
 
 
 class LinkSentence:
-    def __init__(self, link_string, transmitter=None, transmitter_local_index=None, allow_resources=True):
+    def __init__(self, link_string, transmitter=None,allow_resources=True):
         self.link = link_string
         self.transmitter = transmitter
-        self.transmitter_index = transmitter_local_index
+        self.transmitter_index = None
         self.allow_resources = allow_resources
 
     def set_transmitter(self, transmitter):
         self.transmitter = transmitter
+
+    def set_transmitter_local_index(self, index):
+        self.transmitter_index = index
 
     class BSArray:
         def __init__(self, simple_array, set_visited=None):
