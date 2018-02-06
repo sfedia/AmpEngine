@@ -2,6 +2,7 @@
 
 import itertools
 import grammar
+import structures_collection.char_level
 
 
 class HandlerStart:
@@ -191,7 +192,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                                     seq.insert(
                                         j + 1,
                                         {
-                                            get_null_id(decode_asterisk_pattern(null['rx'])): virtual_list
+                                            get_null_id(decode_asterisk_pattern(null['rx'])): [virtual_list]
                                         }
                                     )
                     elif null['post']:
@@ -210,9 +211,12 @@ def morpheme_in_token(input_container_element, container, input_container):
                                     seq.insert(
                                         j - 1,
                                         {
-                                            get_null_id(decode_asterisk_pattern(null['rx'])): virtual_list
+                                            get_null_id(decode_asterisk_pattern(null['rx'])): [virtual_list]
                                         }
                                     )
+                    else:
+                        # UNALLOCATED
+                        ...
 
         if strict_prohib:
             continue
@@ -233,6 +237,22 @@ def morpheme_in_token(input_container_element, container, input_container):
         if add_to_lfs:
             lnk_filtered_seqs.append(seq)
 
+    for j, seq in enumerate(lnk_filtered_seqs):
+        co_list = []
+        for seq_element in seq:
+            element_id = list(seq_element.keys())[0]
+            co_local = structures_collection.char_level.CharOutline(
+                [],
+                attachment=container.get_by_id(element_id).get_content(),
+                metadata={'mc_id': element_id}
+            )
+            for ci in seq_element[element_id]:
+                if ci[0] != -1:
+                    co_local.add_group(structures_collection.char_level.CharIndexGroup(ci))
+                else:
+                    co_local.add_group(structures_collection.char_level.CharIndexGroup(ci[1:], is_virtual=True))
+
+        input_container.segment_element(input_container_element, 'universal:morpheme', co_list, set_group=j)
 
 
 class ParserNotFound(Exception):
