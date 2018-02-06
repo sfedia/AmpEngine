@@ -195,8 +195,8 @@ def morpheme_in_token(input_container_element, container, input_container):
                 if not link.check(input_container_element, el_seq, lambda:True):
                     add_to_lfs = False
                     break
-                if not add_to_lfs:
-                    break
+            if not add_to_lfs:
+                break
         if add_to_lfs:
             lnk_filtered_seqs.append(seq)
 
