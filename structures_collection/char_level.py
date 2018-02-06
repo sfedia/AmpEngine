@@ -13,6 +13,9 @@ class CharOutline:
         elif not override:
             raise AttachmentAlreadySet()
 
+    def add_group(self, group):
+        self.__groups.append(group)
+
     def get_groups(self):
         return self.__groups
 
