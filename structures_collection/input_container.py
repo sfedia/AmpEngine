@@ -2,57 +2,45 @@
 
 
 class CharOutline:
-    def __init__(self, char_indices, is_range=False, range_strict=False, attachment=None, virtual_margins=None):
-        self.index_groups = [list()]
-        self.is_range = is_range
-        self.is_virtual = False
-        self.v_margines = []
+    def __init__(self, ci_groups, attachment=None):
+        self.__groups = ci_groups
         self.__attachment = attachment
-        self.error_se = '.start()/end() is only available for ranges'
 
-        if virtual_margins:
-            if virtual_margins != UNALLOCATED and len(virtual_margins) != 2:
-                raise MalformedCharOutline('virtual margins should contain two integers')
-            self.v_margines = virtual_margins
-        else:
-            if self.is_range and len(char_indices) != 2:
-                raise MalformedCharOutline('indices range should contain two integers')
-            elif self.is_range:
-                for n in range(char_indices[0], char_indices[1] + int(range_strict)):
-                    self.index_groups[0].append(n)
+    def add_attachment(self, attachment, override=False):
+        if not self.__attachment:
+            self.__attachment = attachment
+        elif not override:
+            raise AttachmentAlreadySet()
+
+    def get_groups(self):
+        return self.__groups
+
+
+class CharIndexGroup:
+    def __init__(self, indices, is_range=False, range_strict=False, is_virtual=False):
+        self.is_virtual = is_virtual
+        if is_range and is_virtual:
+            raise MalformedCharOutline('index group cannot be both range and virtual group')
+        self.indices = []
+        self.unallocated = False
+        if is_range and len(self.indices) != 2:
+            raise MalformedCharOutline('range list should include two integers')
+        elif is_range:
+            for n in range(indices[0], indices[1] + int(range_strict)):
+                self.indices.append(n)
+        elif is_virtual:
+            if indices != UNALLOCATED and len(indices) != 2:
+                raise MalformedCharOutline('virtual margin can be unallocated or a list of two integers')
+            elif indices != UNALLOCATED:
+                self.indices = indices
             else:
-                self.index_groups[0] = char_indices
-                self.is_range = True
-                for e, n in self.index_groups[0]:
-                    if not e:
-                        continue
-                    if self.index_groups[0][e] - self.index_groups[0][e - 1] > 1:
-                        self.is_range = False
-                        break
-                    elif not self.index_groups[0][e] - self.index_groups[0][e - 1]:
-                        raise MalformedCharOutline('char indices should not repeat each other')
+                # so margin is UNALLOCATED
+                self.unallocated = True
+        else:
+            self.indices = indices
 
-            if not self.index_groups[0]:
-                raise CharOutlineIsEmpty()
-
-    def start(self):
-        if not self.is_range:
-            raise ValueError(self.error_se)
-        return self.index_groups[0][0]
-
-    def end(self):
-        if not self.is_range:
-            raise MalformedCharOutline(self.error_se)
-        return self.index_groups[-1][-1]
-
-    def add_attachment(self, attachment_string):
-        self.__attachment = attachment_string
-
-    def get_attachment(self):
-        return self.__attachment
-
-    def get_virtual_margins(self):
-        return self.v_margines
+    def get_indices(self):
+        return self.indices if not self.unallocated else UNALLOCATED
 
 
 UNALLOCATED = -1.5
@@ -63,4 +51,8 @@ class CharOutlineIsEmpty(Exception):
 
 
 class MalformedCharOutline(Exception):
+    pass
+
+
+class AttachmentAlreadySet(Exception):
     pass
