@@ -605,7 +605,7 @@ class ContainerElement:
 
 
 class LinkSentence:
-    def __init__(self, link_string, transmitter=None,allow_resources=True):
+    def __init__(self, link_string, transmitter=None, allow_resources=True):
         self.link = link_string
         self.transmitter = transmitter
         self.transmitter_index = None

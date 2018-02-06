@@ -146,10 +146,15 @@ def morpheme_in_token(input_container_element, container, input_container):
     grammar_nulls = container.iter_content_filter(lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme')
     for seq in morpho_seqs:
         id_list = [x[0] for x in seq]
+        available_nulls = []
+        for null in grammar_nulls:
+            for link in null.get_applied()['links']:
+                if link.check(input_container_element, id_list, lambda:True):
+                    available_nulls.append(null)
+
         subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
         strict_prohib = False
         for order in subcl_orders:
-            # available nulls <- LinkSentence check
             order_check = order.check_sequence(order)
             if not order_check['check'] and order.is_strict():
                 strict_prohib = True
