@@ -55,18 +55,27 @@ class InputContainer:
 
         return returned
 
-    def segment_element(self, element, child_system, c_outlines):
+    def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None):
         """
         :param element: IC element to be splitted in segments
         :param child_system: child system of segments
         :param c_outlines: CharOutline objects (with attachment)
+        :param set_group: group to set for all IC subelements (None by default)
+        :param set_fork_id: fork_id to set for all IC subelements (None by default)
         :return: List of IC childs
         """
         parent_ic = element.get_ic_id()
         ices = []
         for outline_object in c_outlines:
+            try:
+                mc_link = outline_object.get_metadata()['mc_id']
+            except KeyError:
+                mc_link = None
+            except TypeError:
+                mc_link = None
             ice = InputContainerElement(
-                child_system, outline_object.get_attachment(), self, char_outline=outline_object, parent=parent_ic
+                child_system, outline_object.get_attachment(), self, char_outline=outline_object,
+                parent=parent_ic, mc_id_link=mc_link, group=set_group, fork_id=set_fork_id
             )
             ices.append(ice.get_ic_id())
             self.add_element(ice)
@@ -117,11 +126,12 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, input_container, char_outline=None, params=dict(), parent=None, group=None, fork_id=None):
+    def __init__(self, system_name, content, input_container, char_outline=None, params=dict(), parent=None, group=None, fork_id=None, mc_id_link=None):
         self.system_name = system_name
         self.content = content
         self.params = params
         self.char_outline = char_outline
+        self.mc_id_link = mc_id_link
         for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
             self.params[param] = func(content)
         self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
@@ -133,6 +143,9 @@ class InputContainerElement:
 
     def set_parameter(self, param_name, param_value):
         self.params[param_name] = param_value
+
+    def set_mc_link(self, mc_id_link):
+        self.mc_id_link = mc_id_link
 
     def get_parameter(self, param_name):
         if param_name not in self.params:
