@@ -29,8 +29,8 @@ class CharIndexGroup:
             for n in range(indices[0], indices[1] + int(range_strict)):
                 self.indices.append(n)
         elif is_virtual:
-            if indices != UNALLOCATED and len(indices) != 2:
-                raise MalformedCharOutline('virtual margin can be unallocated or a list of two integers')
+            if indices != UNALLOCATED and not 0 < len(indices) <= 2:
+                raise MalformedCharOutline('virtual margin can be unallocated or a list of 1 or 2 integers')
             elif indices != UNALLOCATED:
                 self.indices = indices
             else:
