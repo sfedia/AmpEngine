@@ -133,6 +133,7 @@ def morpheme_in_token(input_container_element, container, input_container):
         pattern = pattern.replace('\\', '')
         return 'class' if pattern[1] == '.' else 'id', pattern[2:-1]
 
+    # dead_pos should be specified during an iteration
     segment_forward(input_container_element.get_content(), start=0, dead_pos=[], position=(0,))
     morpho_seqs = []
     for morph_key in morpheme_maps:
@@ -178,6 +179,7 @@ def morpheme_in_token(input_container_element, container, input_container):
         if strict_prohib:
             continue
 
+        filtered_seqs.append(seq)
 
 class ParserNotFound(Exception):
     pass
