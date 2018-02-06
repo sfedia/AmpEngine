@@ -56,6 +56,12 @@ class InputContainer:
         return returned
 
     def segment_element(self, element, child_system, c_outlines):
+        """
+        :param element: IC element to be splitted in segments
+        :param child_system: child system of segments
+        :param c_outlines: CharOutline objects (with attachment)
+        :return: List of IC childs
+        """
         parent_ic = element.get_ic_id()
         ices = []
         for outline_object in c_outlines:
