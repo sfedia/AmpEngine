@@ -2,9 +2,10 @@
 
 
 class CharOutline:
-    def __init__(self, ci_groups, attachment=None):
+    def __init__(self, ci_groups, attachment=None, metadata=None):
         self.__groups = ci_groups
         self.__attachment = attachment
+        self.__metadata = metadata
 
     def add_attachment(self, attachment, override=False):
         if not self.__attachment:
@@ -14,6 +15,9 @@ class CharOutline:
 
     def get_groups(self):
         return self.__groups
+
+    def get_metadata(self):
+        return self.__metadata
 
 
 class CharIndexGroup:
