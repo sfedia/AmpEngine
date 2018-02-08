@@ -384,8 +384,8 @@ class SubclassesOrder:
                     'value': substr[1:]
                 })
             elif '<' in substr or '>' in substr:
-                lookbehind = substr.replace('<', '')
-                lookahead = substr.replace('>', '')
+                lookbehind = ''.join([x for x in substr if x == '<'])
+                lookahead = ''.join([x for x in substr if x == '>'])
                 if lookbehind:
                     self.scheme.append({
                         'type': 'operator',
