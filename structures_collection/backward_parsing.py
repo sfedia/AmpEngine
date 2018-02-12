@@ -147,6 +147,7 @@ def morpheme_in_token(input_container_element, container, input_container):
     if not stems:
         raise InternalParserException('No stems found for <{}>'.format(input_container_element.get_ic_id()))
 
+    group_index = 0
     for n, stem in enumerate(stems):
         sf_object = SegmentForward(container)
         # should be spec-dependent
@@ -258,7 +259,10 @@ def morpheme_in_token(input_container_element, container, input_container):
                     else:
                         co_local.add_group(structures_collection.char_level.CharIndexGroup(ci[1:], is_virtual=True))
 
-            input_container.segment_element(input_container_element, 'universal:morpheme', co_list, set_group=n+j)
+            input_container.segment_element(input_container_element, 'universal:morpheme', co_list, set_group=group_index)
+            group_index += 1
+
+        group_index += 1
 
 
 class ParserNotFound(Exception):
