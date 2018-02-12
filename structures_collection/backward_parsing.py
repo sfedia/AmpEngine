@@ -146,18 +146,7 @@ def morpheme_in_token(input_container_element, container, input_container):
     stems = input_container.ic_log.get_log_sequence("STEMS_EXTRACTED", element_id=input_container_element.get_ic_id())
     if not stems:
         raise InternalParserException('No stems found for <{}>'.format(input_container_element.get_ic_id()))
-    for n, stem in enumerate(stems):
-        input_container_element.ic_log.add_log(
-            "POS_PROHIB",
-            element_id=input_container_element.get_ic_id(),
-            child_system='universal:morpheme',
-            parent_system='universal:token',
-            spec_name='stem',
-            option_number=n,
-            positions=stem.get_prop('positions')
-        )
 
-    # dead_pos should be specified during an iteration
     for n, stem in enumerate(stems):
         sf_object = SegmentForward(container)
         # should be spec-dependent
