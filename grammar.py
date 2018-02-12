@@ -126,7 +126,11 @@ class InputContainer:
 
 
 class InputContainerElement:
-    def __init__(self, system_name, content, input_container, char_outline=None, params=dict(), parent=None, group=None, fork_id=None, mc_id_link=None):
+    def __init__(
+            self,
+            system_name, content, input_container, char_outline=None, params=dict(),
+            parent=None, group=None, fork_id=None, mc_id_link=None, rate_value=None
+            ):
         self.system_name = system_name
         self.content = content
         self.params = params
@@ -138,6 +142,7 @@ class InputContainerElement:
         self.parent_ic_id = parent
         self.group = group
         self.fork_id = fork_id
+        self.rate_value = rate_value
         if fork_id and not input_container.get_by_ic_id(fork_id):
             raise UnknownForkID()
 
@@ -175,6 +180,9 @@ class InputContainerElement:
 
     def get_fork_id(self):
         return self.fork_id
+
+    def get_rate_value(self):
+        return self.rate_value
 
 
 class Container:
