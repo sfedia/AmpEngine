@@ -33,39 +33,24 @@ def new_parser(parent_system, child_system):
     return parser_decorator
 
 
-@new_parser(parent_system='universal:token', child_system='universal:morpheme')
-def morpheme_in_token(input_container_element, container, input_container):
-    if not input_container.ic_log.get_sector("STEMS_EXTRACTED"):
-        raise InternalParserException('No stem extractor provided')
-    stems = input_container.ic_log.get_log_sequence("STEMS_EXTRACTED", element_id=input_container_element.get_ic_id())
-    if not stems:
-        raise InternalParserException('No stems found for <{}>'.format(input_container_element.get_ic_id()))
-    for n, stem in enumerate(stems):
-        input_container_element.ic_log.add_log(
-            "POS_PROHIB",
-            element_id=input_container_element.get_ic_id(),
-            child_system='universal:morpheme',
-            parent_system='universal:token',
-            spec_name='stem',
-            option_number=n,
-            positions=stem.get_prop('positions')
-        )
+class SegmentForward:
+    def __init__(self, container):
+        self.morpheme_maps = {}
+        self.container = container
 
-    morpheme_maps = {}
-    
-    def segment_forward(chars, start, dead_pos, position):
+    def generate_map(self, chars, start, dead_pos, position):
         if start >= len(chars):
             raise InternalParserException()
-        
-        morphemes = container.iter_content_filter(
+
+        morphemes = self.container.iter_content_filter(
             lambda x: x.startswith(chars[start]), sort_desc=True, system_filter='universal:morpheme'
         )
         if not morphemes:
             raise InternalParserException()
-        
+
         morpheme_found = False
         position_index = 0
-        
+
         for morph_object in morphemes:
             morpheme_pos = []
             catch_pos = []
@@ -76,7 +61,8 @@ def morpheme_in_token(input_container_element, container, input_container):
                 if (j - start) == len(morph_object.get_content()):
                     break
 
-                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(morph_object.get_content()):
+                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(
+                        morph_object.get_content()):
                     catch_pos.append(j)
                 elif len(catch_pos) < len(morph_object.get_content()):
                     catch_pos = []
@@ -97,7 +83,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                 perms = list(itertools.permutations(morpheme_pos, e + 1))
                 for perm in perms:
                     local_new_key = tuple(list(position) + [position_index])
-                    morpheme_maps[local_new_key] = {morph_object.get_id(): perm}
+                    self.morpheme_maps[local_new_key] = {morph_object.get_id(): perm}
 
                     local_dead_pos = dead_pos[:] + list(itertools.chain(*perm))
                     local_dead_pos = list(set(local_dead_pos))
@@ -115,36 +101,61 @@ def morpheme_in_token(input_container_element, container, input_container):
                         start_integer = local_dead_pos[-1] + 1
 
                     try:
-                        segment_forward(chars, start_integer, local_dead_pos, local_new_key)
+                        self.generate_map(chars, start_integer, local_dead_pos, local_new_key)
                     except InternalParserException:
-                        morpheme_maps[tuple(list(local_new_key) + [0])] = None
+                        self.morpheme_maps[tuple(list(local_new_key) + [0])] = None
                     position_index += 1
 
         if not morpheme_found:
             raise InternalParserException()
 
-    def create_morpho_sequence(key):
+    def get_result(self):
+        return self.morpheme_maps
+
+    @staticmethod
+    def create_map_sequence(maps, key):
         sequence = []
         while len(key) >= 2:
-            sequence.insert(0, morpheme_maps[key])
+            sequence.insert(0, maps[key])
             key = tuple(x for x in key[:-1])
         return sequence
 
-    def decode_asterisk_pattern(pattern):
-        pattern = pattern.replace('\\', '')
-        return 'class' if pattern[1] == '.' else 'id', pattern[2:-1]
 
-    def get_null_id(decoded_value):
-        if decoded_value[0] == 'id':
-            return decoded_value[1]
-        elif decoded_value[0] == 'class':
-            class_elements = container.get_class(decoded_value[1])
-            for element in class_elements:
-                if element == grammar.Temp.NULL:
-                    return element.get_id()
-            return None
-        else:
-            raise ValueError()
+def decode_asterisk_pattern(pattern):
+    pattern = pattern.replace('\\', '')
+    return 'class' if pattern[1] == '.' else 'id', pattern[2:-1]
+
+
+def get_null_id(decoded_value, container):
+    if decoded_value[0] == 'id':
+        return decoded_value[1]
+    elif decoded_value[0] == 'class':
+        class_elements = container.get_class(decoded_value[1])
+        for element in class_elements:
+            if element == grammar.Temp.NULL:
+                return element.get_id()
+        return None
+    else:
+        raise ValueError()
+
+
+@new_parser(parent_system='universal:token', child_system='universal:morpheme')
+def morpheme_in_token(input_container_element, container, input_container):
+    if not input_container.ic_log.get_sector("STEMS_EXTRACTED"):
+        raise InternalParserException('No stem extractor provided')
+    stems = input_container.ic_log.get_log_sequence("STEMS_EXTRACTED", element_id=input_container_element.get_ic_id())
+    if not stems:
+        raise InternalParserException('No stems found for <{}>'.format(input_container_element.get_ic_id()))
+    for n, stem in enumerate(stems):
+        input_container_element.ic_log.add_log(
+            "POS_PROHIB",
+            element_id=input_container_element.get_ic_id(),
+            child_system='universal:morpheme',
+            parent_system='universal:token',
+            spec_name='stem',
+            option_number=n,
+            positions=stem.get_prop('positions')
+        )
 
     # dead_pos should be specified during an iteration
     segment_forward(input_container_element.get_content(), start=0, dead_pos=[], position=(0,))
