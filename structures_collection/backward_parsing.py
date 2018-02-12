@@ -82,7 +82,7 @@ class SegmentForward:
             for e in range(len(morpheme_pos)):
                 perms = list(itertools.permutations(morpheme_pos, e + 1))
                 for perm in perms:
-                    local_new_key = tuple(list(position) + [position_index])
+                    local_new_key = position + (position_index,)
                     self.__maps[local_new_key] = {morph_object.get_id(): perm}
 
                     local_dead_pos = dead_pos[:] + list(itertools.chain(*perm))
@@ -103,7 +103,7 @@ class SegmentForward:
                     try:
                         self.generate_map(chars, start_integer, local_dead_pos, local_new_key)
                     except InternalParserException:
-                        self.__maps[tuple(list(local_new_key) + [0])] = None
+                        self.__maps[local_new_key + (0,)] = None
                     position_index += 1
 
         if not morpheme_found:
