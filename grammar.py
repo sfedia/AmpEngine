@@ -419,8 +419,8 @@ class SubclassesOrder:
             '(': [r'\(', r'\\('],
             ')': [r'\)', r'\\)']
         }
-        for mr_pair in str2esc_rep:
-            str2esc = str2esc.replace(mr_pair[0], mr_pair[1][int(double)])
+        for mr_key in str2esc_rep:
+            str2esc = str2esc.replace(mr_key, str2esc_rep[mr_key][int(double)])
         return str2esc
 
     def create_asterisk_pattern(self, p_type, p_value, double=False):
