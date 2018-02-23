@@ -18,6 +18,7 @@ class InputContainer:
         self.elements = []
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
+        self.group_data = {}
         self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
 
@@ -55,17 +56,20 @@ class InputContainer:
 
         return returned
 
-    def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None):
+    def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None, group_rate=None):
         """
         :param element: IC element to be splitted in segments
         :param child_system: child system of segments
         :param c_outlines: CharOutline objects (with attachment)
         :param set_group: group to set for all IC subelements (None by default)
         :param set_fork_id: fork_id to set for all IC subelements (None by default)
+        :param rate: rate value given to the group
         :return: List of IC childs
         """
         parent_ic = element.get_ic_id()
         ices = []
+        if set_group is not None:
+            self.group_data[(parent_ic, set_group)] = {'rate': group_rate}
         for outline_object in c_outlines:
             try:
                 mc_link = outline_object.get_metadata()['mc_id']
@@ -190,9 +194,11 @@ class InputContainerElement:
 
 
 class GroupCollection:
-    def __init__(self, elements):
+    def __init__(self, elements, parent_ic_id, input_container):
         self.group_count = 1
         self.groups = {}
+        self.parent_ic_id = parent_ic_id
+        self.input_container = input_container
         none_group = [el for el in elements if el.get_group() is None]
         if none_group:
             self.groups[0] = none_group
@@ -208,7 +214,11 @@ class GroupCollection:
         return self.groups[index]
 
     def groups(self):
-        return [self.groups[x] for x in range(self.group_count)]
+        none_alias = lambda x: x if x is not None else 0
+        return [self.groups[x] for x in sorted(
+            [x for x in range(self.group_count)],
+            key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate'])
+        )]
 
 
 class Container:
