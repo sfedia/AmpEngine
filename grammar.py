@@ -185,9 +185,27 @@ class InputContainerElement:
     def get_rate_value(self):
         return self.rate_value
 
-    def get_childs(self):
-        return [element for element in self.input_container if element.get_parent_ic_id() == self.ic_id]
+    def get_childs(self, filter=lambda element: True):
+        return [el for el in self.input_container if el.get_parent_ic_id() == self.ic_id and filter(el)]
 
+
+class GroupCollection:
+    def __init__(self, elements):
+        self.group_count = 1
+        self.groups = {}
+        none_group = [el for el in elements if el.get_group() is None]
+        if none_group:
+            self.groups[0] = none_group
+            return
+        cur_group = 0
+        found_group = [el for el in elements if el.get_group() == cur_group]
+        while found_group:
+            self.groups[cur_group] = found_group
+            cur_group += 1
+            self.group_count += 1
+
+    def group(self, index):
+        return self.groups[index]
 
 
 class Container:
