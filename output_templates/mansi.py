@@ -30,6 +30,7 @@ class Template:
                         group_text += "-" + morpheme.get_content()
                         morpheme_markers = []
                         for action in self.container.get_by_id(morpheme.mc_id_link).get_actions():
+                            # branching !!!
                             morpheme_markers.append(
                                 lgr.lgr_values[action](action) if action.get_path() in lgr.lgr_values else '?'
                             )
