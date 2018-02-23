@@ -207,6 +207,9 @@ class GroupCollection:
     def group(self, index):
         return self.groups[index]
 
+    def groups(self):
+        return [self.groups[x] for x in range(self.group_count)]
+
 
 class Container:
     def __init__(self):
