@@ -2,6 +2,7 @@
 import grammar
 import json
 
+
 class Template:
     def __init__(self, container):
         self.container = container
