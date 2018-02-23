@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import structures_collection.char_level
+import string
 
 
 class HandlerStart:
@@ -42,23 +43,56 @@ def segmentation(from_, to_):
     return segm_decorator
 
 
-@segmentation('universal:input', 'universal:token')
-def input_to_tokens(content, metadata=None):
+def split_string(content, split_syms, alternate=[]):
     """
-    :param content: IC element content
-    :param metadata: incidental metadata (optional)
-    :return: Array of CharOutline object (with attachment)
+    `split_string` function
+    :param content: string to split
+    :param split_syms: symbol patterns to ignore and split
+    :return: Array of CharOutline objects (with attachment)
     """
 
     start = 0
-    extracted_tokens = []
+    extracted_values = []
+    after_ss = False
+    addition_state = False
     for e, char in enumerate(content):
-        if e > 0 and char == " ":
-            extracted_tokens.append(
-                structures_collection.char_level.CharOutline([start, e - 1], attachment=content[start:e])
-            )
+        if e > 0 and char in split_syms or (char in alternate and after_ss):
+            if char in split_syms:
+                after_ss = True
+            if not addition_state:
+                extracted_values.append(
+                    structures_collection.char_level.CharOutline([start, e - 1], attachment=content[start:e])
+                )
+                addition_state = True
             start = e + 1
-    return extracted_tokens
+        elif char not in split_syms:
+            addition_state = False
+            after_ss = False
+    extracted_values.append(
+        structures_collection.char_level.CharOutline([start, len(content) - 1], attachment=content[start:])
+    )
+    return extracted_values
+
+
+@segmentation('universal:input', 'universal:sentence')
+def input_to_sentences(content, metadata=None):
+    """
+    :param content: IC element content
+    :param metadata: incidental metadata (optional)
+    :return: Array of CharOutline objects (with attachment)
+    """
+    return split_string(content, [".", "!", "?"], alternate=[" "])
+
+
+@segmentation('universal:sentence', 'universal:token')
+def sentence_to_tokens(content, metadata=None):
+    """
+    :param content: IC element content
+    :param metadata: incidental metadata (optional)
+    :return: Array of CharOutline objects (with attachment)
+    """
+
+    return split_string(content, [x for x in string.punctuation], alternate=[" "])
 
 
 class SegmentTemplateNotFound(Exception):
