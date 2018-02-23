@@ -133,6 +133,7 @@ class InputContainerElement:
             ):
         self.system_name = system_name
         self.content = content
+        self.input_container = input_container
         self.params = params
         self.char_outline = char_outline
         self.mc_id_link = mc_id_link
@@ -183,6 +184,10 @@ class InputContainerElement:
 
     def get_rate_value(self):
         return self.rate_value
+
+    def get_childs(self):
+        return [element for element in self.input_container if element.get_parent_ic_id() == self.ic_id]
+
 
 
 class Container:
