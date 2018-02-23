@@ -602,6 +602,9 @@ class ContainerElement:
         self.apply_for[0].add_inherit_element(self)
         return self
 
+    def get_actions(self):
+        return self.apply_for[1]
+
     def add_applied(self, applied_id):
         self.applied_ids.append(applied_id)
         return self
