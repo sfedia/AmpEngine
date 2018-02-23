@@ -48,6 +48,7 @@ def split_string(content, split_syms, alternate=[]):
     `split_string` function
     :param content: string to split
     :param split_syms: symbol patterns to ignore and split
+    :param alternate: symbol to be ignored before/after the main symbol group
     :return: Array of CharOutline objects (with attachment)
     """
 
@@ -68,9 +69,10 @@ def split_string(content, split_syms, alternate=[]):
         elif char not in split_syms:
             addition_state = False
             after_ss = False
-    extracted_values.append(
-        structures_collection.char_level.CharOutline([start, len(content) - 1], attachment=content[start:])
-    )
+    if start < len(content) - 1:
+        extracted_values.append(
+            structures_collection.char_level.CharOutline([start, len(content) - 1], attachment=content[start:])
+        )
     return extracted_values
 
 
