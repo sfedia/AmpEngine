@@ -234,11 +234,14 @@ class Container:
         if entity_object not in self.entities:
             self.entities.append(entity_object)
 
-    def get_class(self, identifier):
+    def get_class(self, identifier, await=False):
         for entity in self.entities:
             if entity.get_level() == 'class' and entity.get_identifier() == identifier:
                 return entity
-        raise ClassEntityNotFound()
+        if await:
+            self.add_entity(ContainerEntity('class', identifier, self))
+        else:
+            raise ClassEntityNotFound()
 
     def get_system(self, identifier):
         for entity in self.entities:
