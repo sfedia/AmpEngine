@@ -40,8 +40,6 @@ class Template:
                     print(group_markers)
 
 
-
-
 class InputContainerIsEmpty(Exception):
     pass
 
