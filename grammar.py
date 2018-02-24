@@ -188,8 +188,8 @@ class InputContainerElement:
     def get_rate_value(self):
         return self.rate_value
 
-    def get_childs(self, filter=lambda element: True):
-        return [el for el in self.input_container if el.get_parent_ic_id() == self.ic_id and filter(el)]
+    def get_childs(self, child_filter=lambda element: True):
+        return [el for el in self.input_container if el.get_parent_ic_id() == self.ic_id and child_filter(el)]
 
 
 class GroupCollection:
