@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import re
-import inspect
 import structures_collection as collection
 import resource_handler as resources
 import convertation_handler as converter
@@ -343,6 +342,9 @@ class Container:
                 raise IntrusionUnsupportedType()
             if type_ == 'classes':
                 self.get_class(whitelist[type_]).subelems_intrusion(link_sentence)
+
+    def list_actions(self):
+        return itertools.chain(*[element.get_actions() for element in self.rows])
 
 
 class ContainerEntity:
