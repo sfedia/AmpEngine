@@ -236,13 +236,13 @@ class Container:
 
     def get_class(self, identifier):
         for entity in self.entities:
-            if entity.get_level() == 'class' and entity.get_identifier == identifier:
+            if entity.get_level() == 'class' and entity.get_identifier() == identifier:
                 return entity
         raise ClassEntityNotFound()
 
     def get_system(self, identifier):
         for entity in self.entities:
-            if entity.get_level() == 'system' and entity.get_identifier == identifier:
+            if entity.get_level() == 'system' and entity.get_identifier() == identifier:
                 return entity
         raise SystemEntityNotFound()
 
