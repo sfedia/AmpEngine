@@ -601,7 +601,7 @@ class ContainerElement:
 
     def applied(self, link_sentence, actions):
         self.apply_for = [link_sentence, actions]
-        self.apply_for[0].add_inherit_element(self)
+        self.apply_for[0].set_transmitter(self)
         return self
 
     def get_actions(self):
