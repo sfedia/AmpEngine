@@ -170,6 +170,7 @@ def morpheme_in_token(input_container_element, container, input_container):
             available_nulls = []
             for null in grammar_nulls:
                 for link in null.get_applied()['links']:
+                    # BS Array
                     if link.check(input_container_element, id_list, lambda: True):
                         available_nulls.append(null)
 
@@ -236,6 +237,7 @@ def morpheme_in_token(input_container_element, container, input_container):
             el_seq = [container.get_by_id(list(x.keys())[0]) for x in seq]
             for mc_element in el_seq:
                 for link in mc_element.get_applied()['links']:
+                    # BS Array
                     if not link.check(input_container_element, el_seq, lambda: True):
                         add_to_lfs = False
                         break
