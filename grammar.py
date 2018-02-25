@@ -312,7 +312,7 @@ class Container:
             return sorted_elements
         return elements
 
-    def get_elems_providing_param(self, param, input_container_element, scanned_system):
+    def get_elems_providing_param(self, param, input_container_element, scanned_system=None):
         aprp = []
         for row in self.rows:
             get_applied = row.get_applied()
@@ -326,8 +326,9 @@ class Container:
                 for link_sentence in link_sentences:
                     check_results = link_sentence.check(input_container_element)
                     if param in collection.static.Handler.get_func_params(action) and check_results:
-                        aprp.append(row.get_id())
-                        break
+                        if scanned_system is None or scanned_system == row.get_type():
+                            aprp.append(row.get_id())
+                            break
         return aprp
 
     def add_element(self, element_type, element_content, element_id):
