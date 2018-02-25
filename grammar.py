@@ -644,8 +644,8 @@ class ContainerElement:
 
     def get_parameter(self, key, args=[]):
         try:
-            extractor = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
-            self.parameters[key] = extractor(self.content, args)
+            extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
+            self.parameters[key] = extractor(self.content, args)[0]
         except collection.auto_parameter_extraction.ExtractorNotFound:
             pass
         if key in self.parameters:
