@@ -39,8 +39,13 @@ def extract_parameter(system_name, param_name):
 
 
 @extract_parameter('universal:token', 'universal:length')
-def length_of_token(content, arguments=[]):
-    return len(content)
+def length_of_token(element, arguments=[]):
+    """
+    :param element: IC element
+    :param arguments: arguments which are passed within ParameterPair
+    :return: parameter value
+    """
+    return len(element.get_content())
 
 
 class ExtractorNotFound(Exception):
