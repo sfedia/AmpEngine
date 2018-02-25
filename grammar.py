@@ -755,7 +755,7 @@ class LinkSentence:
         multiple_choice = []
 
         try:
-            parameter = element.get_parameter(param_pair.key, param_pair.arguments)
+            parameter = element.get_parameter(param_pair.key, param_pair.arguments, value=param_pair.value)
         except ParameterNotFound:
             need_elems = self.get_elems_providing_param(param_pair.key, elems_set, element, check_function)
 
@@ -764,7 +764,7 @@ class LinkSentence:
                     elems_set.set_visited(index)
                     for action in elems_set.bs_array[index][1].get_applied()['actions']:
                         element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
-                parameter = element.get_parameter(param_pair.key, param_pair.arguments)
+                parameter = element.get_parameter(param_pair.key, param_pair.arguments, value=param_pair.value)
 
             elif not self.allow_resources:
                 parameter = resources.request_functions.Handler.get_parameter(param_pair.key, element)
@@ -798,7 +798,7 @@ class LinkSentence:
         return result, element
 
     class ParameterPair:
-        def __init__(self, key, value='', sharp=False, operator="=", bool_check=False, arguments=[]):
+        def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[]):
             self.key = key
             self.bool_check = bool_check
             if value == '':
