@@ -642,10 +642,10 @@ class ContainerElement:
             raise ParameterAlreadyExists()
         return self
 
-    def get_parameter(self, key, args=[]):
+    def get_parameter(self, key, args=[], value=None):
         try:
             extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
-            self.parameters[key] = extractor(self.content, args)[0]
+            self.parameters[key] = extractors(self.content, args)[0]
         except collection.auto_parameter_extraction.ExtractorNotFound:
             pass
         if key in self.parameters:
