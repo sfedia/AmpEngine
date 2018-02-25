@@ -5,18 +5,22 @@ class HandlerStart:
     def __init__(self):
         self.param_extractors = {}
 
-    def get_param_extractors(self, system_name, param_name=None):
+    def get_param_extractors(self, system_name=None, param_name=None):
         if param_name is not None:
-            if (system_name, param_name) in self.param_extractors:
-                return param_name, self.param_extractors[(system_name, param_name)]
-            else:
-                raise ExtractorNotFound()
+            extractors = [
+                (key[1], self.param_extractors[key]) for key in self.param_extractors
+                if (param_name is None and key[0] == system_name) or key[1] == param_name
+            ]
         else:
-            selected_extractors = []
-            for key in self.param_extractors:
-                if key[0] == system_name:
-                    selected_extractors.append((key[1], self.param_extractors[key]))
-            return selected_extractors
+            extractors = [
+                (key[1], self.param_extractors[key]) for key in self.param_extractors
+                if system_name is None or key[0] == system_name
+            ]
+
+        if extractors:
+            return extractors
+        else:
+            raise ExtractorNotFound()
 
     def add_param_extractor(self, system_name, param_name, func):
         self.param_extractors[(system_name, param_name)] = func
