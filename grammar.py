@@ -409,6 +409,11 @@ class ContainerEntity:
         return self.subelems_intrusion
 
 
+class BWList:
+    def __init__(self, exclude_mutations=[]):
+        self.exclude_mutations = exclude_mutations
+
+
 class SubclassesOrder:
     def __init__(self, order_string, main_container, sys_id, parent_filter=None, select_into=None, strict=True):
         self.scheme = []
