@@ -42,14 +42,24 @@ def extract_parameter(system_name, param_name):
     return segm_decorator
 
 
-@extract_parameter('universal:token', 'universal:length')
-def length_of_token(element, arguments=[]):
+@extract_parameter(None, 'universal:length')
+def length_of_element(element, arguments=[]):
     """
     :param element: IC element
     :param arguments: arguments which are passed within ParameterPair
     :return: parameter value
     """
     return len(element.get_content())
+
+
+@extract_parameter(None, 'universal:entity')
+def entity_of_element(element, arguments=[]):
+    return element.get_type().split(':')[-1]
+
+
+@extract_parameter(None, 'universal:full_entity')
+def full_entity_of_element(element, arguments=[]):
+    return element.get_type()
 
 
 class ExtractorNotFound(Exception):
