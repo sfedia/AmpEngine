@@ -50,23 +50,31 @@ def extract_parameter(system_name, param_name):
 
 
 @extract_parameter(None, 'universal:length')
-def length_of_element(element, arguments=[]):
+def length_of_element(element, arguments=[], compared_value=None):
     """
     :param element: IC element
     :param arguments: arguments which are passed within ParameterPair
+    :param compared_value: value which is passed within ParameterPair
     :return: parameter value
     """
     return len(element.get_content())
 
 
 @extract_parameter(None, 'universal:entity')
-def entity_of_element(element, arguments=[]):
+def entity_of_element(element, arguments=[], compared_value=None):
     return element.get_type().split(':')[-1]
 
 
 @extract_parameter(None, 'universal:full_entity')
-def full_entity_of_element(element, arguments=[]):
+def full_entity_of_element(element, arguments=[], compared_value=None):
     return element.get_type()
+
+
+@extract_parameter(None, 'universal:class')
+def class_of_element(element, arguments=[], compared_value=None):
+    if compared_value is None:
+        raise ValueError("There should be a class name to compare with")
+    return compared_value in element.get_class_names()
 
 
 class ExtractorNotFound(Exception):
