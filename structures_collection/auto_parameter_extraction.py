@@ -9,17 +9,17 @@ class HandlerStart:
         if system_name is not None and param_name is not None:
             extractors = [
                 (key[1], self.param_extractors[key]) for key in self.param_extractors
-                if key[0] == system_name and key[1] == param_name
+                if (key[0] is None or key[0] == system_name) and (key[1] is None or key[1] == param_name)
             ]
         elif system_name is None and param_name is not None:
             extractors = [
                 (key[1], self.param_extractors[key]) for key in self.param_extractors
-                if key[1] == param_name
+                if (key[1] is None or key[1] == param_name)
             ]
         elif system_name is not None and param_name is None:
             extractors = [
                 (key[1], self.param_extractors[key]) for key in self.param_extractors
-                if key[0] == system_name
+                if (key[0] is None or key[0] == system_name)
             ]
         else:
             extractors = self.param_extractors
