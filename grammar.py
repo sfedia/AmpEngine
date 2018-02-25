@@ -338,7 +338,7 @@ class Container:
         self.rows.append(element)
         return self.get_by_id(element_id)
 
-    def intrusion(self, link_sentence, whitelist=None):
+    def intrusion(self, link_sentence, whitelist=None, bw_list=None):
         if whitelist is None:
             raise IntrusionIsEmpty()
         supported_types = ['classes']
@@ -346,7 +346,7 @@ class Container:
             if whitelist not in supported_types:
                 raise IntrusionUnsupportedType()
             if type_ == 'classes':
-                self.get_class(whitelist[type_]).subelems_intrusion(link_sentence)
+                self.get_class(whitelist[type_]).subelems_intrusion(link_sentence, bw_list)
 
     def list_actions(self):
         return itertools.chain(*[element.get_actions() for element in self.rows])
@@ -359,6 +359,7 @@ class ContainerEntity:
         self.subcl_orders = []
         self.added_bhvr = 'standard'
         self.subelems_intrusion = []
+        self.bw_lists = {}
         self.container = container
 
     def get_level(self):
@@ -381,8 +382,10 @@ class ContainerEntity:
             )
         )
 
-    def subelements_intrusion(self, link_sentence):
+    def subelements_intrusion(self, link_sentence, bw_list=None):
         self.subelems_intrusion.append(link_sentence)
+        if bw_list is not None:
+            self.bw_lists[len(self.subelems_intrusion) - 1] = bw_list
 
     def get_subcl_orders(self):
         return self.subcl_orders
