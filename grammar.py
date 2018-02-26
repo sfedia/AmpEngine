@@ -560,6 +560,8 @@ class SubclassesOrder:
                 continue
         non_ev_str = '|'.join(non_ev)
 
+        check_regex = (r'^' if self.begin else '') + check_regex + (r'$' if self.end else '')
+
         subst_nulls = []
         for null in [(x.get_id(), x.get_class_names()) for x in available_nulls]:
             for j, el in enumerate(self.scheme):
