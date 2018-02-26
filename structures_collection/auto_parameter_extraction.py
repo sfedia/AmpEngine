@@ -92,6 +92,25 @@ def class_of_element(element, arguments=[], compared_value=None):
     return compared_value in element.get_class_names()
 
 
+@extract_parameter(None, 'universal:reg_match')
+def reg_match(element, arguments=[], compared_value=None):
+    if compared_value is None:
+        raise ValueError("Regex is empty")
+    args = Arguments(arguments)
+    pre_param = args.get_argument('pre', allow_none=True)
+    min_strategy = True if args.get_argument('max_strategy', allow_none=True) is None else False
+    if pre_param is None or pre_param not in element.get_content():
+        return re.search(compared_value, element.get_content()) is not None
+    else:
+        cv_pattern = re.compile(pre_param)
+        positions = [x.start() for x in cv_pattern.finditer(element.get_content())]
+        if min_strategy:
+            for pos in positions if min_strategy else reversed(positions):
+                if re.search(compared_value, element.get_content[:pos]) is not None:
+                    return True
+            return False
+
+
 class ExtractorNotFound(Exception):
     pass
 
