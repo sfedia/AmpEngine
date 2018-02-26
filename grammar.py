@@ -213,7 +213,7 @@ class GroupCollection:
         return self.groups[index]
 
     def groups(self):
-        none_alias = lambda x: x if x is not None else 0
+        def none_alias(x): return x if x is not None else 0
         sorted_indices = sorted(
             [x for x in range(self.group_count)],
             key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate']),
