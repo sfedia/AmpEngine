@@ -352,14 +352,6 @@ class ContainerEntity:
         self.bw_lists = {}
         self.container = container
 
-    def intrusion(self, class_list, bw_list=None):
-        if class_list is None:
-            raise IntrusionIsEmpty()
-        for class_name in class_list:
-            self.container.get_class(class_name).subelems_intrusion(
-                LinkSentence('universal:class=(%s)' % class_name), bw_list
-            )
-
     def get_level(self):
         return self.level
 
@@ -405,6 +397,15 @@ class ContainerEntity:
 
     def inspect_added_behaviour(self):
         return self.added_bhvr
+
+    # active intrusion
+    def intrusion(self, class_list, bw_list=None):
+        if class_list is None:
+            raise IntrusionIsEmpty()
+        for class_name in class_list:
+            self.container.get_class(class_name).subelems_intrusion(
+                LinkSentence('universal:class=(%s)' % class_name), bw_list
+            )
 
     def get_subelems_intrusion(self):
         return self.subelems_intrusion
