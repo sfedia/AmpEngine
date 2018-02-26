@@ -339,7 +339,7 @@ class Container:
         return self.get_by_id(element_id)
 
     def list_actions(self):
-        return itertools.chain(*[element.get_actions() for element in self.rows])
+        return list(itertools.chain(*[element.get_actions() for element in self.rows]))
 
 
 class ContainerEntity:
