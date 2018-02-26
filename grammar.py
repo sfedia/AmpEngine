@@ -424,7 +424,17 @@ class SubclassesOrder:
         self.parent_filter = parent_filter
         self.sys_identifier = sys_id
         self.select_into = select_into
+        self.begin = False
+        self.end = False
+
         sp_string = order_string.split()
+        if sp_string:
+            if sp_string[0] == '|':
+                self.begin = True
+            if sp_string[-1] == '|':
+                self.end = True
+            sp_string = [x for x in sp_string if x != '|']
+
         for substr in sp_string:
             if substr == '?':
                 self.scheme.append({
@@ -521,7 +531,7 @@ class SubclassesOrder:
             if n > 0:
                 if self.scheme[n - 1]['type'] == 'operator' and self.scheme[n - 1]['subtype'] == 'lookahead':
                     return self.scheme[n - 1]['value']
-            elif n < len(self.scheme) - 1:
+            if n < len(self.scheme) - 1:
                 if self.scheme[n + 1]['type'] == 'operator' and self.scheme[n + 1]['subtype'] == 'lookbehind':
                     return self.scheme[n + 1]['value']
 
