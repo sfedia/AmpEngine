@@ -688,7 +688,7 @@ class ContainerElement:
 
 class LinkSentence:
     def __init__(self, link_string, transmitter=None, allow_resources=True):
-        self.link = link_string
+        self.link = re.sub(r'\n|\s{2,}', ' ', link_string)
         self.transmitter = transmitter
         self.transmitter_index = None
         self.allow_resources = allow_resources
