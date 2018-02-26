@@ -403,7 +403,7 @@ class ContainerEntity:
         if class_list is None:
             raise IntrusionIsEmpty()
         for class_name in class_list:
-            self.container.get_class(class_name).subelems_intrusion(
+            self.container.get_class(class_name, await=True).subelems_intrusion(
                 LinkSentence('universal:class=(%s)' % class_name), bw_list
             )
 
