@@ -338,16 +338,6 @@ class Container:
         self.rows.append(element)
         return self.get_by_id(element_id)
 
-    def intrusion(self, link_sentence, whitelist=None, bw_list=None):
-        if whitelist is None:
-            raise IntrusionIsEmpty()
-        supported_types = ['classes']
-        for type_ in whitelist:
-            if whitelist not in supported_types:
-                raise IntrusionUnsupportedType()
-            if type_ == 'classes':
-                self.get_class(whitelist[type_]).subelems_intrusion(link_sentence, bw_list)
-
     def list_actions(self):
         return itertools.chain(*[element.get_actions() for element in self.rows])
 
@@ -361,6 +351,14 @@ class ContainerEntity:
         self.subelems_intrusion = []
         self.bw_lists = {}
         self.container = container
+
+    def intrusion(self, class_list, bw_list=None):
+        if class_list is None:
+            raise IntrusionIsEmpty()
+        for class_name in class_list:
+            self.container.get_class(class_name).subelems_intrusion(
+                LinkSentence('universal:class=(%s)' % class_name), bw_list
+            )
 
     def get_level(self):
         return self.level
