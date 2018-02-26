@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import re
 
 class HandlerStart:
     def __init__(self):
@@ -31,6 +32,20 @@ class HandlerStart:
 
     def add_param_extractor(self, system_name, param_name, func):
         self.param_extractors[(system_name, param_name)] = func
+
+
+class Arguments:
+    def __init__(self, args):
+        self.args = args
+
+    def get_argument(self, name, allow_none=False):
+        args = [arg['value'] for arg in self.args if arg['name'] == name]
+        if args:
+            return args[0]
+        elif allow_none:
+            return None
+        else:
+            raise ArgumentNotFound()
 
 
 Handler = HandlerStart()
@@ -78,4 +93,8 @@ def class_of_element(element, arguments=[], compared_value=None):
 
 
 class ExtractorNotFound(Exception):
+    pass
+
+
+class ArgumentNotFound(Exception):
     pass
