@@ -61,8 +61,7 @@ class SegmentForward:
                 if (j - start) == len(morph_object.get_content()):
                     break
 
-                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(
-                        morph_object.get_content()):
+                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(morph_object.get_content()):
                     catch_pos.append(j)
                 elif len(catch_pos) < len(morph_object.get_content()):
                     catch_pos = []
