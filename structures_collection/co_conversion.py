@@ -32,6 +32,22 @@ class HandlerStart:
 Handler = HandlerStart()
 
 
+class Conversion:
+    def __init__(self):
+        self.__match_from = {}
+
+    def add_match(self, a, b, regex_before=(0, None), before_strict=False, regex_after=(0, None), after_strict=False):
+        mf_key = tuple(x for x in a)
+        if mf_key not in self.__match_from:
+            self.__match_from[mf_key] = {}
+        self.__match_from[mf_key][(regex_before, regex_after)] = b
+
+    def char_replace(self, char, before=None, after=None):
+        ...
+
+
+
+
 def regressive_conversion(from_, to_):
     def rc_decorator(func):
         Handler.add_conversion(from_, to_, func)
