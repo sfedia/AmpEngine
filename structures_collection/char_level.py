@@ -2,18 +2,16 @@
 
 
 class CharOutline:
-    def __init__(self, ci_groups, attachment=None, attachment_index=0, metadata=None):
+    def __init__(self, ci_groups, attachment=None, metadata=None):
         self.__groups = ci_groups
-        self.__attachment = {}
-        if attachment is not None:
-            if type(attachment) == str:
-                self.__attachment[attachment_index] = [attachment]
-            else:
-                self.__attachment[attachment_index] = attachment
+        self.__attachment = attachment
         self.__metadata = metadata
 
-    def add_attachment(self, attachment, index=0):
-        self.__attachment[index] = attachment
+    def add_attachment(self, attachment, override=False):
+        if not self.__attachment:
+            self.__attachment = attachment
+        elif not override:
+            raise AttachmentAlreadySet()
 
     def add_group(self, group):
         self.__groups.append(group)
@@ -24,8 +22,8 @@ class CharOutline:
     def get_metadata(self):
         return self.__metadata
 
-    def get_attachment(self, index=0):
-        return self.__attachment[index]
+    def get_attachment(self):
+        return self.__attachment
 
 
 class CharIndexGroup:
