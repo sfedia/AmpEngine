@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import structures_collection.char_level
 import string
+import re
 
 
 class HandlerStart:
@@ -42,8 +43,12 @@ class Conversion:
             self.__match_from[mf_key] = {}
         self.__match_from[mf_key][(regex_before, regex_after)] = b
 
-    def char_replace(self, char, before=None, after=None):
-        ...
+    def char_replace(self, char, before=[], after=[]):
+        return [
+            self.__match_from[char][x] for x in self.__match_from[char]
+            if x[0][0] == len(before) and re.search(x[0][1], ''.join(before))
+            and x[1][0] == len(after) and re.search(x[1][1], ''.join(after))
+        ]
 
 
 
