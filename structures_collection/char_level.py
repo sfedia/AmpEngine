@@ -4,10 +4,18 @@
 class CharOutline:
     def __init__(self, ci_groups, attachment=None, metadata=None):
         self.__groups = ci_groups
-        self.__attachment = attachment
+        if attachment is None:
+            self.__attachment = []
+        else:
+            if type(attachment) == str:
+                self.__attachment = [attachment]
+            else:
+                self.__attachment = attachment
         self.__metadata = metadata
 
-    def add_attachment(self, attachment, override=False):
+    def add_attachment(self, attachment, override=False, index=None):
+        if index is None:
+            index = 0
         if not self.__attachment:
             self.__attachment = attachment
         elif not override:
