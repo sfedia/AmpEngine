@@ -105,11 +105,11 @@ class ConvSubHistory:
             self.__shifts.append(creq.get(sum(self.__shifts))[3])
             self.__subhistory.append(creq)
 
-    def get_subhistory(self):
-        return self.__subhistory
+    def get_subhistory(self, rev=False):
+        return self.__subhistory if not rev else list(reversed(self.__subhistory))
 
-    def get_shifts(self):
-        return self.__shifts
+    def get_shifts(self, rev=False):
+        return self.__shifts if not rev else list(reversed(self.__shifts))
 
 
 def regressive_conversion(from_, to_):
