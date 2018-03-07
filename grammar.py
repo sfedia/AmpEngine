@@ -48,12 +48,7 @@ class InputContainer:
         return None
 
     def get_by_system_name(self, system_name):
-        returned = []
-        for element in self.elements:
-            if element.get_ic_id() == system_name:
-                returned.append(element)
-
-        return returned
+        return [element for element in self.elements if element.get_ic_id() == system_name]
 
     def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None, group_rate=None):
         """
