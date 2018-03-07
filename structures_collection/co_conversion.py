@@ -93,6 +93,25 @@ class ConvAction:
         )
 
 
+class ConvSubHistory:
+    def __init__(self, conversion, input_container):
+        self.__conversion = conversion
+        self.__input_container = input_container
+        self.__subhistory = []
+        self.__shifts = []
+        input_sequence = self.__input_container.get_system_name('universal:input')[0].get_content()
+        for j, char in enumerate(input_sequence):
+            creq = self.__conversion.char_request(j, input_sequence)
+            self.__shifts.append(creq.get(sum(self.__shifts))[3])
+            self.__subhistory.append(creq)
+
+    def get_subhistory(self):
+        return self.__subhistory
+
+    def get_shifts(self):
+        return self.__shifts
+
+
 def regressive_conversion(from_, to_):
     def rc_decorator(func):
         Handler.add_conversion(from_, to_, func)
