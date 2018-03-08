@@ -18,6 +18,7 @@ class InputContainer:
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
         self.group_data = {}
+        self.system_names = []
         self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
 
@@ -80,6 +81,8 @@ class InputContainer:
         return ices
 
     def add_element(self, element):
+        if element.get_system_name() not in self.system_names:
+            self.system_names.append(element.get_system_name())
         self.elements.append(element)
 
     def get_all(self):
