@@ -224,6 +224,9 @@ class GroupCollection:
         )
         return [self.groups[x] for x in sorted_indices]
 
+    def serialize(self):
+        return list(itertools.chain(*[self.groups[N] for N in self.groups]))
+
 
 class Container:
     def __init__(self):
