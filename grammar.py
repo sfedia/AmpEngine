@@ -194,11 +194,13 @@ class InputContainerElement:
 
 
 class GroupCollection:
-    def __init__(self, elements, parent_ic_id, input_container):
+    def __init__(self, parent_ic_id, input_container, elements=None):
         self.group_count = 1
         self.groups = {}
         self.parent_ic_id = parent_ic_id
         self.input_container = input_container
+        if elements is None:
+            elements = self.input_container.get_by_ic_id(parent_ic_id).get_childs()
         none_group = [el for el in elements if el.get_group() is None]
         if none_group:
             self.groups[0] = none_group
