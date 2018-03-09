@@ -194,7 +194,7 @@ class InputContainerElement:
 
 
 class GroupCollection:
-    def __init__(self, parent_ic_id, input_container, elements=None):
+    def __init__(self, parent_ic_id, input_container, elements=None, spread_ci=True):
         self.group_count = 1
         self.groups = {}
         self.parent_ic_id = parent_ic_id
@@ -208,9 +208,14 @@ class GroupCollection:
         cur_group = 0
         found_group = [el for el in elements if el.get_group() == cur_group]
         while found_group:
+            found_group = [el for el in elements if el.get_group() == cur_group]
             self.groups[cur_group] = found_group
             cur_group += 1
             self.group_count += 1
+        if spread_ci:
+            for group_index in self.groups:
+                for element in self.groups[group_index]:
+                    ...
 
     def group(self, index):
         return self.groups[index]
