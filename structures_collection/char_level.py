@@ -36,8 +36,7 @@ class CharIndexGroup:
         if is_range and len(self.indices) != 2:
             raise MalformedCharOutline('range list should include two integers')
         elif is_range:
-            for n in range(indices[0], indices[1] + int(range_strict)):
-                self.indices.append(n)
+            self.indices += list(range(indices[0], indices[1] + int(range_strict)))
         elif is_virtual:
             if indices != UNALLOCATED and not 0 < len(indices) <= 2:
                 raise MalformedCharOutline('virtual margin can be unallocated or a list of 1 or 2 integers')
