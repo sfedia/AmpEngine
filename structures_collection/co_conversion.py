@@ -2,6 +2,7 @@
 import structures_collection.char_level
 import string
 import re
+import grammar
 
 
 class HandlerStart:
@@ -110,6 +111,30 @@ class ConvSubHistory:
 
     def get_shifts(self, rev=False):
         return self.__shifts if not rev else list(reversed(self.__shifts))
+
+
+class LayerConversion:
+    def __init__(self, subhistory, input_container):
+        self.layers = input_container.get_system_names()
+        self.subhistory = subhistory
+        self.input_container = input_container
+
+    def convert_layer(self, layer_name):
+        layer_elements = self.input_container.get_by_system_name(layer_name)
+        if not layer_elements:
+            return []
+        clusters = {}
+        for le in layer_elements:
+            if le.get_parent_ic_id() not in clusters:
+                clusters[le.get_parent_ic_id()] = []
+            clusters[le.get_parent_ic_id()].append(le)
+
+        clustered_gc = [grammar.GroupCollection(clusters[x], x, self.input_container) for x in clusters]
+        for gc in clustered_gc:
+            for group in gc.groups():
+                ...
+            
+
 
 
 def regressive_conversion(from_, to_):
