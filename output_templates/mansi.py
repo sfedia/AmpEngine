@@ -18,9 +18,9 @@ class Template:
             for token in tokens:
                 print("Token: %s" % (token.get_content()))
                 token_gc = grammar.GroupCollection(
-                    token.get_childs(lambda tkn: tkn.get_system_name() == 'universal:morpheme'),
                     token.get_ic_id(),
-                    input_container
+                    input_container,
+                    elements=token.get_childs(lambda tkn: tkn.get_system_name() == 'universal:morpheme')
                 )
                 for group in token_gc.groups():
                     # get stem and print it
