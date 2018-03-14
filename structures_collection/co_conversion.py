@@ -133,8 +133,31 @@ class LayerConversion:
         for gc in clustered_gc:
             for group in gc.groups():
                 ...
-            
 
+    @staticmethod
+    def shift(group, shift_int, start_int, rev=False, elem_index=None):
+        """
+        :param group: [List] group containing IC elements
+        :param shift_int:
+        :param start_int:
+        :param rev: [Bool] reverse mode
+        :param elem_index:
+        :return: changed group
+        """
+        if not rev:
+            shift_set = group if not elem_index else group[elem_index:]
+        else:
+            shift_set = group if not elem_index else group[:elem_index+1]
+
+        for elem in shift_set:
+            elem_co = elem.get_char_outline()
+            elem_co.shift_group(0, shift_int, start_int, rev)
+            elem.char_outline = elem_co
+
+        if not rev:
+            return group[:elem_index] + shift_set
+        else:
+            return shift_set + group[elem_index+1:]
 
 
 def regressive_conversion(from_, to_):
