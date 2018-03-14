@@ -212,6 +212,8 @@ class GroupCollection:
             self.groups[cur_group] = found_group
             cur_group += 1
             self.group_count += 1
+
+        # self.groups[N] = Array of CharOutline
         if spread_ci:
             for group_index in self.groups:
                 for element in self.groups[group_index]:
