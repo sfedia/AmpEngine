@@ -16,6 +16,9 @@ class CharOutline:
     def add_group(self, group):
         self.__groups.append(group)
 
+    def shift_group(self, group_index, shift_int, start_int, rev=False):
+        self.__groups[group_index].shift_indices(shift_int, start_int, rev)
+
     def get_groups(self):
         return self.__groups
 
@@ -50,6 +53,11 @@ class CharIndexGroup:
 
     def get_indices(self):
         return self.indices if not self.unallocated else UNALLOCATED
+
+    def shift_indices(self, shift_int, start_int, rev=False):
+        for j, n in enumerate(self.indices):
+            if (not rev and n >= start_int) or (rev and n <= start_int):
+                self.indices[j] += shift_int
 
 
 UNALLOCATED = -1.5
