@@ -18,7 +18,7 @@ class InputContainer:
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
         self.group_data = {}
-        self.onext_hooks = {}
+        self.onseg_hooks = {}
         self.__system_names = []
         self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
@@ -95,15 +95,15 @@ class InputContainer:
     def backward_parse(self, input_container_element, scanned_system):
         pass
 
-    def add_onext_hook(self, ext_system, onext_hook):
+    def add_onseg_hook(self, ext_system, onseg_hook):
         """
-        add_onext_hook procedure
+        add_onseg_hook procedure
         :param ext_system: system name which will refer to the hook
-        :param onext_hook: hook(-> IC Elem) which will be called by extraction of elements that belong to the ext_system
+        :param onseg_hook: hook(-> IC Elem) which will be called by extraction of elements that belong to the ext_system
         """
-        if ext_system not in self.onext_hooks:
-            self.onext_hooks[ext_system] = []
-        self.onext_hooks[ext_system].append(onext_hook)
+        if ext_system not in self.onseg_hooks:
+            self.onseg_hooks[ext_system] = []
+        self.onseg_hooks[ext_system].append(onseg_hook)
 
     def make_apply(self, main_container_element_id, main_container, scanned_system):
         main_container_element = main_container.get_by_id(main_container_element_id)
