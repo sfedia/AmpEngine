@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import structures_collection.char_level
 import string
+import collections
 import re
 import grammar
 
@@ -105,6 +106,19 @@ class ConvAction:
     def what(self):
         return self.__action_type
 
+    @staticmethod
+    def reverse_action(action):
+        if action == 'Equal':
+            return action
+        return 'Add' if action == 'Remove' else 'Remove'
+
+    def create_reversed(self, back_value):
+        return ConvAction(
+            self.__int_index,
+            back_value,
+            self.reverse_action(self.__action_type)
+        )
+
     def get(self, shift=0):
         return (
             self.__action_type,
@@ -122,7 +136,11 @@ class ConvSubHistory:
         self.__back = []
         self.__shifts = []
         input_sequence = self.__input_container.get_system_name('universal:input')[0].get_content()
+        skip_char = 0
         for j, char in enumerate(input_sequence):
+            if skip_char:
+                skip_char -= 1
+                continue
             creq = self.__conversion.char_request(j, input_sequence)
             for x, ca in enumerate(creq):
                 self.__shifts.append(ca.get(sum(self.__shifts))[3])
@@ -131,6 +149,18 @@ class ConvSubHistory:
                     self.__back.append(input_sequence[j + x])
                 else:
                     self.__back.append(None)
+            skip_char = len(creq) - 1
+
+    def get_whole(self, rev=False):
+        sh_returned = collections.namedtuple('SubHistory', 'subhistory, back, shifts')
+        if not rev:
+            sh_returned.subhistory = self.__subhistory
+            sh_returned.back = self.__back
+            sh_returned.shifts = self.__shifts
+        else:
+            sh_returned.shifts = reversed(self.__shifts)
+            sh_returned.back = reversed(self.__back)
+
 
     def get_subhistory(self, rev=False):
         return self.__subhistory if not rev else list(reversed(self.__subhistory))
