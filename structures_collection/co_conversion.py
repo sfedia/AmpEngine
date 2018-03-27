@@ -166,7 +166,6 @@ class ConvSubHistory:
                 revb,
                 reversed(self.__shifts)
             )
-        return sh_returned
 
 
 class LayerConversion:
