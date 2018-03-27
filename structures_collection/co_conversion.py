@@ -154,13 +154,18 @@ class ConvSubHistory:
     def get_whole(self, rev=False):
         sh_returned = collections.namedtuple('SubHistory', 'subhistory, back, shifts')
         if not rev:
-            sh_returned.subhistory = self.__subhistory
-            sh_returned.back = self.__back
-            sh_returned.shifts = self.__shifts
+            return sh_returned(
+                self.__subhistory,
+                self.__back,
+                self.__shifts
+            )
         else:
-            sh_returned.back = reversed(self.__back)
-            sh_returned.subhistory = [ca.create_reversed(sh_returned.back[j]) for j, ca in enumerate(self.__subhistory)]
-            sh_returned.shifts = reversed(self.__shifts)
+            revb = reversed(self.__back)
+            return sh_returned(
+                [ca.create_reversed(revb[j]) for j, ca in enumerate(self.__subhistory)],
+                revb,
+                reversed(self.__shifts)
+            )
         return sh_returned
 
 
@@ -183,6 +188,16 @@ class LayerConversion:
         clustered_gc = [grammar.GroupCollection(clusters[x], x, self.input_container) for x in clusters]
 
         cum_shift = 0
+
+        for j, a in enumerate(self.subhistory):
+            act_type, act_index, act_rc, act_shift = a.get(cum_shift)
+            cum_shift += act_shift
+            for n, pid_gc in enumerate(clustered_gc):
+                for i, group in pid_gc.group(index_pair=True):
+                    for l, elem in enumerate(group):
+                        start_index = None
+                        for num, index in en
+
         for j, a in enumerate(self.subhistory):
             act_type, act_indices, act_repls, act_shift = a.get(cum_shift)
             cum_shift += act_shift
