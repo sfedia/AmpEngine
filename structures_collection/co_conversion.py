@@ -46,6 +46,8 @@ class Conversion:
         self.__match_fc[a[0]][(regex_before, a, regex_after)] = b
 
     def char_request(self, index, co_sequence):
+        conv_actions = []
+
         for properties in self.__match_fc[co_sequence[index]]:
             if properties[2][0] < len(co_sequence[index + 1:]):
                 continue
@@ -59,28 +61,46 @@ class Conversion:
             if index + len(properties[1]) >= len(co_sequence):
                 continue
 
-            return ConvAction(
-                list(range(index, index + len(properties[1]))),
+            conv_actions += ConvActionsGenerator(
+                range(index, index + len(properties[1])),
                 [x for x in self.__match_fc[co_sequence[index]][properties]]
             )
 
-        return ConvAction('Equal', [index], [co_sequence[index]])
+        if not conv_actions:
+            return [ConvAction('Equal', [index], [co_sequence[index]])]
+        else:
+            return conv_actions
 
 
+class ConvActionsGenerator:
+    def __init__(self, int_list, rep_list):
+        self.generated_ca = []
+        if len(int_list) >= len(rep_list):
+            x = int_list[0]
+            for i in int_list:
+                if i - x < len(rep_list):
+                    self.generated_ca.append(ConvAction(i, rep_list[i - x], 'Equal'))
+                else:
+                    self.generated_ca.append(ConvAction(i, None, 'Remove'))
+        else:
+            x = int_list[0]
+            for j, r in enumerate(rep_list):
+                if j < len(int_list):
+                    self.generated_ca.append(ConvAction(x + j, r, 'Equal'))
+                else:
+                    self.generated_ca.append(ConvAction(x + j, r, 'Add'))
+        
+    def get(self):
+        return self.generated_ca
+    
+    
 class ConvAction:
-    def __init__(self, int_list, rep_list, action_type=None):
-        if action_type is None:
-            if len(rep_list) - len(int_list) > 0:
-                self.__action_type = 'Divide'
-            elif len(rep_list) == len(int_list):
-                self.__action_type = 'Equal'
-            elif len(rep_list) - len(int_list) < 0:
-                self.__action_type = 'Merge'
-        elif action_type not in ('Equal', 'Divide', 'Merge'):
+    def __init__(self, int_index, rep_char, action_type):
+        if action_type not in ('Equal', 'Remove', 'Add'):
             raise ValueError
         self.__action_type = action_type
-        self.__int_list = int_list
-        self.__rep_list = rep_list
+        self.__int_index = int_index
+        self.__rep_char = rep_char
 
     def what(self):
         return self.__action_type
@@ -88,9 +108,9 @@ class ConvAction:
     def get(self, shift=0):
         return (
             self.__action_type,
-            [x + shift for x in self.__int_list],
-            self.__rep_list,
-            len(self.__rep_list) - len(self.__int_list)
+            self.__int_index + shift,
+            self.__rep_char,
+            0 if self.__action_type == 'Equal' else 1 if self.__action_type == 'Add' else -1
         )
 
 
@@ -99,15 +119,22 @@ class ConvSubHistory:
         self.__conversion = conversion
         self.__input_container = input_container
         self.__subhistory = []
+        self.__back = []
         self.__shifts = []
         input_sequence = self.__input_container.get_system_name('universal:input')[0].get_content()
         for j, char in enumerate(input_sequence):
             creq = self.__conversion.char_request(j, input_sequence)
-            self.__shifts.append(creq.get(sum(self.__shifts))[3])
-            self.__subhistory.append(creq)
+            for x, ca in enumerate(creq):
+                self.__shifts.append(ca.get(sum(self.__shifts))[3])
+                self.__subhistory.append(ca)
+                if ca.get()[0] in ('Equal', 'Remove'):
+                    self.__back.append(input_sequence[j + x])
+                else:
+                    self.__back.append(None)
 
     def get_subhistory(self, rev=False):
         return self.__subhistory if not rev else list(reversed(self.__subhistory))
+        # WRONG!!!
 
     def get_shifts(self, rev=False):
         return self.__shifts if not rev else list(reversed(self.__shifts))
@@ -119,7 +146,7 @@ class LayerConversion:
         self.subhistory = subhistory
         self.input_container = input_container
 
-    def convert_layer(self, layer_name):
+    def convert_layer(self, layer_name, rev=False):
         layer_elements = self.input_container.get_by_system_name(layer_name)
         if not layer_elements:
             return []
@@ -130,9 +157,37 @@ class LayerConversion:
             clusters[le.get_parent_ic_id()].append(le)
 
         clustered_gc = [grammar.GroupCollection(clusters[x], x, self.input_container) for x in clusters]
-        for gc in clustered_gc:
-            for group in gc.groups():
-                ...
+
+        cum_shift = 0
+        for j, a in enumerate(self.subhistory):
+            act_type, act_indices, act_repls, act_shift = a.get(cum_shift)
+            cum_shift += act_shift
+            for n, pid_gc in enumerate(clustered_gc):
+                for i, group in pid_gc.groups(index_pair=True):
+                    for l, elem in enumerate(group):
+                        start_index = None
+                        for num, index in enumerate(elem.get_char_outline()):
+                            if index in act_indices:
+                                start_index = index
+                                break
+                            if act_type == 'Divide':
+                                ...
+
+                left_margin = pid_gc.group(0)[0].get_char_outline().get_groups()[0][0]
+                right_margin = pid_gc.group(0)[-1].get_char_outline().get_groups()[0][-1]
+                if left_margin <= act_indices[0] <= right_margin:
+                    for i, group in pid_gc.groups(index_pair=True):
+                        if act_type == 'Divide':
+                            clustered_gc[n].groups[i]
+
+
+            for n, pid_gc in enumerate(clustered_gc):
+
+
+
+        """for j, gc in enumerate(clustered_gc):
+            for i, group in gc.groups(True):
+                clustered_gc[j].groups[i] = ..."""
 
     @staticmethod
     def shift(group, shift_int, start_int, rev=False, elem_index=None):
