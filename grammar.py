@@ -191,6 +191,10 @@ class InputContainerElement:
     def get_char_outline(self):
         return self.char_outline
 
+    def check_ca_matching(self):
+        fg = self.char_outline.get_groups()[0]
+        if fg.get_indices() != collection.char_level.UNALLOCATED
+
     def get_group(self):
         """
         :return: (Int; >0 because None should not confuse group number) number of group the element belongs to
@@ -973,6 +977,7 @@ class Action:
 
 class Temp:
     NULL = '$__NULL__'
+    UNALLOCATED = -1.5
 
 
 class IdIsNotUnique(Exception):
