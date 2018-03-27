@@ -25,7 +25,7 @@ class CharOutline:
 
     def ca_for_group(self, group_index, ca_data):
         """
-        CA for group
+        CA for group (<- ca_for_element)
         :param group_index: index of group where ConvAction should be applied
         :param ca_data: <- <CA Object>.get()
         """
@@ -37,8 +37,6 @@ class CharOutline:
             self.__groups[group_index].remove_index(ca_data[addresses.int_index])
         elif ca_data[addresses.action_type] == 'Add':
             self.__groups[group_index].add_index(ca_data[addresses.int_index])
-
-        # ca_for_element -> ca_for_group !!!
 
     def shift_group(self, group_index, shift_int, start_int, rev=False):
         self.__groups[group_index].shift_indices(shift_int, start_int, rev)
