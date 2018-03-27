@@ -5,6 +5,7 @@ import resource_handler as resources
 import convertation_handler as converter
 import log_handler as logs
 import itertools
+import collections
 import random
 import string
 
@@ -196,6 +197,13 @@ class InputContainerElement:
         if fg.get_indices() != Temp.UNALLOCATED and index in fg.get_indices():
             return True
         return False
+
+    def ca_for_element(self, ca_data):
+        a_map = collections.namedtuple('addresses', 'action_type int_index rep_char shift')
+        addresses = a_map(0, 1, 2, 3)
+        ci = self.char_outline.get_int_index_in_group(0, ca_data[addresses.int_index])
+        self.content[ci] = ca_data[addresses.rep_char]
+        self.char_outline.ca_for_group(0, ca_data)
 
     def get_group(self):
         """
