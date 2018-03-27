@@ -152,16 +152,16 @@ class ConvSubHistory:
             skip_char = len(creq) - 1
 
     def get_whole(self, rev=False):
-        sh_returned = collections.namedtuple('SubHistory', 'subhistory, back, shifts')
+        subhistory = collections.namedtuple('SubHistory', 'subhistory, back, shifts')
         if not rev:
-            return sh_returned(
+            return subhistory(
                 self.__subhistory,
                 self.__back,
                 self.__shifts
             )
         else:
             revb = reversed(self.__back)
-            return sh_returned(
+            return subhistory(
                 [ca.create_reversed(revb[j]) for j, ca in enumerate(self.__subhistory)],
                 revb,
                 reversed(self.__shifts)
