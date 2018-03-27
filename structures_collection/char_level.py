@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+import collections
 
 class CharOutline:
     def __init__(self, ci_groups, attachment=None, metadata=None):
@@ -15,6 +15,24 @@ class CharOutline:
 
     def add_group(self, group):
         self.__groups.append(group)
+
+    def ca_for_group(self, group_index, ca_data):
+        """
+        CA for group
+        :param group_index: index of group where ConvAction should be applied
+        :param ca_data: <- <CA Object>.get()
+        """
+        a_map = collections.namedtuple('addresses', 'action_type int_index rep_char shift')
+        addresses = a_map(0, 1, 2, 3)
+        if ca_data[addresses.action_type] == 'Equal':
+            pass
+        elif ca_data[addresses.action_type] == 'Remove':
+            ...
+        elif ca_data[addresses.action_type] == 'Add':
+            ...
+
+        # ca_for_element -> ca_for_group !!!
+
 
     def shift_group(self, group_index, shift_int, start_int, rev=False):
         self.__groups[group_index].shift_indices(shift_int, start_int, rev)
@@ -54,8 +72,26 @@ class CharIndexGroup:
     def get_indices(self):
         return self.indices if not self.unallocated else UNALLOCATED
 
-    def shift_indices(self, shift_int, start_int, rev=False):
+    def add_index(self, index_int):
+        try:
+            self.indices.insert(self.indices.index(index_int), index_int)
+            self.shift_indices(1, index_int, soft=True)
+        except ValueError:
+            raise GroupOutOfAction()
+
+    def remove_index(self, index_int):
+        try:
+            del self.indices[self.indices.index(index_int)]
+            self.shift_indices(-1, index_int)
+        except ValueError:
+            raise GroupOutOfAction()
+
+    def shift_indices(self, shift_int, start_int, rev=False, soft=False):
+        fo = True
         for j, n in enumerate(self.indices):
+            if n == start_int and soft and fo:
+                fo = False
+                continue
             if (not rev and n >= start_int) or (rev and n <= start_int):
                 self.indices[j] += shift_int
 
@@ -72,4 +108,8 @@ class MalformedCharOutline(Exception):
 
 
 class AttachmentAlreadySet(Exception):
+    pass
+
+
+class GroupOutOfAction(Exception):
     pass
