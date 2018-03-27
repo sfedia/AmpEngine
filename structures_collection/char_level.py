@@ -17,6 +17,12 @@ class CharOutline:
     def add_group(self, group):
         self.__groups.append(group)
 
+    def get_int_index_in_group(self, group_index, integer):
+        try:
+            self.__groups[group_index].get_indices().index(integer)
+        except ValueError:
+            raise GroupOutOfAction()
+
     def ca_for_group(self, group_index, ca_data):
         """
         CA for group
