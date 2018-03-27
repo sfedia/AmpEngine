@@ -194,38 +194,9 @@ class LayerConversion:
             for n, pid_gc in enumerate(clustered_gc):
                 for i, group in pid_gc.group(index_pair=True):
                     for l, elem in enumerate(group):
-                        start_index = None
-                        for num, index in en
-
-        for j, a in enumerate(self.subhistory):
-            act_type, act_indices, act_repls, act_shift = a.get(cum_shift)
-            cum_shift += act_shift
-            for n, pid_gc in enumerate(clustered_gc):
-                for i, group in pid_gc.groups(index_pair=True):
-                    for l, elem in enumerate(group):
-                        start_index = None
-                        for num, index in enumerate(elem.get_char_outline()):
-                            if index in act_indices:
-                                start_index = index
-                                break
-                            if act_type == 'Divide':
-                                ...
-
-                left_margin = pid_gc.group(0)[0].get_char_outline().get_groups()[0][0]
-                right_margin = pid_gc.group(0)[-1].get_char_outline().get_groups()[0][-1]
-                if left_margin <= act_indices[0] <= right_margin:
-                    for i, group in pid_gc.groups(index_pair=True):
-                        if act_type == 'Divide':
-                            clustered_gc[n].groups[i]
-
-
-            for n, pid_gc in enumerate(clustered_gc):
-
-
-
-        """for j, gc in enumerate(clustered_gc):
-            for i, group in gc.groups(True):
-                clustered_gc[j].groups[i] = ..."""
+                        if elem.check_ca_matching(act_index):
+                            clustered_gc[n].groups[i].ca_for_element(a.get(cum_shift))
+                # SHIFT NEXT
 
     @staticmethod
     def shift(group, shift_int, start_int, rev=False, elem_index=None):
