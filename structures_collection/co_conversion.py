@@ -158,16 +158,10 @@ class ConvSubHistory:
             sh_returned.back = self.__back
             sh_returned.shifts = self.__shifts
         else:
-            sh_returned.shifts = reversed(self.__shifts)
             sh_returned.back = reversed(self.__back)
-
-
-    def get_subhistory(self, rev=False):
-        return self.__subhistory if not rev else list(reversed(self.__subhistory))
-        # WRONG!!!
-
-    def get_shifts(self, rev=False):
-        return self.__shifts if not rev else list(reversed(self.__shifts))
+            sh_returned.subhistory = [ca.create_reversed(sh_returned.back[j]) for j, ca in enumerate(self.__subhistory)]
+            sh_returned.shifts = reversed(self.__shifts)
+        return sh_returned
 
 
 class LayerConversion:
