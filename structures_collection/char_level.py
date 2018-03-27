@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import collections
 
+
 class CharOutline:
     def __init__(self, ci_groups, attachment=None, metadata=None):
         self.__groups = ci_groups
@@ -32,7 +33,6 @@ class CharOutline:
             self.__groups[group_index].add_index(ca_data[addresses.int_index])
 
         # ca_for_element -> ca_for_group !!!
-
 
     def shift_group(self, group_index, shift_int, start_int, rev=False):
         self.__groups[group_index].shift_indices(shift_int, start_int, rev)
