@@ -935,7 +935,7 @@ class LinkSentence:
 
         return parsed_list
 
-    def is_good(self, link_slice, element, elems_set, check_function):
+    def is_good(self, link_slice, element, elems_set, check_function, return_bs=False):
         len_link_slice = len(link_slice)
         complete_list = []
 
@@ -958,7 +958,10 @@ class LinkSentence:
             raise WrongLinkSentence()
 
         if not common_operator:
-            return link_slice[0]
+            if not return_bs:
+                return link_slice[0]
+            else:
+                return link_slice[0], elems_set
         elif common_operator == '&':
             return False not in link_slice, element
         elif common_operator == '|':
