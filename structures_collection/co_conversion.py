@@ -196,6 +196,9 @@ class LayerConversion:
                     for l, elem in enumerate(group):
                         if elem.check_ca_matching(act_index):
                             clustered_gc[n].groups[i].ca_for_element(a.get(cum_shift))
+                        elif elem.co_follows(act_index):
+                            clustered_gc[n].groups[i].shift_following_co(act_shift)
+
                 # SHIFT NEXT
 
     @staticmethod
