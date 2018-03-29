@@ -196,6 +196,10 @@ class InputContainerElement:
         fg = self.char_outline.get_groups()[0]
         return fg.get_indices() != Temp.UNALLOCATED and fg.get_indices()[0] > index
 
+    def shift_following_co(self, shift_int):
+        fg = self.char_outline.get_groups()[0]
+        self.char_outline.shift_group(0, shift_int, fg.get_indices[0])
+
     def check_ca_matching(self, index):
         fg = self.char_outline.get_groups()[0]
         return fg.get_indices() != Temp.UNALLOCATED and index in fg.get_indices()
