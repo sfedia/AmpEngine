@@ -766,7 +766,6 @@ class LinkSentence:
             """
             :param simple_array: List of IC container elements
             :param set_visited: array indices which should be marked as visited
-            :return: [0, x] for x in simple_array
             """
             self.bs_array = [[0, x] for x in simple_array]
             if set_visited:
