@@ -198,9 +198,7 @@ class InputContainerElement:
 
     def check_ca_matching(self, index):
         fg = self.char_outline.get_groups()[0]
-        if fg.get_indices() != Temp.UNALLOCATED and index in fg.get_indices():
-            return True
-        return False
+        return fg.get_indices() != Temp.UNALLOCATED and index in fg.get_indices()
 
     def ca_for_element(self, ca_data):
         a_map = collections.namedtuple('addresses', 'action_type int_index rep_char shift')
