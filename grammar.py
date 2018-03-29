@@ -192,6 +192,10 @@ class InputContainerElement:
     def get_char_outline(self):
         return self.char_outline
 
+    def co_follows(self, index):
+        fg = self.char_outline.get_groups()[0]
+        return fg.get_indices() != Temp.UNALLOCATED and fg.get_indices()[0] > index
+
     def check_ca_matching(self, index):
         fg = self.char_outline.get_groups()[0]
         if fg.get_indices() != Temp.UNALLOCATED and index in fg.get_indices():
