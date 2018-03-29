@@ -855,7 +855,7 @@ class LinkSentence:
                     element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
                 break
 
-        return result, element
+        return result, element, elems_set
 
     class ParameterPair:
         def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[]):
@@ -946,6 +946,7 @@ class LinkSentence:
                 ce_result = self.check_element(element, link_slice[i], elems_set, check_function)
                 complete_list.append(ce_result[0])
                 element = ce_result[1]
+                elems_set = ce_result[2]
             else:
                 complete_list.append(self.is_good(link_slice[i], element, elems_set, check_function))
 
