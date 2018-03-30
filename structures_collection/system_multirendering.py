@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import collections
+import re
 
 
 class HandlerStart:
@@ -53,6 +54,29 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
     """
 
     renderer_code = 'MWM'
+    rend_object = collections.namedtuple('RenderedMC', 'type content id')
+
+    if mce_content.startswith('^'):
+        mce_spec = '^'
+        rendered_content = mce_content[1:]
+        dfix_search = re.search(r'^\$\[([^\]]+)\]', rendered_content)
+        if dfix_search:
+            fixed_vow = dfix_search.group(1)
+            final_part = rendered_content[len(dfix_search.group(0)):]
+            return [
+                rend_object(
+                    'universal:morpheme',
+                    mce_spec + fixed_vow + final_part,
+                    mce_id + generate_renderer_postfix(renderer_code, 0)
+                ),
+                rend_object(
+                    'universal:morpheme',
+                    mce_spec + final_part,
+                    mce_id + generate_renderer_postfix(renderer_code, 1)
+                ),
+            ]
+
+
     ...
 
 
