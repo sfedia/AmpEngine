@@ -585,7 +585,6 @@ class SubclassesOrder:
                 if self.scheme[n + 1]['type'] == 'operator' and self.scheme[n + 1]['subtype'] == 'lookbehind':
                     return self.scheme[n + 1]['value']
 
-        all_nulls = self.main_container.iter_content_filter(lambda x: x == Temp.NULL, system_filter=self.sys_identifier)
         ev_groups = []
         non_ev = []
         check_regex = ''
