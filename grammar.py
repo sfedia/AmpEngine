@@ -384,6 +384,14 @@ class Container:
     def add_element(self, element_type, element_content, element_id):
         if self.get_by_id(element_id):
             raise IdIsNotUnique()
+        if collection.system_multirendering.Handler.is_renderable(element_type):
+            rendered_elements = collection.system_multirendering.Handler.render(
+                element_type, element_content, element_id
+            )
+            for re in rendered_elements:
+                self.rows.append(ContainerElement(re.type, re.content, re.id))
+            element = ContainerElement(new_type, new_content)
+
         element = ContainerElement(element_type, element_content, element_id, self)
         self.rows.append(element)
         return self.get_by_id(element_id)
@@ -658,6 +666,27 @@ class SubclassesOrder:
             "check": False,
             "nulls": subst_nulls
         }
+
+
+class ContainerElementCollection:
+    def __init__(self, id_list, mc_container):
+        self.id_list = id_list
+        self.mc_container = mc_container
+
+    def __getattr__(self, name):
+        def method(*args):
+            for elem_id in self.id_list:
+                if args:
+                    result = self.mc_container.get_by_id(elem_id).__getattribute__(name)(*args)
+                else:
+                    result = self.mc_container.get_by_id(elem_id).__getattribute__(name)()
+
+                if result == self.mc_container.get_by_id(elem_id):
+                    return self
+                else:
+                    return result
+
+        return method
 
 
 class ContainerElement:
