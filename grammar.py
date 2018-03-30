@@ -20,6 +20,7 @@ class InputContainer:
         self.ic_log = logs.log_object.New()
         self.group_data = {}
         self.onseg_hooks = {}
+        self.onseg_hook_bank = HookBank()
         self.__system_names = []
         self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
@@ -142,6 +143,14 @@ class InputContainer:
                                 branching=action.branching_allowed()
                             )
                     break
+
+
+class HookBank:
+    def __init__(self):
+        """
+        Class which is used to hold variables and functions to use with onseg hooks
+        """
+        pass
 
 
 class InputContainerElement:
