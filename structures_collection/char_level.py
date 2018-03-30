@@ -17,6 +17,11 @@ class CharOutline:
     def add_group(self, group):
         self.__groups.append(group)
 
+    def set_group_to_null(self, index):
+        future_null = self.__groups[index]
+        del self.__groups
+        self.__groups = [future_null]
+
     def get_int_index_in_group(self, group_index, integer):
         try:
             self.__groups[group_index].get_indices().index(integer)
