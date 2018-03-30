@@ -7,3 +7,5 @@ class Clear:
         if system_name == 'universal:morpheme':
             if content.startswith('^'):
                 return content[1:]
+            return content
+        return content
