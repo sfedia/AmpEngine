@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import collections
 
 class HandlerStart:
     def __init__(self):
@@ -42,7 +43,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
     :param mce_type: system name of MC container element
     :param mce_content: content of MC container element
     :param mce_id: ID of MC container element
-    :return: List of (MCE_TYPE, MCE_CONTENT, MCE_ID) properties rendered from the source (T,C,I)
+    :return: List of namedtuple -> (.type, .content, .id) properties rendered from the source (T,C,I)
     """
 
     ...
