@@ -60,6 +60,8 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
         mce_spec = '^'
         rendered_content = mce_content[1:]
         dfix_search = re.search(r'^\$\[([^\]]+)\]', rendered_content)
+        start_vow = [x for x in 'ёуеыаоэяию']
+        sv_length = len(start_vow)
         if dfix_search:
             fixed_vow = dfix_search.group(1)
             final_part = rendered_content[len(dfix_search.group(0)):]
@@ -74,6 +76,18 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                     mce_spec + final_part,
                     mce_id + generate_renderer_postfix(renderer_code, 1)
                 ),
+            ]
+        else:
+            return [rend_object(
+                'universal:morpheme',
+                mce_spec + vow + rendered_content,
+                mce_id + generate_renderer_postfix(renderer_code, n)
+            ) for n, vow in enumerate(start_vow)] + [
+                rend_object(
+                    'universal:morpheme',
+                    mce_spec + rendered_content,
+                    mce_id + generate_renderer_postfix(renderer_code, sv_length)
+                )
             ]
 
 
