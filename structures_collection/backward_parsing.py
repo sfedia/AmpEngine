@@ -167,10 +167,12 @@ def morpheme_in_token(input_container_element, container, input_container):
         for seq in morpho_seqs:
             id_list = [container.get_by_id(list(x.keys())[0]) for x in seq]
             available_nulls = []
+            found_ids = id_list
             for null in grammar_nulls:
                 for link in null.get_applied()['links']:
                     # BS Array
-                    if link.check(input_container_element, id_list, lambda: True):
+                    lc_bool, found_ids = link.check(input_container_element, found_ids, lambda: True)
+                    if lc_bool:
                         available_nulls.append(null)
 
             subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
