@@ -388,13 +388,16 @@ class Container:
             rendered_elements = collection.system_multirendering.Handler.render(
                 element_type, element_content, element_id
             )
+            rnd_ids = []
             for rel in rendered_elements:
                 self.rows.append(ContainerElement(rel.type, rel.content, rel.id, self))
-            element = ContainerElement(new_type, new_content)
+                rnd_ids.append(rel.id)
+            return ContainerElementCollection(rnd_ids, self)
 
-        element = ContainerElement(element_type, element_content, element_id, self)
-        self.rows.append(element)
-        return self.get_by_id(element_id)
+        else:
+            element = ContainerElement(element_type, element_content, element_id, self)
+            self.rows.append(element)
+            return self.get_by_id(element_id)
 
     def list_actions(self):
         return list(itertools.chain(*[element.get_actions() for element in self.rows]))
