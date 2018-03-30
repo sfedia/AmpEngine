@@ -167,12 +167,12 @@ def morpheme_in_token(input_container_element, container, input_container):
         for seq in morpho_seqs:
             id_list = [container.get_by_id(list(x.keys())[0]) for x in seq]
             available_nulls = []
-            found_ids = id_list
+            bsid_obj = id_list
             for null in grammar_nulls:
                 for link in null.get_applied()['links']:
                     # BS Array
-                    lc_bool, found_ids, input_container_element = link.check(
-                        input_container_element, found_ids, lambda x: True, return_bs=True
+                    lc_bool, bsid_obj, input_container_element = link.check(
+                        input_container_element, bsid_obj, lambda x: True, return_bs=True
                     )
                     if lc_bool:
                         available_nulls.append(null)
