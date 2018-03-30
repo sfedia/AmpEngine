@@ -6,3 +6,4 @@ import structures_collection.auto_parameter_extraction as auto_parameter_extract
 import structures_collection.static as static
 import structures_collection.sharp_function as sharp_function
 import structures_collection.layer_extraction as layer_extraction
+import structures_collection.system_multirendering as system_multirendering
