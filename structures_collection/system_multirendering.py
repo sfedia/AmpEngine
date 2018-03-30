@@ -35,10 +35,15 @@ def multirenderer(from_, to_):
     return mrr_decorator
 
 
+def generate_renderer_postfix(code, n):
+    return '@gen_%s_%i' % (code, n)
+
+
 @multirenderer('mansi:VowMorpheme', 'universal:morpheme')
 def mansi_vowmorpheme(mce_type, mce_content, mce_id):
     """
     mansi:VowMorpheme -> universal:morpheme
+    (MC ID must look like ...@gen_CODE_n)
     :param mc_element: MC container element which belongs to A system
     :param mce_type: system name of MC container element
     :param mce_content: content of MC container element
@@ -46,6 +51,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
     :return: List of namedtuple -> (.type, .content, .id) properties rendered from the source (T,C,I)
     """
 
+    renderer_code = 'MWM'
     ...
 
 
