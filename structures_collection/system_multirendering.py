@@ -91,8 +91,5 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
             ]
 
 
-    ...
-
-
 class MultirenderingTemplateNotFound(Exception):
     pass
