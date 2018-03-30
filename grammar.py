@@ -384,6 +384,7 @@ class Container:
     def add_element(self, element_type, element_content, element_id):
         if self.get_by_id(element_id):
             raise IdIsNotUnique()
+
         if collection.system_multirendering.Handler.is_renderable(element_type):
             rendered_elements = collection.system_multirendering.Handler.render(
                 element_type, element_content, element_id
@@ -393,7 +394,6 @@ class Container:
                 self.rows.append(ContainerElement(rel.type, rel.content, rel.id, self))
                 rnd_ids.append(rel.id)
             return ContainerElementCollection(rnd_ids, self)
-
         else:
             element = ContainerElement(element_type, element_content, element_id, self)
             self.rows.append(element)
