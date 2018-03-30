@@ -972,7 +972,7 @@ class LinkSentence:
 
     def check(self, element, elems_set, check_function):
         parsed_list = self.parse_sector(self.link, element)
-        return self.is_good(parsed_list, element, elems_set, check_function)
+        return self.is_good(parsed_list, element, elems_set, check_function, return_bs=True)
 
 
 class Action:
