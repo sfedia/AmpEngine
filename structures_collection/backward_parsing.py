@@ -171,7 +171,9 @@ def morpheme_in_token(input_container_element, container, input_container):
             for null in grammar_nulls:
                 for link in null.get_applied()['links']:
                     # BS Array
-                    lc_bool, found_ids = link.check(input_container_element, found_ids, lambda: True)
+                    lc_bool, found_ids, input_container_element = link.check(
+                        input_container_element, found_ids, lambda: True, return_bs=True
+                    )
                     if lc_bool:
                         available_nulls.append(null)
 
