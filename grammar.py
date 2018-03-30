@@ -250,8 +250,16 @@ class GroupCollection:
         # self.groups[N] = Array of CharOutline
         if spread_ci:
             for group_index in self.groups:
+                pos_spread = {}
+                linearized_group = []
                 for element in self.groups[group_index]:
-                    ...
+                    for n, co_group in enumerate(element.get_char_outline().get_groups()):
+                        psi_shortkey = (co_group.get_indices()[0], co_group.get_indices()[-1])
+                        pos_spread[psi_shortkey] = element
+                        pos_spread[psi_shortkey].char_outline.set_group_to_null(n)
+                for k in sorted(list(pos_spread.keys())):
+                    linearized_group.append(pos_spread[k])
+                self.groups[group_index] = linearized_group
 
     def group(self, index):
         return self.groups[index]
