@@ -9,9 +9,9 @@ class HandlerStart:
     def is_renderable(self, a_system):
         return a_system in self.renderable
 
-    def render(self, from_, mc_element):
+    def render(self, from_, mc_t, mc_c, mc_id):
         if self.is_renderable(from_):
-            return self.multirenderers[self.renderable[from_]](mc_element)
+            return self.multirenderers[self.renderable[from_]](mc_t, mc_c, mc_id)
         else:
             raise MultirenderingTemplateNotFound()
 
