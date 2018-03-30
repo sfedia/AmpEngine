@@ -35,12 +35,16 @@ def multirenderer(from_, to_):
 
 
 @multirenderer('mansi:VowMorpheme', 'universal:morpheme')
-def mansi_vowmorpheme(mc_element):
+def mansi_vowmorpheme(mce_type, mce_content, mce_id):
     """
     mansi:VowMorpheme -> universal:morpheme
     :param mc_element: MC container element which belongs to A system
-    :return: List of MC elements which belong to B system
+    :param mce_type: system name of MC container element
+    :param mce_content: content of MC container element
+    :param mce_id: ID of MC container element
+    :return: List of (MCE_TYPE, MCE_CONTENT, MCE_ID) properties rendered from the source (T,C,I)
     """
+
     ...
 
 
