@@ -106,3 +106,4 @@ venv.bak/
 .idea/
 
 test*
+mansi_stemmer/
