@@ -388,8 +388,8 @@ class Container:
             rendered_elements = collection.system_multirendering.Handler.render(
                 element_type, element_content, element_id
             )
-            for re in rendered_elements:
-                self.rows.append(ContainerElement(re.type, re.content, re.id))
+            for rel in rendered_elements:
+                self.rows.append(ContainerElement(rel.type, rel.content, rel.id, self))
             element = ContainerElement(new_type, new_content)
 
         element = ContainerElement(element_type, element_content, element_id, self)
@@ -675,16 +675,18 @@ class ContainerElementCollection:
 
     def __getattr__(self, name):
         def method(*args):
-            for elem_id in self.id_list:
+            ln = len(self.id_list) - 1
+            for j, elem_id in enumerate(self.id_list):
                 if args:
                     result = self.mc_container.get_by_id(elem_id).__getattribute__(name)(*args)
                 else:
                     result = self.mc_container.get_by_id(elem_id).__getattribute__(name)()
 
-                if result == self.mc_container.get_by_id(elem_id):
-                    return self
-                else:
-                    return result
+                if j == ln - 1:
+                    if result == self.mc_container.get_by_id(elem_id):
+                        return self
+                    else:
+                        return result
 
         return method
 
