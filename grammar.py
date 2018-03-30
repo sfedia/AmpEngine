@@ -787,6 +787,8 @@ class LinkSentence:
         for j, elem in enumerate(bs_array.bs_array):
             if elem[0]:
                 continue
+            if not check_function(elem):
+                continue
             row = elem[1]
             get_applied = row.get_applied()
             if not get_applied['links']:
@@ -962,7 +964,7 @@ class LinkSentence:
             if not return_bs:
                 return link_slice[0]
             else:
-                return link_slice[0], elems_set
+                return link_slice[0], elems_set, element
         elif common_operator == '&':
             return False not in link_slice, element
         elif common_operator == '|':
