@@ -18,6 +18,7 @@ class InputContainer:
         self.elements = []
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
+        self.create_default_icl_sectors()
         self.group_data = {}
         self.onseg_hooks = {}
         self.onseg_hook_bank = HookBank()
@@ -39,6 +40,9 @@ class InputContainer:
                 self.segment_into_childs(child_system)
             except collection.auto_segmentation.SegmentTemplateNotFound:
                 continue
+
+    def create_default_icl_sectors(self):
+        self.ic_log.add_sector("STEMS_EXTRACTED")
 
     def remove_childs_of(self, parent_id):
         for element in self.elements:
