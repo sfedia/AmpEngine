@@ -201,6 +201,10 @@ class InputContainerElement:
     def get_char_outline(self):
         return self.char_outline
 
+    def is_last_in_cluster(self):
+        p_childs = self.input_container.get_by_ic_id(self.get_parent_ic_id()).get_childs()
+        return self in p_childs and p_childs.index(self) == len(p_childs)
+
     def co_follows(self, index):
         fg = self.char_outline.get_groups()[0]
         return fg.get_indices() != Temp.UNALLOCATED and fg.get_indices()[0] > index
