@@ -43,6 +43,7 @@ class InputContainer:
 
     def create_default_icl_sectors(self):
         self.ic_log.add_sector("STEMS_EXTRACTED")
+        self.ic_log.add_sector("POS_EXTRACTED")
 
     def remove_childs_of(self, parent_id):
         for element in self.elements:
