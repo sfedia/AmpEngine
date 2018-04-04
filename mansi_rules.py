@@ -2405,7 +2405,8 @@ def stem_token(ic, elem):
                     element_id=elem.get_ic_id(),
                     cluster_id=elem.get_parent_ic_id(),
                     positions=substem[1],
-                    group=pos_tags.index(stem['pos_tags'][0])
+                    group=pos_tags.index(stem['pos_tags'][0]),
+                    status='preview'
                 )
         for group_index, pos_tag in enumerate(pos_tags):
             ic.ic_log.add_log(
@@ -2413,11 +2414,40 @@ def stem_token(ic, elem):
                 element_id=elem.get_ic_id(),
                 cluster_id=elem.get_parent_ic_id(),
                 pos_tag=pos_tag,
-                group=group_index
+                group=group_index,
+                status='preview'
             )
     if elem.is_last_in_cluster():
         ic.nullint_for_cluster(elem.get_parent_ic_id())
-        ...
+        for elem in ic.get_by_ic_id(elem.get_parent_ic_id()).get_childs():
+            stems_ext = ic.ic_log.get_log_sequence(
+                "STEMS_EXTRACTED", element_id=elem.get_ic_id(), cluster_id=elem.get_parent_ic_id()
+            )
+            pos_ext = ic.ic_log.get_log_sequence(
+                "POS_EXTRACTED", element_id=elem.get_ic_id(), cluster_id=elem.get_parent_ic_id()
+            )
+            for gr_index in range(0, len(pos_tags)):
+                if gr_index > len(pos_ext):
+                    cel = ic.clone_within_cluster(elem, gr_index)
+                    cel.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
+                    cel_stem = stems_ext[0]
+                    cel_stem.set_prop('element_id', cel.get_ic_id())
+                    ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
+                else:
+                    cel = ic.clone_within_cluster(elem, gr_index)
+                    cel.set_parameter('mansi:basic_pos', pos_ext[gr_index].get_prop('pos_tag'))
+                    cel_stem = stems_ext[gr_index]
+                    cel_stem.set_prop('element_id', cel.get_ic_id())
+                    ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
+
+        ic.ic_log.remove_logs_from_sector(
+            "STEMS_EXTRACTED", ic.ic_log.get_log_sequence("STEMS_EXTRACTED", status='preview')
+        )
+        ic.ic_log.remove_logs_from_sector(
+            "POS_EXTRACTED", ic.ic_log.get_log_sequence("POS_EXTRACTED", status='preview')
+        )
+
+
 
 input_container.add_onseg_hook('universal:token', )
 
