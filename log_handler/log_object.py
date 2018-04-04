@@ -43,6 +43,11 @@ class New:
                 logs_found.append(log)
         return logs_found
 
+    def remove_logs_from_sector(self, purpose_key, log_sequence):
+        if purpose_key not in self.log_sectors:
+            raise LogSectorNotFound()
+        self.log_sectors[purpose_key] = [ls for ls in self.log_sectors[purpose_key] if ls not in log_sequence]
+
     def edit_log_document(self, purpose_key, filter_props, index, props2edit):
         sector_logs = self.get_log_sequence(purpose_key, **filter_props)
         if index >= len(sector_logs):
