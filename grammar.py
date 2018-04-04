@@ -104,6 +104,10 @@ class InputContainer:
     def get_system_names(self):
         return self.__system_names
 
+    @staticmethod
+    def generate_ic_id():
+        return ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
+
     def get_all(self):
         return self.elements
 
