@@ -96,6 +96,11 @@ class InputContainer:
             self.__system_names.append(element.get_system_name())
         self.elements.append(element)
 
+    def nullint_for_cluster(self, parent_ic_id):
+        self.elements = [
+            (elem if elem.get_parent_ic_id() != parent_ic_id else elem.set_group_as_null()) for elem in self.elements
+        ]
+
     def get_system_names(self):
         return self.__system_names
 
@@ -241,8 +246,12 @@ class InputContainerElement:
     def get_rate_value(self):
         return self.rate_value
 
+    def set_group_as_null(self):
+        self.group = 0
+        return self
+
     def get_childs(self, child_filter=lambda element: True):
-        return [el for el in self.input_container if el.get_parent_ic_id() == self.ic_id and child_filter(el)]
+        return [el for el in self.input_container.elements if el.get_parent_ic_id() == self.ic_id and child_filter(el)]
 
 
 class GroupCollection:
