@@ -2448,8 +2448,7 @@ def stem_token(ic, elem):
         )
 
 
-
-input_container.add_onseg_hook('universal:token', )
+input_container.add_onseg_hook('universal:token', stem_token)
 
 print(stemmer.find('пун', start_del=[], end_del=['а', 'с'], end_add=['ӈкве', 'аӈкве', 'юӈкве', 'уӈкве']))
 stemmer.write_cache()
