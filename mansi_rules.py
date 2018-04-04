@@ -2403,6 +2403,7 @@ def stem_token(ic, elem):
                 ic.ic_log.add_log(
                     "STEMS_EXTRACTED",
                     element_id=elem.get_ic_id(),
+                    cluster_id=elem.get_parent_ic_id(),
                     positions=substem[1],
                     group=pos_tags.index(stem['pos_tags'][0])
                 )
@@ -2410,9 +2411,13 @@ def stem_token(ic, elem):
             ic.ic_log.add_log(
                 "POS_EXTRACTED",
                 element_id=elem.get_ic_id(),
+                cluster_id=elem.get_parent_ic_id(),
                 pos_tag=pos_tag,
                 group=group_index
             )
+    if elem.is_last_in_cluster():
+        ic.nullint_for_cluster(elem.get_parent_ic_id())
+        ...
 
 input_container.add_onseg_hook('universal:token', )
 
