@@ -181,7 +181,7 @@ class InputContainerElement:
         self.mc_id_link = mc_id_link
         for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
             self.params[param] = func(content)
-        self.ic_id = ''.join(random.choice('abcdef' + string.digits) for _ in range(20))
+        self.ic_id = input_container.generate_ic_id()
         self.parent_ic_id = parent
         self.group = group
         self.fork_id = fork_id
