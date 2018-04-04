@@ -59,7 +59,7 @@ class InputContainer:
     def get_by_system_name(self, system_name):
         return [element for element in self.elements if element.get_ic_id() == system_name]
 
-    def clone_in_cluster(self, element, new_group_index):
+    def clone_within_cluster(self, element, new_group_index):
         element.group = new_group_index
         element.ic_id = self.generate_ic_id()
         self.elements.append(element)
