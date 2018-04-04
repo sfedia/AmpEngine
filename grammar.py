@@ -59,6 +59,11 @@ class InputContainer:
     def get_by_system_name(self, system_name):
         return [element for element in self.elements if element.get_ic_id() == system_name]
 
+    def clone_in_cluster(self, element, new_group_index):
+        element.group = new_group_index
+        element.ic_id = self.generate_ic_id()
+        self.elements.append(element)
+
     def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None, group_rate=None):
         """
         :param element: IC element to be splitted in segments
