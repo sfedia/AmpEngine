@@ -63,7 +63,7 @@ class InputContainer:
         element.group = new_group_index
         element.ic_id = self.generate_ic_id()
         self.elements.append(element)
-        return self.get_by_ic_id(element.ic_id())
+        return self.get_by_ic_id(element.ic_id)
 
     def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None, group_rate=None):
         """
