@@ -2395,6 +2395,7 @@ def stem_token(ic, elem):
         end_del=ic.onseg_hook_bank.end_del,
         end_add=['ӈкве', 'аӈкве', 'юӈкве', 'уӈкве']
     )
+    ic.onseg_hook_bank.stemmer.write_cache()
     pos_tags = [stem['pos_tags'][0] for stem in stem_results]
     pos_tags = list(set(pos_tags))
     if stem_results:
@@ -2449,9 +2450,6 @@ def stem_token(ic, elem):
 
 
 input_container.add_onseg_hook('universal:token', stem_token)
-
-print(stemmer.find('пун', start_del=[], end_del=['а', 'с'], end_add=['ӈкве', 'аӈкве', 'юӈкве', 'уӈкве']))
-stemmer.write_cache()
 
 
 # page 159: ?
