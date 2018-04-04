@@ -21,6 +21,12 @@ class New:
         log_document.set_sector_name(purpose_key)
         self.log_sectors[purpose_key].append(log_document)
 
+    def add_log_document(self, purpose_key, log_document):
+        if purpose_key not in self.log_sectors:
+            raise LogSectorNotFound()
+        log_document.set_sector_name(purpose_key)
+        self.log_sectors[purpose_key].append(log_document)
+
     def get_sector(self, purpose_key):
         if purpose_key not in self.log_sectors:
             return None
