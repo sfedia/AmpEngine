@@ -78,12 +78,12 @@ def length_of_element(element, arguments=[], compared_value=None):
 
 @extract_parameter(None, 'universal:entity')
 def entity_of_element(element, arguments=[], compared_value=None):
-    return element.get_type().split(':')[-1]
+    return element.get_system_name().split(':')[-1]
 
 
 @extract_parameter(None, 'universal:full_entity')
 def full_entity_of_element(element, arguments=[], compared_value=None):
-    return element.get_type()
+    return element.get_system_name()
 
 
 @extract_parameter(None, 'universal:class')
