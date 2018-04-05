@@ -2450,7 +2450,7 @@ def stem_token(ic, elem):
 
 
 input_container.add_onseg_hook('universal:token', stem_token)
-
+input_container.connect_mc(rombandeeva)
 
 # page 159: ?
 
