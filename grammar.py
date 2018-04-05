@@ -19,12 +19,16 @@ class InputContainer:
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
         self.create_default_icl_sectors()
+        self.main_container = None
         self.group_data = {}
         self.onseg_hooks = {}
         self.onseg_hook_bank = HookBank()
         self.__system_names = []
         self.add_element(InputContainerElement(self.INPUT, content, self))
         self.segment_into_childs(self.INPUT)
+
+    def connect_mc(self, main_container):
+        self.main_container = main_container
 
     def segment_into_childs(self, system_name):
         if system_name not in collection.dependency.systems:
@@ -118,7 +122,9 @@ class InputContainer:
         return self.elements
 
     def backward_parse(self, input_container_element, scanned_system):
-        pass
+        kw_pairs = collection.backward_parsing.Handler.to_values(scanned_system)
+        for pair in kw_pairs:
+            collection.backward_parsing.Handler.get_parser(*pair)(self, input_container_element)
 
     def add_onseg_hook(self, ext_system, onseg_hook):
         """
@@ -1160,4 +1166,7 @@ class MalformedSubOrder(Exception):
 
 
 class RepeatedClassAssignment(Exception):
+    pass
+
+class MainContainerNotFound(Exception):
     pass
