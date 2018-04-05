@@ -122,9 +122,12 @@ class InputContainer:
         return self.elements
 
     def backward_parse(self, input_container_element, scanned_system):
+        if not self.main_container:
+            raise MainContainerNotFound()
         kw_pairs = collection.backward_parsing.Handler.to_values(scanned_system)
         for pair in kw_pairs:
-            collection.backward_parsing.Handler.get_parser(*pair)(self, input_container_element)
+            collection.backward_parsing.Handler.get_parser(*pair)(self, self.main_container, input_container_element)
+            # should it be procedure or function?
 
     def add_onseg_hook(self, ext_system, onseg_hook):
         """
