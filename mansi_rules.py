@@ -2383,8 +2383,9 @@ text = 'Lorem ipsum dolor sit amet'
 input_container = grammar.InputContainer(text)
 input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
 input_container.onseg_hook_bank.end_del = [
-    coll.minor.Clear.remove_spec_chars('universal:morpheme', ct)
+    coll.minor.Clear.remove_spec_chars('universal:morpheme', ct.get_content())
     for ct in rombandeeva.iter_content_filter(lambda x: True, system_filter='universal:morpheme')
+    if ct.get_content() != grammar.Temp.NULL
 ]
 
 
