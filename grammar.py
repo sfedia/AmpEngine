@@ -194,8 +194,6 @@ class InputContainerElement:
         self.params = params
         self.char_outline = char_outline
         self.mc_id_link = mc_id_link
-        for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
-            self.params[param] = func(content)
         self.ic_id = input_container.generate_ic_id()
         self.parent_ic_id = parent
         self.group = group
@@ -203,6 +201,8 @@ class InputContainerElement:
         self.rate_value = rate_value
         if fork_id and not input_container.get_by_ic_id(fork_id):
             raise UnknownForkID()
+        for param, func in collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name):
+            self.params[param] = func(self)
 
     def set_parameter(self, param_name, param_value):
         self.params[param_name] = param_value
