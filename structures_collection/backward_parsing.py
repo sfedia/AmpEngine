@@ -143,7 +143,7 @@ def get_null_id(decoded_value, container):
 
 @new_parser(parent_system='universal:token', child_system='universal:morpheme')
 def morpheme_in_token(input_container_element, container, input_container):
-    if not input_container.ic_log.get_sector("STEMS_EXTRACTED"):
+    if input_container.ic_log.get_sector("STEMS_EXTRACTED") is None:
         raise InternalParserException('No stem extractor provided')
     stems = input_container.ic_log.get_log_sequence("STEMS_EXTRACTED", element_id=input_container_element.get_ic_id())
     if not stems:
