@@ -13,6 +13,12 @@ class HandlerStart:
         else:
             raise SegmentTemplateNotFound()
 
+    def is_auto(self, system_name):
+        for key in self.segments:
+            if key == system_name:
+                return True
+        return False
+
     def add_segment(self, from_, to_, func):
         self.segments[(from_, to_)] = func
 
