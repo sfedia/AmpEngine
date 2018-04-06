@@ -15,7 +15,7 @@ class HandlerStart:
 
     def is_auto(self, system_name):
         for key in self.segments:
-            if key == system_name:
+            if key[0] == system_name:
                 return True
         return False
 
