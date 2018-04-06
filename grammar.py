@@ -133,7 +133,14 @@ class InputContainer:
         if not self.main_container:
             raise MainContainerNotFound()
         for system in self.__system_names:
-            if
+            if collection.auto_segmentation.Handler.is_auto(system):
+                continue
+            bw_to_values = collection.backward_parsing.Handler.to_values(system)
+            if not bw_to_values:
+                raise SegMethodNotFound()
+            for to_value in bw_to_values:
+                for element in self.get_by_system_name(system):
+                    collection.backward_parsing.Handler.get_parser(system, to_value)(element, self.main_container, self)
 
     def add_onseg_hook(self, ext_system, onseg_hook):
         """
