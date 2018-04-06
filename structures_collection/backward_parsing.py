@@ -13,7 +13,7 @@ class HandlerStart:
         if (parent_system, child_system) in self.parsers:
             return self.parsers[(parent_system, child_system)]
         else:
-            raise ParserNotFound()
+            raise ParserNotFound(parent_system, child_system)
 
     def add_parser(self, parent_system, child_system, func):
         self.parsers[(parent_system, child_system)] = func
