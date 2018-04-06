@@ -39,7 +39,7 @@ class InputContainer:
                     self.segment_element(
                         element,
                         child_system,
-                        collection.auto_segmentation.Handler.segment(system_name, child_system)
+                        collection.auto_segmentation.Handler.segment(system_name, child_system)(element.get_content())
                     )
                 self.segment_into_childs(child_system)
             except collection.auto_segmentation.SegmentTemplateNotFound:
