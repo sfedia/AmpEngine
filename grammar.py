@@ -61,7 +61,7 @@ class InputContainer:
         return None
 
     def get_by_system_name(self, system_name):
-        return [element for element in self.elements if element.get_ic_id() == system_name]
+        return [element for element in self.elements if element.get_system_name() == system_name]
 
     def clone_within_cluster(self, element, new_group_index):
         element.group = new_group_index
@@ -137,7 +137,7 @@ class InputContainer:
                 continue
             bw_to_values = collection.backward_parsing.Handler.to_values(system)
             if not bw_to_values:
-                raise SegMethodNotFound()
+                raise SegMethodNotFound(system)
             for to_value in bw_to_values:
                 for element in self.get_by_system_name(system):
                     collection.backward_parsing.Handler.get_parser(system, to_value)(element, self.main_container, self)
