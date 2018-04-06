@@ -129,6 +129,12 @@ class InputContainer:
             collection.backward_parsing.Handler.get_parser(*pair)(self, self.main_container, input_container_element)
             # should it be procedure or function?
 
+    def run_mc_analysis(self):
+        if not self.main_container:
+            raise MainContainerNotFound()
+        for system in self.__system_names:
+            if
+
     def add_onseg_hook(self, ext_system, onseg_hook):
         """
         add_onseg_hook procedure
@@ -1171,4 +1177,8 @@ class RepeatedClassAssignment(Exception):
 
 
 class MainContainerNotFound(Exception):
+    pass
+
+
+class SegMethodNotFound(Exception):
     pass
