@@ -19,7 +19,7 @@ class HandlerStart:
         self.parsers[(parent_system, child_system)] = func
 
     def to_values(self, parent_system):
-        return [x for x in self.parsers if x[0] == parent_system]
+        return [x[1] for x in self.parsers if x[0] == parent_system]
 
 
 Handler = HandlerStart()
