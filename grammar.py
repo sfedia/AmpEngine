@@ -11,11 +11,12 @@ import string
 
 
 class InputContainer:
-    def __init__(self, content, metadata=None):
+    def __init__(self, content, metadata=None, prevent_auto=False):
         self.metadata = {}
         if metadata:
             self.metadata = metadata
         self.elements = []
+        self.content = content
         self.INPUT = 'universal:input'
         self.ic_log = logs.log_object.New()
         self.create_default_icl_sectors()
@@ -24,7 +25,11 @@ class InputContainer:
         self.onseg_hooks = {}
         self.onseg_hook_bank = HookBank()
         self.__system_names = []
-        self.add_element(InputContainerElement(self.INPUT, content, self))
+        if not prevent_auto:
+            self.start_auto_segmentation()
+
+    def start_auto_segmentation(self):
+        self.add_element(InputContainerElement(self.INPUT, self.content, self))
         self.segment_into_childs(self.INPUT)
 
     def connect_mc(self, main_container):
