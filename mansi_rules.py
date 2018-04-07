@@ -2379,14 +2379,15 @@ for lemma, meanings in postpos_unmutable:
     pp_i += 1
 
 
-text = 'Lorem ipsum dolor sit amet'
-input_container = grammar.InputContainer(text)
+text = 'ань махум савсыр ляххалыт, потрыт интернетыт ловьтэгыт'
+input_container = grammar.InputContainer(text, prevent_auto=True)
 input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
 input_container.onseg_hook_bank.end_del = [
     coll.minor.Clear.remove_spec_chars('universal:morpheme', ct.get_content())
     for ct in rombandeeva.iter_content_filter(lambda x: True, system_filter='universal:morpheme')
     if ct.get_content() != grammar.Temp.NULL
 ]
+input_container.onseg_hook_bank.end_del = list(set(input_container.onseg_hook_bank.end_del))
 
 
 def stem_token(ic, elem):
@@ -2396,7 +2397,6 @@ def stem_token(ic, elem):
         end_del=ic.onseg_hook_bank.end_del,
         end_add=['ӈкве', 'аӈкве', 'юӈкве', 'уӈкве']
     )
-    ic.onseg_hook_bank.stemmer.write_cache()
     pos_tags = [stem['pos_tags'][0] for stem in stem_results]
     pos_tags = list(set(pos_tags))
     if stem_results:
@@ -2451,7 +2451,13 @@ def stem_token(ic, elem):
 
 
 input_container.add_onseg_hook('universal:token', stem_token)
+input_container.start_auto_segmentation()
+input_container.onseg_hook_bank.stemmer.write_cache()
 input_container.connect_mc(rombandeeva)
+input_container.run_mc_analysis()
+
+print([(x.get_system_name(), x.get_content()) for x in input_container.elements])
+
 
 # page 159: ?
 
