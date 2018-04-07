@@ -147,7 +147,11 @@ def morpheme_in_token(input_container_element, container, input_container):
         raise InternalParserException('No stem extractor provided')
     stems = input_container.ic_log.get_log_sequence("STEMS_EXTRACTED", element_id=input_container_element.get_ic_id())
     if not stems:
-        raise InternalParserException('No stems found for <{}>'.format(input_container_element.get_ic_id()))
+        raise InternalParserException(
+            'No stems found for <{}> (={})'.format(
+                input_container_element.get_ic_id(), input_container_element.get_content()
+            )
+        )
 
     group_index = 0
     for n, stem in enumerate(stems):
