@@ -102,8 +102,8 @@ class InputContainer:
             ices.append(ice.get_ic_id())
             self.add_element(ice)
             if child_system in self.onseg_hooks:
-                for hook in self.onseg_hooks:
-                    self.onseg_hooks[hook](self, ice)
+                for system_hook in self.onseg_hooks[child_system]:
+                    system_hook(self, ice)
         return ices
 
     def add_element(self, element):
