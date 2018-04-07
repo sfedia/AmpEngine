@@ -3,6 +3,7 @@
 import itertools
 import grammar
 import structures_collection.char_level
+import structures_collection.minor as mnr
 
 
 class HandlerStart:
@@ -46,7 +47,9 @@ class SegmentForward:
             raise InternalParserException()
 
         morphemes = self.container.iter_content_filter(
-            lambda x: x.startswith(chars[start]), sort_desc=True, system_filter='universal:morpheme'
+            lambda x: mnr.Clear.remove_spec_chars('universal:morpheme', x).startswith(chars[start]),
+            sort_desc=True,
+            system_filter='universal:morpheme'
         )
         if not morphemes:
             raise InternalParserException()
