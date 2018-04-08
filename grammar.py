@@ -243,6 +243,9 @@ class InputContainerElement:
     def get_content(self):
         return self.content
 
+    def get_clear_content(self):
+        return collection.minor.Clear.remove_spec_chars(self.system_name, self.content)
+
     def get_char_outline(self):
         return self.char_outline
 
