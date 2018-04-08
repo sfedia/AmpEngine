@@ -43,6 +43,10 @@ class SegmentForward:
         self.container = container
 
     def generate_map(self, chars, start, dead_pos, position):
+        print('DP', dead_pos)
+        while start in dead_pos:
+            start += 1
+
         if start >= len(chars):
             raise InternalParserException()
 
@@ -64,20 +68,21 @@ class SegmentForward:
             for j in range(start, len(chars)):
                 if j in dead_pos:
                     continue
-                if (j - start) == len(morph_object.get_content()):
+                if (j - start) == len(morph_object.get_clear_content()):
                     break
 
-                if chars[j] == morph_object.get_content()[j - start] and len(catch_pos) < len(morph_object.get_content()):
+                mcnt = morph_object.get_clear_content()
+                if len(catch_pos) < len(mcnt) and chars[j] == mcnt[j - start]:
                     catch_pos.append(j)
-                elif len(catch_pos) < len(morph_object.get_content()):
+                elif len(catch_pos) < len(morph_object.get_clear_content()):
                     catch_pos = []
-                elif len(catch_pos) == len(morph_object.get_content()):
+                elif len(catch_pos) == len(morph_object.get_clear_content()):
                     morpheme_pos.append(catch_pos)
                     catch_pos = []
                 else:
                     raise InternalParserException()
 
-            if len(catch_pos) == len(morph_object.get_content()):
+            if len(catch_pos) == len(morph_object.get_clear_content()):
                 morpheme_pos.append(catch_pos)
 
             if not morpheme_pos:
@@ -160,6 +165,7 @@ def morpheme_in_token(input_container_element, container, input_container):
     for n, stem in enumerate(stems):
         sf_object = SegmentForward(container)
         # should be spec-dependent
+        print((input_container_element.get_content(), 0, stem.get_prop('positions'), (0,)))
         sf_object.generate_map(
             input_container_element.get_content(), start=0, dead_pos=stem.get_prop('positions'), position=(0,)
         )
