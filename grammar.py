@@ -243,9 +243,6 @@ class InputContainerElement:
     def get_content(self):
         return self.content
 
-    def get_clear_content(self):
-        return collection.minor.Clear.remove_spec_chars(self.system_name, self.content)
-
     def get_char_outline(self):
         return self.char_outline
 
@@ -831,6 +828,9 @@ class ContainerElement:
 
     def get_content(self):
         return self.content
+
+    def get_clear_content(self):
+        return collection.minor.Clear.remove_spec_chars(self.type, self.content)
 
     def append_child_type(self, child_type):
         if ':' in child_type:
