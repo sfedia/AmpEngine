@@ -845,7 +845,7 @@ class ContainerElement:
 
     def get_applied(self):
         applied_object = {
-            'links': self.apply_for[0],
+            'links': [self.apply_for[0]],
             'actions': self.apply_for[1]
         }
         for class_name in self.class_names:
