@@ -172,7 +172,10 @@ def morpheme_in_token(input_container_element, container, input_container):
         morpheme_maps = sf_object.get_result()
         morpho_seqs = []
         for morph_key in morpheme_maps:
-            for group in reversed(morpheme_maps[morph_key][1]):
+            if morpheme_maps[morph_key] is None:
+                continue
+            [(v, group_holder)] = morpheme_maps[morph_key].items()
+            for group in reversed(group_holder):
                 if group[-1] == len(input_container_element.get_content()) - 1:
                     morpho_seqs.append(sf_object.create_map_sequence(morpheme_maps, morph_key))
                     break
