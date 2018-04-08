@@ -1021,7 +1021,7 @@ class LinkSentence:
         for seq in parsed_sector:
             # AND/OR operators
             if re.search(r'[&\|]', seq.group(0)):
-                parsed_list.append(seq.group(1))
+                parsed_list.append(seq.group(6))
             # bracket group
             elif re.search(r'^\[.*\]$', seq.group(0)):
                 parsed_list.append(self.parse_sector(seq.group(1), element))
