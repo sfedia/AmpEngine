@@ -165,7 +165,6 @@ def morpheme_in_token(input_container_element, container, input_container):
     for n, stem in enumerate(stems):
         sf_object = SegmentForward(container)
         # should be spec-dependent
-        print((input_container_element.get_content(), 0, stem.get_prop('positions'), (0,)))
         sf_object.generate_map(
             input_container_element.get_content(), start=0, dead_pos=stem.get_prop('positions'), position=(0,)
         )
