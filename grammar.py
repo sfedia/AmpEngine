@@ -1050,7 +1050,7 @@ class LinkSentence:
         for i in range(len_link_slice):
             if link_slice[i] in ('&', '|'):
                 complete_list.append(link_slice[i])
-            elif type(link_slice[i]) == list:
+            elif type(link_slice[i]) == LinkSentence.ParameterPair:
                 ce_result = self.check_element(element, link_slice[i], elems_set, check_function)
                 complete_list.append(ce_result[0])
                 element = ce_result[1]
