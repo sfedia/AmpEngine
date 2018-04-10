@@ -1,30 +1,32 @@
 #!/usr/bin/python3
 
 import re
+import collections
 
 
 class HandlerStart:
     def __init__(self):
         self.param_extractors = {}
+        self.ext_wrap = collections.namedtuple('ExtractorWrapper', 'parameter extractor')
 
     def get_param_extractors(self, system_name=None, param_name=None):
         if system_name is not None and param_name is not None:
             extractors = [
-                (key[1], self.param_extractors[key]) for key in self.param_extractors
+                self.ext_wrap(key[1], self.param_extractors[key]) for key in self.param_extractors
                 if (key[0] is None or key[0] == system_name) and (key[1] is None or key[1] == param_name)
             ]
         elif system_name is None and param_name is not None:
             extractors = [
-                (key[1], self.param_extractors[key]) for key in self.param_extractors
+                self.ext_wrap(key[1], self.param_extractors[key]) for key in self.param_extractors
                 if (key[1] is None or key[1] == param_name)
             ]
         elif system_name is not None and param_name is None:
             extractors = [
-                (key[1], self.param_extractors[key]) for key in self.param_extractors
+                self.ext_wrap(key[1], self.param_extractors[key]) for key in self.param_extractors
                 if (key[0] is None or key[0] == system_name)
             ]
         else:
-            extractors = self.param_extractors
+            extractors = [self.ext_wrap(key[1], self.param_extractors[key]) for key in self.param_extractors]
 
         if extractors:
             return extractors
