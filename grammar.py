@@ -984,7 +984,7 @@ class LinkSentence:
         def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[]):
             self.key = key
             self.bool_check = bool_check
-            if value == '':
+            if not value:
                 self.bool_check = True
             self.value = value
             self.prop = 'ParameterPair'
