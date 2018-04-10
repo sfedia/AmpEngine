@@ -229,7 +229,7 @@ class InputContainerElement:
     def get_parameter(self, key, args=[], value=None):
         try:
             extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name, key)
-            self.params[key] = extractors[0](self.content, args, value)
+            self.params[key] = extractors[0].extractor(self, args, value)
         except collection.auto_parameter_extraction.ExtractorNotFound:
             pass
         if key in self.params:
