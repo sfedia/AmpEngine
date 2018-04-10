@@ -775,6 +775,7 @@ class ContainerElement:
         self.applied_ids = []
         self.mutation_links = []
         self.parameters = {}
+        self.transmitter_local_index = None
 
     def applied(self, link_sentence, actions):
         self.apply_for = [link_sentence, actions]
@@ -851,7 +852,15 @@ class ContainerElement:
         for class_name in self.class_names:
             for link_sentence in self.container.get_class(class_name).get_subelems_intrusion():
                 applied_object['links'].append(link_sentence)
+
+        if self.transmitter_local_index is not None:
+            for e, link in enumerate(applied_object['links']):
+                applied_object['links'][e].set_transmitter_local_index(self.transmitter_local_index)
+
         return applied_object
+
+    def set_transmitter_local_index(self, tidx):
+        self.transmitter_local_index = tidx
 
 
 class LinkSentence:
