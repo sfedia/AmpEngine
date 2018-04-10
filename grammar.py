@@ -236,7 +236,6 @@ class InputContainerElement:
             return self.params[key]
         else:
             raise ParameterNotFound()
-        return self.params[param_name]
 
     def get_ic_id(self):
         return self.ic_id
