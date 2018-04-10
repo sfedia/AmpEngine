@@ -10,7 +10,7 @@ class HandlerStart:
         if func_name in self.funcs:
             return self.funcs[func_name]
         else:
-            raise FunctionNotFound()
+            raise FunctionNotFound(func_name)
 
     def add_func(self, func_name, params_affected, value):
         self.funcs[func_name] = value
