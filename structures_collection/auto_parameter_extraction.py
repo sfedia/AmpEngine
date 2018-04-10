@@ -2,6 +2,7 @@
 
 import re
 import collections
+import grammar
 
 
 class HandlerStart:
@@ -49,6 +50,10 @@ class Arguments:
             return None
         else:
             raise ArgumentNotFound()
+
+
+def bool_equiv(bool_value, compared_value):
+    return compared_value if bool_value else grammar.Temp.NULL
 
 
 Handler = HandlerStart()
