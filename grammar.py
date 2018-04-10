@@ -226,8 +226,15 @@ class InputContainerElement:
     def set_mc_link(self, mc_id_link):
         self.mc_id_link = mc_id_link
 
-    def get_parameter(self, param_name):
-        if param_name not in self.params:
+    def get_parameter(self, key, args=[], value=None):
+        try:
+            extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name, key)
+            self.params[key] = extractors[0](self.content, args, value)
+        except collection.auto_parameter_extraction.ExtractorNotFound:
+            pass
+        if key in self.params:
+            return self.params[key]
+        else:
             raise ParameterNotFound()
         return self.params[param_name]
 
