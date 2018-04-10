@@ -927,7 +927,7 @@ class LinkSentence:
             )
         elems_set.set_visited(self.transmitter_index)
         if param_pair.prop == 'Sharp':
-            return True, element
+            return True, element, elems_set
 
         multiple_choice = []
 
