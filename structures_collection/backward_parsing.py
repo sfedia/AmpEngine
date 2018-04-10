@@ -184,6 +184,8 @@ def morpheme_in_token(input_container_element, container, input_container):
         grammar_nulls = container.iter_content_filter(lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme')
         for seq in morpho_seqs:
             id_list = [container.get_by_id(list(x.keys())[0]) for x in seq]
+            for e, elem in enumerate(id_list):
+                elem.set_transmitter_local_index(e)
             available_nulls = []
             bsid_obj = id_list
             for null in grammar_nulls:
