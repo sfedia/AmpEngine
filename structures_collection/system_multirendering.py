@@ -65,9 +65,12 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
             'э': 'е',
             'о': 'ё',
             'а': 'я',
-            'у': 'ю'
+            'у': 'ю',
+            'ы': 'и',
+            'и': 'ы',
+            'е': 'э'
         }
-        jot_vow = [x for x in 'эоау']
+        jot_vow = [x for x in 'эоауыеи']
         sv_length = len(start_vow)
         if dfix_search:
             fixed_vow = dfix_search.group(1)
@@ -85,18 +88,31 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                 ),
             ]
         else:
-            return [rend_object(
-                'universal:morpheme',
-                mce_spec + vow + rendered_content,
-                mce_id + generate_renderer_postfix(renderer_code, n)
-            ) for n, vow in enumerate(start_vow)] + [
-                rend_object(
+            if rendered_content[0] not in jot_vow:
+                return [rend_object(
                     'universal:morpheme',
-                    mce_spec + rendered_content,
-                    mce_id + generate_renderer_postfix(renderer_code, sv_length)
-                )
-            ]
-
+                    mce_spec + vow + rendered_content,
+                    mce_id + generate_renderer_postfix(renderer_code, n)
+                ) for n, vow in enumerate(start_vow)] + [
+                    rend_object(
+                        'universal:morpheme',
+                        mce_spec + rendered_content,
+                        mce_id + generate_renderer_postfix(renderer_code, sv_length)
+                    )
+                ]
+            else:
+                return [
+                    rend_object(
+                        'universal:morpheme',
+                        mce_spec + jot_subst[rendered_content[0]] + rendered_content[1:],
+                        mce_id + generate_renderer_postfix(renderer_code, 0)
+                    ),
+                    rend_object(
+                        'universal:morpheme',
+                        mce_spec + rendered_content,
+                        mce_id + generate_renderer_postfix(renderer_code, 1)
+                    )
+                ]
 
 class MultirenderingTemplateNotFound(Exception):
     pass
