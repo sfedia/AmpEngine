@@ -61,6 +61,13 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
         rendered_content = mce_content[1:]
         dfix_search = re.search(r'^\$\[([^\]]+)\]', rendered_content)
         start_vow = [x for x in 'ёуеыаоэяию']
+        jot_subst = {
+            'э': 'е',
+            'о': 'ё',
+            'а': 'я',
+            'у': 'ю'
+        }
+        jot_vow = [x for x in 'эоау']
         sv_length = len(start_vow)
         if dfix_search:
             fixed_vow = dfix_search.group(1)
