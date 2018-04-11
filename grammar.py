@@ -754,7 +754,7 @@ class ContainerElementCollection:
 
     def __getattr__(self, name):
         def method(*args):
-            ln = len(self.id_list) - 1
+            ln = len(self.id_list)
             for j, elem_id in enumerate(self.id_list):
                 if args:
                     result = self.mc_container.get_by_id(elem_id).__getattribute__(name)(*args)
