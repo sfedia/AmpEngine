@@ -84,7 +84,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                 rend_object(
                     'universal:morpheme',
                     mce_spec + final_part,
-                    mce_id + generate_renderer_postfix(renderer_code, 1)
+                    mce_id
                 ),
             ]
         else:
@@ -97,7 +97,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                     rend_object(
                         'universal:morpheme',
                         mce_spec + rendered_content,
-                        mce_id + generate_renderer_postfix(renderer_code, sv_length)
+                        mce_id
                     )
                 ]
             else:
@@ -110,9 +110,10 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                     rend_object(
                         'universal:morpheme',
                         mce_spec + rendered_content,
-                        mce_id + generate_renderer_postfix(renderer_code, 1)
+                        mce_id
                     )
                 ]
+
 
 class MultirenderingTemplateNotFound(Exception):
     pass
