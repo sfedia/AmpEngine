@@ -84,7 +84,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                 rend_object(
                     'universal:morpheme',
                     mce_spec + final_part,
-                    mce_id
+                    mce_id + generate_renderer_postfix(renderer_code, 1)
                 ),
             ]
         else:
@@ -97,7 +97,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                     rend_object(
                         'universal:morpheme',
                         mce_spec + rendered_content,
-                        mce_id
+                        mce_id + generate_renderer_postfix(renderer_code, sv_length)
                     )
                 ]
             else:
@@ -110,7 +110,7 @@ def mansi_vowmorpheme(mce_type, mce_content, mce_id):
                     rend_object(
                         'universal:morpheme',
                         mce_spec + rendered_content,
-                        mce_id
+                        mce_id + generate_renderer_postfix(renderer_code, 1)
                     )
                 ]
 
