@@ -986,7 +986,7 @@ class LinkSentence:
                     raise CannotGetParameter()
 
             else:
-                if param_pair.operator == "!=":
+                if param_pair.operator == "!=" and param_pair.is_bool_check():
                     return True, element, elems_set
                 raise CannotGetParameter()
 
