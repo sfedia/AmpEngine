@@ -226,7 +226,7 @@ class InputContainerElement:
             self.params[param_name] = param_value
         else:
             if param_name in self.params and type(self.params[param_name]) != ParameterBranching:
-                raise CannotCreateBranch()
+                raise CannotCreateBranch(param_name)
             elif param_name in self.params:
                 self.params[param_name].add_branch(param_value)
             else:
