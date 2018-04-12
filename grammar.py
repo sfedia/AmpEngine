@@ -243,7 +243,10 @@ class InputContainerElement:
         except collection.auto_parameter_extraction.ExtractorNotFound:
             pass
         if key in self.params:
-            return self.params[key]
+            if type(self.params[key]) != ParameterBranching:
+                return self.params[key]
+            else:
+                return self.params[key].get_branches()[0]
         else:
             raise ParameterNotFound()
 
