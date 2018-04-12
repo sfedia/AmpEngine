@@ -296,6 +296,18 @@ class InputContainerElement:
         return [el for el in self.input_container.elements if el.get_parent_ic_id() == self.ic_id and child_filter(el)]
 
 
+class ParameterBranching:
+    def __init__(self, parameter_name):
+        self.parameter_name = parameter_name
+        self.__value_branches = []
+
+    def add_branch(self, value):
+        self.__value_branches.append(value)
+
+    def get_branches(self):
+        return self.__value_branches
+
+
 class GroupCollection:
     def __init__(self, parent_ic_id, input_container, elements=None, spread_ci=True):
         self.group_count = 1
