@@ -986,6 +986,8 @@ class LinkSentence:
                     raise CannotGetParameter()
 
             else:
+                if param_pair.operator == "!=":
+                    return True, element, elems_set
                 raise CannotGetParameter()
 
         param_set = (parameter,) if not multiple_choice else multiple_choice
