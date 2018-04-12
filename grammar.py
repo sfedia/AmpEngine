@@ -69,10 +69,11 @@ class InputContainer:
         return [element for element in self.elements if element.get_system_name() == system_name]
 
     def clone_within_cluster(self, element, new_group_index):
-        element.group = new_group_index
-        element.ic_id = self.generate_ic_id()
-        self.elements.append(element)
-        return self.get_by_ic_id(element.ic_id)
+        new_element = element
+        new_element.group = new_group_index
+        new_element.ic_id = self.generate_ic_id()
+        self.elements.append(new_element)
+        return self.get_by_ic_id(new_element.ic_id)
 
     def segment_element(self, element, child_system, c_outlines, set_group=None, set_fork_id=None, group_rate=None):
         """
