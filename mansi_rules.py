@@ -2379,7 +2379,7 @@ for lemma, meanings in postpos_unmutable:
     pp_i += 1
 
 
-text = 'ань махум савсыр ляххалыт, потрыт интернетыт ловьтэгыт'
+text = 'ляххалыт, потрыт интернетыт ловьтэгыт'
 input_container = grammar.InputContainer(text, prevent_auto=True)
 input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
 input_container.onseg_hook_bank.end_del = [
