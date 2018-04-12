@@ -221,8 +221,17 @@ class InputContainerElement:
         if fork_id and not input_container.get_by_ic_id(fork_id):
             raise UnknownForkID()
 
-    def set_parameter(self, param_name, param_value):
-        self.params[param_name] = param_value
+    def set_parameter(self, param_name, param_value, branching=False):
+        if not branching:
+            self.params[param_name] = param_value
+        else:
+            if param_name in self.params and type(self.params[param_name]) != ParameterBranching:
+                raise CannotCreateBranch()
+            elif param_name in self.params:
+                self.params[param_name].add_branch(param_value)
+            else:
+                self.params[param_name] = ParameterBranching(param_name)
+                self.params[param_name].add_branch(param_value)
 
     def set_mc_link(self, mc_id_link):
         self.mc_id_link = mc_id_link
