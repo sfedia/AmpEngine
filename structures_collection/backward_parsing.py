@@ -190,6 +190,7 @@ def morpheme_in_token(input_container_element, container, input_container):
             bsid_obj = id_list + grammar_nulls
             for e, null in enumerate(grammar_nulls):
                 null.set_transmitter_local_index(len(id_list) + e)
+            for e, null in enumerate(grammar_nulls):
                 for link in null.get_applied()['links']:
                     # BS Array
                     lc_bool, bsid_obj, input_container_element = link.check(
