@@ -1117,11 +1117,15 @@ class LinkSentence:
             return False not in link_slice, element
         elif common_operator == '|':
             return True in link_slice, element
+                return True in link_slice, element
+            else:
+                return True in link_slice, elems_set, element
         else:
             raise WrongLinkSentence()
 
     def check(self, element, elems_set, check_function, return_bs=False):
         parsed_list = self.parse_sector(self.link, element)
+        print('ParsedList', parsed_list)
         return self.is_good(parsed_list, element, elems_set, check_function, return_bs)
 
 
