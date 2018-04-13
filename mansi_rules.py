@@ -898,10 +898,10 @@ for sing, dual, plur, id_word in interrog_pronoun:
     ).add_class('interrog_pronoun')
 
 
-rombandeeva.get_class('interrog_pronoun').intrusion(
-    class_list=['case_suffixes'],
-    bw_list=grammar.BWList(exclude_mutations=['gram:case:set_loc'])
-)
+#rombandeeva.get_class('interrog_pronoun').intrusion(
+#    class_list=['case_suffixes'],
+#    bw_list=grammar.BWList(exclude_mutations=['gram:case:set_loc'])
+#)
 
 demonstr_pronoun_matrix = [
     [['ты', 'та'], ['тыиг', 'таиг'], ['тыит', 'таит']],
@@ -2324,9 +2324,9 @@ for pp_word, pp_id in postpos_mutable:
         ]
     ).add_class('postpos_mutable')
 
-rombandeeva.get_class('postpos_mutable', await=True).intrusion(
-    class_list=['case_suffixes', 'verb_conj_personal']
-)
+#rombandeeva.get_class('postpos_mutable', await=True).intrusion(
+#    class_list=['case_suffixes', 'verb_conj_personal']
+#)
 
 rombandeeva.get_system('universal:morpheme').subclasses_order(
     '.case_suffixes > .verb_conj_personal',
