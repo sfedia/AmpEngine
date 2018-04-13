@@ -1239,3 +1239,7 @@ class MainContainerNotFound(Exception):
 
 class SegMethodNotFound(Exception):
     pass
+
+
+class CannotCreateBranch(Exception):
+    pass
