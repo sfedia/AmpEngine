@@ -735,7 +735,7 @@ class SubclassesOrder:
                         'post': []
                     })
                     if j > 0:
-                        for i in range(j - 1, -1, step=-1):
+                        for i in range(j - 1, -1, -1):
                             if self.scheme[i]['type'] == 'pointer' and self.scheme[i]['subtype'] != 'everything':
                                 subst_nulls[-1]['pre'].append(
                                     self.create_asterisk_pattern(
