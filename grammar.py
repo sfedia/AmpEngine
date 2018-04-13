@@ -919,6 +919,7 @@ class LinkSentence:
                     self.bs_array[i][0] = 1
 
         def set_visited(self, index):
+            print('Index', index)
             self.bs_array[index][0] = 1
 
         def set_unvisited(self, index):
@@ -1114,9 +1115,12 @@ class LinkSentence:
             else:
                 return link_slice[0], elems_set, element
         elif common_operator == '&':
-            return False not in link_slice, element
+            if not return_bs:
+                return False not in link_slice, element
+            else:
+                return False not in link_slice, elems_set, element
         elif common_operator == '|':
-            return True in link_slice, element
+            if not return_bs:
                 return True in link_slice, element
             else:
                 return True in link_slice, elems_set, element
