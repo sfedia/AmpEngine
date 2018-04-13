@@ -199,7 +199,9 @@ def morpheme_in_token(input_container_element, container, input_container):
                     if lc_bool:
                         available_nulls.append(null)
 
-            subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_list)
+            subcl_orders = container.get_system('universal:morpheme').get_subcl_orders_affecting_ids([
+                el.get_id() for el in id_list
+            ])
             strict_prohib = False
             for order in subcl_orders:
                 order_check = order.check_sequence(order, available_nulls)
