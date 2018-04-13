@@ -114,7 +114,7 @@ def reg_match(element, arguments=[], compared_value=None):
         positions = [x.start() for x in cv_pattern.finditer(element.get_content())]
         if min_strategy:
             for pos in positions if min_strategy else reversed(positions):
-                if re.search(compared_value, element.get_content[:pos]) is not None:
+                if re.search(compared_value, element.get_content()[:pos]) is not None:
                     return bool_equiv(True, compared_value)
             return bool_equiv(False, compared_value)
 
