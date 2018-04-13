@@ -700,7 +700,7 @@ class SubclassesOrder:
         ev_groups = []
         non_ev = []
         check_regex = ''
-        for j, el in self.scheme:
+        for j, el in enumerate(self.scheme):
             if el['type'] == 'pointer' and el['subtype'] == 'everything':
                 if get_operator(j) == 'required':
                     check_regex += '((.+))'
