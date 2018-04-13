@@ -35,7 +35,7 @@ for element in rombandeeva.get_by_class_name('caus_suffixes'):
     # or just element.applied ??
     rombandeeva.get_by_id(element.get_id()).applied(
         *[
-            grammar.LinkSentence('# & universal:entity=(token) & mansi:simple_pos=(verb) & sem:non_causative=()'),
+            grammar.LinkSentence('# & universal:entity=(token) & mansi:simple_pos=(verb) & sem:causative!=()'),
             [
                 grammar.Action('sem:make_causative')
             ]
