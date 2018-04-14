@@ -731,21 +731,21 @@ class SubclassesOrder:
                                     (self.scheme[i]['subtype'], self.scheme[i]['value'])
                                 )
 
-        for j, sequence in enumerate([co_sequence, self.null_substitution(co_sequence, subst_nulls)]):
-            el_masks = [
-                [*['.' + x for x in self.main_container.get_by_id(el_id).get_class_names()], '#' + el_id]
-                for el_id in sequence
-            ]
-            for mask_product in [''.join(['*' + y + '*' for y in x]) for x in itertools.product(el_masks)]:
-                rx_grouping = re.compile(check_regex).match(mask_product)
-                if not rx_grouping:
-                    continue
-                if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
-                    continue
-                return {
-                    "check": True,
-                    "nulls": subst_nulls
-                }
+        cn_sequence = self.null_substitution(co_sequence, subst_nulls)
+        el_masks = [
+            [*['.' + x for x in self.main_container.get_by_id(elem.get_id()).get_class_names()], '#' + elem.get_id()]
+            for elem in cn_sequence
+        ]
+        for mask_product in [''.join(['*' + y + '*' for y in x]) for x in itertools.product(*el_masks)]:
+            rx_grouping = re.compile(check_regex).match(mask_product)
+            if not rx_grouping:
+                continue
+            if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
+                continue
+            return {
+                "check": True,
+                "nulls": subst_nulls
+            }
 
         return {
             "check": False,
