@@ -665,22 +665,6 @@ class SubclassesOrder:
     def double_pattern_to_single(pattern):
         return pattern.replace('\\\\', '\\')
 
-    def null_substitution(self, pattern, subst_nulls):
-        for null in subst_nulls:
-            subst_made = False
-            if null['pre']:
-                for pre_ptrn in null['pre']:
-                    if re.search(pre_ptrn, pattern):
-                        pattern = re.sub(pre_ptrn, self.double_pattern_to_single(pre_ptrn) + null['rx'], pattern)
-                        subst_made = True
-                        break
-            if not subst_made and null['post']:
-                for post_ptrn in null['post']:
-                    if re.search(post_ptrn, pattern):
-                        pattern = re.sub(post_ptrn, null['rx'] + self.double_pattern_to_single(post_ptrn), pattern)
-                        break
-        return pattern
-
     def check_sequence(self, co_sequence, available_nulls):
         """
         :param co_sequence: List[List[MC element ID, CharOutline Object]]
@@ -730,7 +714,7 @@ class SubclassesOrder:
                     continue
                 if (el['subtype'] == 'id' and el['value'] == null[0]) or (el['subtype'] == 'class' and el['value'] in null[1]):
                     subst_nulls.append({
-                        'rx': self.create_asterisk_pattern(el['subtype'], el['value']),
+                        'null_ice': null,
                         'pre': [],
                         'post': []
                     })
@@ -738,18 +722,15 @@ class SubclassesOrder:
                         for i in range(j - 1, -1, -1):
                             if self.scheme[i]['type'] == 'pointer' and self.scheme[i]['subtype'] != 'everything':
                                 subst_nulls[-1]['pre'].append(
-                                    self.create_asterisk_pattern(
-                                        self.scheme[i]['subtype'], self.scheme[i]['value'], double=True
-                                    )
+                                    (self.scheme[i]['subtype'], self.scheme[i]['value'])
                                 )
                     if j < len(self.scheme) - 1:
                         for i in range(j + 1, len(self.scheme)):
                             if self.scheme[i]['type'] == 'pointer' and self.scheme[i]['subtype'] != 'everything':
                                 subst_nulls[-1]['post'].append(
-                                    self.create_asterisk_pattern(
-                                        self.scheme[i]['subtype'], self.scheme[i]['value'], double=True
-                                    )
+                                    (self.scheme[i]['subtype'], self.scheme[i]['value'])
                                 )
+
         for j, sequence in enumerate([co_sequence, self.null_substitution(co_sequence, subst_nulls)]):
             el_masks = [
                 [*['.' + x for x in self.main_container.get_by_id(el_id).get_class_names()], '#' + el_id]
@@ -770,6 +751,40 @@ class SubclassesOrder:
             "check": False,
             "nulls": subst_nulls
         }
+
+    def null_substitution(self, co_sequence, subst_nulls):
+        for null in subst_nulls:
+            insertion_made = False
+            for pre_element_data in null['pre']:
+                for j, element in enumerate(co_sequence):
+                    element_id, element_classes = element.get_id(), element.get_class_names()
+                    if pre_element_data[0] == 'id' and element_id == pre_element_data[0]:
+                        co_sequence.insert(j + 1, null)
+                        insertion_made = True
+                        break
+                    elif pre_element_data[0] == 'class' and pre_element_data[0] in element_classes:
+                        co_sequence.insert(j + 1, null)
+                        insertion_made = True
+                        break
+                if insertion_made:
+                    break
+            if insertion_made:
+                continue
+            for post_element_data in null['post']:
+                insertion_made = False
+                for j, element in enumerate(co_sequence):
+                    element_id, element_classes = element.get_id(), element.get_class_names()
+                    if post_element_data[0] == 'id' and element_id == pre_element_data[0]:
+                        co_sequence.insert(j, null)
+                        insertion_made = True
+                        break
+                    elif pre_element_data[0] == 'class' and pre_element_data[0] in element_classes:
+                        co_sequence.insert(j, null)
+                        insertion_made = True
+                        break
+                if insertion_made:
+                    break
+        return co_sequence
 
 
 class ContainerElementCollection:
