@@ -1024,7 +1024,7 @@ class LinkSentence:
         return result, element, elems_set
 
     class ParameterPair:
-        def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[]):
+        def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[], metadata=None):
             self.key = key
             self.bool_check = bool_check
             if not value:
@@ -1033,6 +1033,7 @@ class LinkSentence:
             self.prop = 'ParameterPair'
             self.operator = operator
             self.arguments = arguments
+            self.metadata = metadata
             if sharp:
                 self.prop = 'Sharp'
 
@@ -1069,6 +1070,10 @@ class LinkSentence:
 
     def parse_sector(self, sector, element):
         sector = sector.strip()
+        for txt_link in list(set(re.findall(r'%[^\)%]+%', sector))):
+            sector = sector.replace(
+                txt_link, resources.txt_import.Handler.get_link(txt_link.strip('%'))
+            )
         sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
         parsed_list = []
         if re.search(r'^#\s*', sector):
