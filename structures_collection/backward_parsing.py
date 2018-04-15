@@ -224,6 +224,10 @@ def morpheme_in_token(input_container_element, container, input_container):
                                         if j < len(seq) - 1:
                                             next_elem_pos = list(seq[j + 1].keys())[0]
                                             virtual_list.append(next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])
+                                        if j > 0:
+                                            for k in seq[j + 1]:
+                                                ei = seq[j + 1][k][0]
+                                                virtual_list.append(ei[0] if ei[0] != -1 else ei[1])
                                         seq.insert(
                                             j + 1,
                                             {
@@ -241,8 +245,9 @@ def morpheme_in_token(input_container_element, container, input_container):
                                         next_elem_pos = list(seq[j].keys())[0]
                                         virtual_list = [-1, (next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])]
                                         if j > 0:
-                                            prev_elem_pos = list(seq[j - 1].keys())[0]
-                                            virtual_list.append(prev_elem_pos[0] if prev_elem_pos[0] != -1 else prev_elem_pos[1])
+                                            for k in seq[j - 1]:
+                                                ei = seq[j - 1][k][0]
+                                                virtual_list.append(ei[0] if ei[0] != -1 else ei[1])
                                         seq.insert(
                                             j - 1,
                                             {
