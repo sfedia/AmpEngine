@@ -910,14 +910,18 @@ class ContainerElement:
 
 
 class LinkSentence:
-    def __init__(self, link_string, transmitter=None, allow_resources=True):
+    def __init__(self, link_string, transmitter=None, allow_resources=True, metadata=None):
         self.link = re.sub(r'\n|\s{2,}', ' ', link_string)
         self.transmitter = transmitter
         self.transmitter_index = None
         self.allow_resources = allow_resources
+        self.metadata = metadata
 
     def set_transmitter(self, transmitter):
         self.transmitter = transmitter
+
+    def set_metadata(self, metadata):
+        self.metadata = metadata
 
     def set_transmitter_local_index(self, index):
         self.transmitter_index = index
