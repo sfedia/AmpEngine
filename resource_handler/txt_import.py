@@ -35,7 +35,7 @@ def new_link(link_name):
     return link_decorator
 
 
-@new_link('MANSI_CONS2')
+@new_link('MANSI_CONS2_END')
 def mansi_cons_two(input_container):
     """
     MANSI_CONS2
@@ -43,7 +43,42 @@ def mansi_cons_two(input_container):
     :return: compared value [Str]
     """
 
-    return "[^ёуезыаоэяию]{2}"
+    return "[^ёуезыаоэяию]{2}$"
+
+
+@new_link('MANSI_CONS+I')
+def mansi_cons_and_i(input_container):
+    return "[^ёуезаоэяию]"
+
+
+@new_link('MANSI_CONS_END')
+def mansi_cons_end(input_container):
+    return "[^ёуезыаоэяию]$"
+
+
+@new_link('MANSI_CONS_TWO_MORE_END')
+def mansi_cons_two_more_end(input_container):
+    return "[^ёуезыаоэяию]{2,}$"
+
+
+@new_link('MANSI_VOW_END')
+def mansi_cons_end(input_container):
+    return "[ёуезыаоэяию]$"
+
+
+@new_link('MANSI_VOW')
+def mansi_cons_end(input_container):
+    return "[ёуезыаоэяию]"
+
+
+@new_link('MANSI_CONS')
+def mansi_cons(input_container):
+    return "[^ёуезыаоэяию]"
+
+
+@new_link('MANSI_CONS_1,2_END')
+def mansi_cons_one_two(input_container):
+    return "[^ёуезыаоэяию]{1,2}$"
 
 
 class LinkNotFound(Exception):
