@@ -744,12 +744,14 @@ class SubclassesOrder:
                 continue
             return {
                 "check": True,
-                "nulls": subst_nulls
+                "nulls": subst_nulls,
+                "cn_sequence": cn_sequence
             }
 
         return {
             "check": False,
-            "nulls": subst_nulls
+            "nulls": subst_nulls,
+            "cn_sequence": cn_sequence
         }
 
     def null_substitution(self, co_sequence, subst_nulls):
