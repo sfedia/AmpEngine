@@ -35,5 +35,16 @@ def new_link(link_name):
     return link_decorator
 
 
+@new_link('MANSI_CONS2')
+def mansi_cons_two(input_container):
+    """
+    MANSI_CONS2
+    :param input_container: IC container
+    :return: compared value [Str]
+    """
+
+    return "[^ёуезыаоэяию]{2}"
+
+
 class LinkNotFound(Exception):
     pass
