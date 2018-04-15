@@ -36,10 +36,10 @@ def new_link(link_name):
 
 
 @new_link('MANSI_CONS2_END')
-def mansi_cons_two(input_container):
+def mansi_cons_two(metadata):
     """
     MANSI_CONS2
-    :param input_container: IC container
+    :param metadata: IC container
     :return: compared value [Str]
     """
 
@@ -47,37 +47,37 @@ def mansi_cons_two(input_container):
 
 
 @new_link('MANSI_CONS+I')
-def mansi_cons_and_i(input_container):
+def mansi_cons_and_i(metadata):
     return "[^ёуезаоэяию]"
 
 
 @new_link('MANSI_CONS_END')
-def mansi_cons_end(input_container):
+def mansi_cons_end(metadata):
     return "[^ёуеыаоэяию]$"
 
 
 @new_link('MANSI_CONS_TWO_MORE_END')
-def mansi_cons_two_more_end(input_container):
+def mansi_cons_two_more_end(metadata):
     return "[^ёуеыаоэяию]{2,}$"
 
 
 @new_link('MANSI_VOW_END')
-def mansi_cons_end(input_container):
+def mansi_cons_end(metadata):
     return "[ёуеыаоэяию]$"
 
 
 @new_link('MANSI_VOW')
-def mansi_cons_end(input_container):
+def mansi_cons_end(metadata):
     return "[ёуеыаоэяию]"
 
 
 @new_link('MANSI_CONS')
-def mansi_cons(input_container):
+def mansi_cons(metadata):
     return "[^ёуеыаоэяию]"
 
 
 @new_link('MANSI_CONS_1,2_END')
-def mansi_cons_one_two(input_container):
+def mansi_cons_one_two(metadata):
     return "[^ёуеыаоэяию]{1,2}$"
 
 
