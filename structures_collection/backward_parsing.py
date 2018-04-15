@@ -227,7 +227,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                                         seq.insert(
                                             j + 1,
                                             {
-                                                get_null_id(decode_asterisk_pattern(null['rx']), container): [virtual_list]
+                                                null['null_ice'][0]: [virtual_list]
                                             }
                                         )
                         elif null['post']:
@@ -246,7 +246,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                                         seq.insert(
                                             j - 1,
                                             {
-                                                get_null_id(decode_asterisk_pattern(null['rx']), container): [virtual_list]
+                                                null['null_ice'][0]: [virtual_list]
                                             }
                                         )
                         else:
