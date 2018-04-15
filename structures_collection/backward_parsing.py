@@ -215,10 +215,10 @@ def morpheme_in_token(input_container_element, container, input_container):
                     for null in order_check['nulls']:
                         if null['pre']:
                             for pre in null['pre']:
-                                dec_value = decode_asterisk_pattern(pre)
                                 for j, seq_el in enumerate(seq):
-                                    if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
-                                    (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
+                                    elem_id = list(seq_el.keys())[0]
+                                    if (pre[0] == 'id' and elem_id == pre[1]) or \
+                                    (pre[0] == 'class' and pre[1] in container.get_by_id(elem_id).get_class_names()):
                                         prev_elem_pos = list(seq[j].keys())[0]
                                         virtual_list = [-1, (prev_elem_pos[0] if prev_elem_pos[0] != -1 else prev_elem_pos[1])]
                                         if j < len(seq) - 1:
@@ -232,12 +232,12 @@ def morpheme_in_token(input_container_element, container, input_container):
                                         )
                         elif null['post']:
                             for post in null['post']:
-                                dec_value = decode_asterisk_pattern(post)
                                 for j, seq_el in enumerate(seq):
                                     if j == 0:
                                         continue
-                                    if (dec_value[0] == 'id' and seq_el == dec_value[1]) or \
-                                    (dec_value[0] == 'class' and dec_value[1] in container.get_by_id(seq_el).get_class_names()):
+                                    elem_id = list(seq_el.keys())[0]
+                                    if (post[0] == 'id' and elem_id == post[1]) or \
+                                    (post[0] == 'class' and post[1] in container.get_by_id(elem_id).get_class_names()):
                                         next_elem_pos = list(seq[j].keys())[0]
                                         virtual_list = [-1, (next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])]
                                         if j > 0:
