@@ -755,17 +755,22 @@ class SubclassesOrder:
         }
 
     def null_substitution(self, co_sequence, subst_nulls):
+        if not co_sequence:
+            return []
+        container = co_sequence[0].container
         for null in subst_nulls:
             insertion_made = False
             for pre_element_data in null['pre']:
                 for j, element in enumerate(co_sequence):
                     element_id, element_classes = element.get_id(), element.get_class_names()
+                    if element.get_content() == Temp.NULL:
+                        continue
                     if pre_element_data[0] == 'id' and element_id == pre_element_data[1]:
-                        co_sequence.insert(j + 1, null)
+                        co_sequence.insert(j, container.get_by_id(null['null_ice'][0]))
                         insertion_made = True
                         break
                     elif pre_element_data[0] == 'class' and pre_element_data[1] in element_classes:
-                        co_sequence.insert(j + 1, null)
+                        co_sequence.insert(j, container.get_by_id(null['null_ice'][0]))
                         insertion_made = True
                         break
                 if insertion_made:
@@ -776,12 +781,14 @@ class SubclassesOrder:
                 insertion_made = False
                 for j, element in enumerate(co_sequence):
                     element_id, element_classes = element.get_id(), element.get_class_names()
+                    if element.get_content() == Temp.NULL:
+                        continue
                     if post_element_data[0] == 'id' and element_id == post_element_data[1]:
-                        co_sequence.insert(j, null)
+                        co_sequence.insert(j, container.get_by_id(null['null_ice'][0]))
                         insertion_made = True
                         break
                     elif post_element_data[0] == 'class' and post_element_data[1] in element_classes:
-                        co_sequence.insert(j, null)
+                        co_sequence.insert(j, container.get_by_id(null['null_ice'][0]))
                         insertion_made = True
                         break
                 if insertion_made:
