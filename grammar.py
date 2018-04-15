@@ -1072,7 +1072,7 @@ class LinkSentence:
         sector = sector.strip()
         for txt_link in list(set(re.findall(r'%[^\)%]+%', sector))):
             sector = sector.replace(
-                txt_link, resources.txt_import.Handler.get_link(txt_link.strip('%'))
+                txt_link, resources.txt_import.Handler.get_link(txt_link.strip('%'))(self.metadata)
             )
         sector_rx = r'([\w:]+)(\*?([<>!=\?]+))\(([^\)]*)\)(\{[^\}]+\})?|\s*([&\|])\s*|(\[\s*(.*?)\s*\])'
         parsed_list = []
