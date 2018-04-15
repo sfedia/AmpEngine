@@ -219,12 +219,10 @@ def morpheme_in_token(input_container_element, container, input_container):
                                     elem_id = list(seq_el.keys())[0]
                                     if (pre[0] == 'id' and elem_id == pre[1]) or \
                                     (pre[0] == 'class' and pre[1] in container.get_by_id(elem_id).get_class_names()):
-                                        prev_elem_pos = list(seq[j].keys())[0]
-                                        virtual_list = [-1, (prev_elem_pos[0] if prev_elem_pos[0] != -1 else prev_elem_pos[1])]
+                                        for k in seq[j]:
+                                            ei = seq[j][k][0]
+                                            virtual_list = [-1, (ei[0] if ei[0] != -1 else ei[1])]
                                         if j < len(seq) - 1:
-                                            next_elem_pos = list(seq[j + 1].keys())[0]
-                                            virtual_list.append(next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])
-                                        if j > 0:
                                             for k in seq[j + 1]:
                                                 ei = seq[j + 1][k][0]
                                                 virtual_list.append(ei[0] if ei[0] != -1 else ei[1])
@@ -242,8 +240,9 @@ def morpheme_in_token(input_container_element, container, input_container):
                                     elem_id = list(seq_el.keys())[0]
                                     if (post[0] == 'id' and elem_id == post[1]) or \
                                     (post[0] == 'class' and post[1] in container.get_by_id(elem_id).get_class_names()):
-                                        next_elem_pos = list(seq[j].keys())[0]
-                                        virtual_list = [-1, (next_elem_pos[0] if next_elem_pos[0] != -1 else next_elem_pos[1])]
+                                        for k in seq[j]:
+                                            ei = seq[j][k][0]
+                                            virtual_list = [-1, ei[0] if ei[0] != -1 else ei[1]]
                                         if j > 0:
                                             for k in seq[j - 1]:
                                                 ei = seq[j - 1][k][0]
