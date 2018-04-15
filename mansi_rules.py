@@ -1906,7 +1906,7 @@ rombandeeva.add_element('universal:morpheme', '^э!', 'ee_latentive_present').ap
 # page 133, try if this works for the tables on p. 132-133
 
 rombandeeva.add_element('universal:morpheme', '^м', 'm_suffix_past_latentive').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb) & universal:reg_match=([ГЛАСНЫЙ]){post=()}'),
+    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb) & universal:reg_match=(%MANSI_VOW%){post=()}'),
     [
         grammar.Action('gram:tense:set_past'),
         grammar.Action('gram:mood:set_latentive')
@@ -1946,7 +1946,7 @@ rombandeeva.add_element('universal:morpheme', '^у!м', 'uum_suffix_past_latenti
         '''# & universal:entity=(token)
         & mansi:basic_pos=(verb)
         & mansi:syl_count=(1){pre=(у!м)}
-        & universal:reg_match=([ГЛАСНЫЙ][лн]){pre=(у!м)}
+        & universal:reg_match=(%MANSI_VOW%[лн]){pre=(у!м)}
         '''
     ),
     [
