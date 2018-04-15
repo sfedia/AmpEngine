@@ -760,11 +760,11 @@ class SubclassesOrder:
             for pre_element_data in null['pre']:
                 for j, element in enumerate(co_sequence):
                     element_id, element_classes = element.get_id(), element.get_class_names()
-                    if pre_element_data[0] == 'id' and element_id == pre_element_data[0]:
+                    if pre_element_data[0] == 'id' and element_id == pre_element_data[1]:
                         co_sequence.insert(j + 1, null)
                         insertion_made = True
                         break
-                    elif pre_element_data[0] == 'class' and pre_element_data[0] in element_classes:
+                    elif pre_element_data[0] == 'class' and pre_element_data[1] in element_classes:
                         co_sequence.insert(j + 1, null)
                         insertion_made = True
                         break
@@ -776,11 +776,11 @@ class SubclassesOrder:
                 insertion_made = False
                 for j, element in enumerate(co_sequence):
                     element_id, element_classes = element.get_id(), element.get_class_names()
-                    if post_element_data[0] == 'id' and element_id == post_element_data[0]:
+                    if post_element_data[0] == 'id' and element_id == post_element_data[1]:
                         co_sequence.insert(j, null)
                         insertion_made = True
                         break
-                    elif post_element_data[0] == 'class' and post_element_data[0] in element_classes:
+                    elif post_element_data[0] == 'class' and post_element_data[1] in element_classes:
                         co_sequence.insert(j, null)
                         insertion_made = True
                         break
