@@ -947,7 +947,6 @@ class LinkSentence:
                     self.bs_array[i][0] = 1
 
         def set_visited(self, index):
-            print('Index', index)
             self.bs_array[index][0] = 1
 
         def set_unvisited(self, index):
@@ -1161,7 +1160,6 @@ class LinkSentence:
 
     def check(self, element, elems_set, check_function, return_bs=False):
         parsed_list = self.parse_sector(self.link, element)
-        print('ParsedList', parsed_list)
         return self.is_good(parsed_list, element, elems_set, check_function, return_bs)
 
 
