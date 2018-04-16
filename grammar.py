@@ -984,7 +984,11 @@ class LinkSentence:
             elems_set = self.BSArray(
                 elems_set, set_visited=[self.transmitter_index] if self.transmitter_index else None
             )
-        elems_set.set_visited(self.transmitter_index)
+        try:
+            elems_set.set_visited(self.transmitter_index)
+        except IndexError:
+            pass
+
         if param_pair.prop == 'Sharp':
             return True, element, elems_set
 
