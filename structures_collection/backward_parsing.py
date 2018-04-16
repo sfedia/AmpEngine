@@ -43,7 +43,6 @@ class SegmentForward:
         self.container = container
 
     def generate_map(self, chars, start, dead_pos, position):
-        print('DP', dead_pos)
         while start in dead_pos:
             start += 1
 
@@ -211,52 +210,25 @@ def morpheme_in_token(input_container_element, container, input_container):
                     strict_prohib = False
                 if strict_prohib:
                     continue
-                if order_check['nulls']:
-                    for null in order_check['nulls']:
-                        if null['pre']:
-                            for pre in null['pre']:
-                                for j, seq_el in enumerate(seq):
-                                    elem_id = list(seq_el.keys())[0]
-                                    if (pre[0] == 'id' and elem_id == pre[1]) or \
-                                    (pre[0] == 'class' and pre[1] in container.get_by_id(elem_id).get_class_names()):
-                                        for k in seq[j]:
-                                            ei = seq[j][k][0]
-                                            virtual_list = [-1, (ei[0] if ei[0] != -1 else ei[1])]
-                                        if j < len(seq) - 1:
-                                            for k in seq[j + 1]:
-                                                ei = seq[j + 1][k][0]
-                                                virtual_list.append(ei[0] if ei[0] != -1 else ei[1])
-                                        seq.insert(
-                                            j + 1,
-                                            {
-                                                null['null_ice'][0]: [virtual_list]
-                                            }
-                                        )
-                        elif null['post']:
-                            for post in null['post']:
-                                for j, seq_el in enumerate(seq):
-                                    if j == 0:
-                                        continue
-                                    elem_id = list(seq_el.keys())[0]
-                                    if (post[0] == 'id' and elem_id == post[1]) or \
-                                    (post[0] == 'class' and post[1] in container.get_by_id(elem_id).get_class_names()):
-                                        for k in seq[j]:
-                                            ei = seq[j][k][0]
-                                            virtual_list = [-1, ei[0] if ei[0] != -1 else ei[1]]
-                                        if j > 0:
-                                            for k in seq[j - 1]:
-                                                ei = seq[j - 1][k][0]
-                                                virtual_list.append(ei[0] if ei[0] != -1 else ei[1])
-                                        seq.insert(
-                                            j - 1,
-                                            {
-                                                null['null_ice'][0]: [virtual_list]
-                                            }
-                                        )
-                        else:
-                            # UNALLOCATED
-                            ...
 
+                cn_seq = order_check['cn_sequence']
+                upd_seq = []
+
+                real_elements = [j for j, el in enumerate(cn_seq) if el.get_content() != grammar.Temp.NULL]
+                for j, element in enumerate(cn_seq):
+                    if element.get_content() == grammar.Temp.NULL:
+                        if j > 0:
+                            for k in upd_seq[j - 1]:
+                                upd_seq.append({element.get_id(): (upd_seq[j - 1][k][0][0],)})
+                        elif j < len(upd_seq) - 1:
+                            for k in upd_seq[j + 1]:
+                                upd_seq.append({element.get_id(): (upd_seq[j + 1][k][0][0],)})
+                    else:
+                        rei = real_elements.index(j)
+                        for k in seq[rei]:
+                            upd_seq.append({element.get_id(): seq[rei][k]})
+
+                seq = upd_seq
             if strict_prohib:
                 continue
 
