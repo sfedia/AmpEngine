@@ -12,3 +12,10 @@ systems = {
     ],
     'universal:morpheme': []
 }
+
+
+def check_transitivity(a_system, b_system):
+    global systems
+    if a_system not in systems:
+        return False
+    return b_system in systems[a_system]
