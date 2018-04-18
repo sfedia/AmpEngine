@@ -1153,7 +1153,7 @@ class LinkSentence:
             if not return_bs:
                 return link_slice[0]
             else:
-                return link_slice[0], elems_set, element
+                return link_slice[0], elems_set, execute_for_element(element, link_slice[0])
         elif common_operator == '&':
             blc = False not in complete_list
             if not return_bs:
