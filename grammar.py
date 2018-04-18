@@ -1033,8 +1033,6 @@ class LinkSentence:
             else:
                 result = True if parameter else False
             if result:
-                for action in self.transmitter.get_applied()['actions']:
-                    element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
                 break
 
         return result, element, elems_set
@@ -1144,21 +1142,30 @@ class LinkSentence:
         if not common_operator and (not link_slice or len(link_slice) > 1):
             raise WrongLinkSentence()
 
+        def execute_for_element(elt, bl):
+            if not bl:
+                return elt
+            for a in self.transmitter.get_applied()['actions']:
+                elt = collection.static.Handler.get_func(a.get_path())(elt, a.get_arguments())
+            return elt
+
         if not common_operator:
             if not return_bs:
                 return link_slice[0]
             else:
                 return link_slice[0], elems_set, element
         elif common_operator == '&':
+            blc = False not in complete_list
             if not return_bs:
-                return False not in link_slice, element
+                return blc, execute_for_element(element, blc)
             else:
-                return False not in link_slice, elems_set, element
+                return blc, elems_set, execute_for_element(element, blc)
         elif common_operator == '|':
+            blc = True in complete_list
             if not return_bs:
-                return True in link_slice, element
+                return blc, execute_for_element(element, blc)
             else:
-                return True in link_slice, elems_set, element
+                return blc, elems_set, execute_for_element(element)
         else:
             raise WrongLinkSentence()
 
