@@ -1165,7 +1165,7 @@ class LinkSentence:
             if not return_bs:
                 return blc, execute_for_element(element, blc)
             else:
-                return blc, elems_set, execute_for_element(element)
+                return blc, elems_set, execute_for_element(element, blc)
         else:
             raise WrongLinkSentence()
 
