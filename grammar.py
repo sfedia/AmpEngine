@@ -82,7 +82,7 @@ class InputContainer:
         :param c_outlines: CharOutline objects (with attachment)
         :param set_group: group to set for all IC subelements (None by default)
         :param set_fork_id: fork_id to set for all IC subelements (None by default)
-        :param rate: rate value given to the group
+        :param group_rate: rate value given to the group
         :return: List of IC childs
         """
         parent_ic = element.get_ic_id()
@@ -218,6 +218,7 @@ class InputContainerElement:
         self.group = group
         self.fork_id = fork_id
         self.rate_value = rate_value
+        self.clusters_length = {}
         if fork_id and not input_container.get_by_ic_id(fork_id):
             raise UnknownForkID()
 
@@ -272,6 +273,12 @@ class InputContainerElement:
     def co_follows(self, index):
         fg = self.char_outline.get_groups()[0]
         return fg.get_indices() != Temp.UNALLOCATED and fg.get_indices()[0] > index
+
+    def set_cluster_length(self, system_name, length):
+        if system_name not in self.clusters_length:
+            self.clusters_length[system_name] = length
+        else:
+            raise CannotRewriteClusterLength(system_name)
 
     def shift_following_co(self, shift_int):
         fg = self.char_outline.get_groups()[0]
@@ -1291,4 +1298,8 @@ class SegMethodNotFound(Exception):
 
 
 class CannotCreateBranch(Exception):
+    pass
+
+
+class CannotRewriteClusterLength(Exception):
     pass
