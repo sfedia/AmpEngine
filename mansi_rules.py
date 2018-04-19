@@ -2418,7 +2418,6 @@ def stem_token(ic, elem):
                 group=group_index,
                 status='preview'
             )
-    if elem.is_last_in_cluster():
     else:
         ic.ic_log.add_log(
             "STEMS_EXTRACTED",
@@ -2438,6 +2437,7 @@ def stem_token(ic, elem):
             status='preview'
         )
 
+    if elem.is_last_in_cluster('universal:token'):
         ic.nullint_for_cluster(elem.get_parent_ic_id())
         for elem in ic.get_by_ic_id(elem.get_parent_ic_id()).get_childs():
             stems_ext = ic.ic_log.get_log_sequence(
