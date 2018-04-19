@@ -2433,12 +2433,14 @@ def stem_token(ic, elem):
                     cel.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
                     cel_stem = stems_ext[0]
                     cel_stem.set_prop('element_id', cel.get_ic_id())
+                    cel_stem.remove_prop('status')
                     ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
                 else:
                     cel = ic.clone_within_cluster(elem, gr_index)
                     cel.set_parameter('mansi:basic_pos', pos_ext[gr_index].get_prop('pos_tag'))
                     cel_stem = stems_ext[gr_index]
                     cel_stem.set_prop('element_id', cel.get_ic_id())
+                    cel_stem.remove_prop('status')
                     ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
 
         ic.ic_log.remove_logs_from_sector(
