@@ -98,6 +98,11 @@ class LogDocument:
             raise PropNotFound()
         self.props[prop_name] = prop_value
 
+    def remove_prop(self, prop_name):
+        if prop_name not in self.props:
+            raise PropNotFound()
+        del self.props[prop_name]
+
     def set_sector_name(self, sector_name):
         self.sector_name = sector_name
 
