@@ -277,10 +277,7 @@ class InputContainerElement:
         return fg.get_indices() != Temp.UNALLOCATED and fg.get_indices()[0] > index
 
     def set_cluster_length(self, system_name, length):
-        if system_name not in self.clusters_length:
-            self.clusters_length[system_name] = length
-        else:
-            raise CannotRewriteClusterLength(system_name)
+        self.clusters_length[system_name] = length
 
     def shift_following_co(self, shift_int):
         fg = self.char_outline.get_groups()[0]
@@ -1300,8 +1297,4 @@ class SegMethodNotFound(Exception):
 
 
 class CannotCreateBranch(Exception):
-    pass
-
-
-class CannotRewriteClusterLength(Exception):
     pass
