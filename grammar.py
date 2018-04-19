@@ -1162,19 +1162,19 @@ class LinkSentence:
             if not return_bs:
                 return link_slice[0]
             else:
-                return link_slice[0], elems_set, execute_for_element(element, link_slice[0])
+                return link_slice[0], elems_set, self.execute_for_element(element, link_slice[0])
         elif common_operator == '&':
             blc = False not in complete_list
             if not return_bs:
-                return blc, execute_for_element(element, blc)
+                return blc, self.execute_for_element(element, blc)
             else:
-                return blc, elems_set, execute_for_element(element, blc)
+                return blc, elems_set, self.execute_for_element(element, blc)
         elif common_operator == '|':
             blc = True in complete_list
             if not return_bs:
-                return blc, execute_for_element(element, blc)
+                return blc, self.execute_for_element(element, blc)
             else:
-                return blc, elems_set, execute_for_element(element, blc)
+                return blc, elems_set, self.execute_for_element(element, blc)
         else:
             raise WrongLinkSentence()
 
