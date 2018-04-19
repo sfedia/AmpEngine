@@ -90,7 +90,7 @@ class LogDocument:
 
     def get_prop(self, prop_name):
         if prop_name not in self.props:
-            raise PropNotFound()
+            raise PropNotFound(prop_name)
         return self.props[prop_name]
 
     def set_prop(self, prop_name, prop_value):
