@@ -268,10 +268,9 @@ class InputContainerElement:
         return self.char_outline
 
     def is_last_in_cluster(self, system_name):
-        p_childs = self.input_container.get_by_ic_id(self.get_parent_ic_id()).get_childs(
-            lambda e: e.get_system_name() == system_name
-        )
-        return self in p_childs and p_childs.index(self) == len(self.clusters_length[system_name]) - 1
+        parent_element = self.input_container.get_by_ic_id(self.get_parent_ic_id())
+        p_childs = parent_element.get_childs(lambda e: e.get_system_name() == system_name)
+        return self in p_childs and p_childs.index(self) == parent_element.clusters_length[system_name] - 1
 
     def co_follows(self, index):
         fg = self.char_outline.get_groups()[0]
