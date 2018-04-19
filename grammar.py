@@ -89,6 +89,7 @@ class InputContainer:
         ices = []
         if set_group is not None:
             self.group_data[(parent_ic, set_group)] = {'rate': group_rate}
+        element.set_cluster_length(child_system, len(c_outlines))
         for outline_object in c_outlines:
             try:
                 mc_link = outline_object.get_metadata()['mc_id']
