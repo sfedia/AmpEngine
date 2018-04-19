@@ -1128,6 +1128,13 @@ class LinkSentence:
 
         return parsed_list
 
+    def execute_for_element(self, elt, bl):
+        if not bl:
+            return elt
+        for a in self.transmitter.get_applied()['actions']:
+            elt = collection.static.Handler.get_func(a.get_path())(elt, a.get_arguments())
+        return elt
+
     def is_good(self, link_slice, element, elems_set, check_function, return_bs=False):
         len_link_slice = len(link_slice)
         complete_list = []
@@ -1150,13 +1157,6 @@ class LinkSentence:
 
         if not common_operator and (not link_slice or len(link_slice) > 1):
             raise WrongLinkSentence()
-
-        def execute_for_element(elt, bl):
-            if not bl:
-                return elt
-            for a in self.transmitter.get_applied()['actions']:
-                elt = collection.static.Handler.get_func(a.get_path())(elt, a.get_arguments())
-            return elt
 
         if not common_operator:
             if not return_bs:
