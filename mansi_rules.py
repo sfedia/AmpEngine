@@ -2458,7 +2458,8 @@ def stem_token(ic, elem):
             pos_ext = ic.ic_log.get_log_sequence(
                 "POS_EXTRACTED", element_id=elem.get_ic_id(), cluster_id=elem.get_parent_ic_id()
             )
-            for gr_index in range(len(pos_tags)):
+            max_ptl = ic.ic_log.get_log_sequence("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id())
+            for gr_index in range(max_ptl[0].get_prop('int_value')):
                 if gr_index >= len(pos_ext):
                     cel = ic.clone_within_cluster(elem, gr_index)
                     cel.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
