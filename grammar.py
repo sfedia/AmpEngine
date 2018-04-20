@@ -1008,6 +1008,10 @@ class LinkSentence:
             if need_elems:
                 for index in need_elems:
                     elems_set.set_visited(index)
+                    if not collections.dependency.check_transitivity(
+                            element.get_system_name(), elems_set.bs_array[index][1].get_type()
+                    ):
+                        continue
                     for action in elems_set.bs_array[index][1].get_applied()['actions']:
                         element = collection.static.Handler.get_func(action.get_path())(element, action.get_arguments())
                 parameter = element.get_parameter(param_pair.key, param_pair.arguments, value=param_pair.value)
