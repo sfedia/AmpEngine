@@ -2398,12 +2398,12 @@ def stem_token(ic, elem):
     )
     pos_tags = [stem['pos_tags'][0] for stem in stem_results]
     pos_tags = list(set(pos_tags))
+    try:
+        ic.ic_log.add_sector("MAX_CLUSTER_PTL")
+    except log_handler.log_object.LogSectorAlreadyExists:
+        pass
     max_ptl = ic.ic_log.get_log_sequence("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id())
     if not max_ptl:
-        try:
-            ic.ic_log.add_sector("MAX_CLUSTER_PTL")
-        except log_handler.log_object.LogSectorAlreadyExists:
-            pass
         ic.ic_log.add_log("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id(), int_value=len(pos_tags))
     elif len(pos_tags) > max_ptl[0].get_prop('int_value'):
         ic.ic_log.edit_log_document(
