@@ -2404,7 +2404,7 @@ def stem_token(ic, elem):
             ic.ic_log.add_sector("MAX_CLUSTER_PTL")
         except log_handler.log_object.LogSectorAlreadyExists:
             pass
-        ic.ic_log.add_log_document("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id(), int_value=len(pos_tags))
+        ic.ic_log.add_log("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id(), int_value=len(pos_tags))
     elif len(pos_tags) > max_ptl[0].get_prop('int_value'):
         ic.ic_log.edit_log_document(
             "MAX_CLUSTER_PTL",
