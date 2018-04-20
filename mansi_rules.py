@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import grammar
+import log_handler
 import mansi_stemmer
 import structures_collection as coll
 
