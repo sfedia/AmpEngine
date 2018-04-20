@@ -2436,7 +2436,6 @@ def stem_token(ic, elem):
             "STEMS_EXTRACTED",
             element_id=elem.get_ic_id(),
             cluster_id=elem.get_parent_ic_id(),
-            pos_tag="unknown",
             positions=list(range(len(elem.get_content()))),
             group=0,
             status='preview'
