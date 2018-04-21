@@ -8,6 +8,7 @@ import itertools
 import collections
 import random
 import string
+from copy import copy
 
 
 class InputContainer:
