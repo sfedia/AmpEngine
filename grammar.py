@@ -70,7 +70,7 @@ class InputContainer:
         return [element for element in self.elements if element.get_system_name() == system_name]
 
     def clone_within_cluster(self, element, new_group_index):
-        new_element = element
+        new_element = copy(element)
         new_element.group = new_group_index
         new_element.ic_id = self.generate_ic_id()
         self.elements.append(new_element)
