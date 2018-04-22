@@ -219,10 +219,10 @@ def morpheme_in_token(input_container_element, container, input_container):
                     if element.get_content() == grammar.Temp.NULL:
                         if j > 0:
                             for k in upd_seq[j - 1]:
-                                upd_seq.append({element.get_id(): (upd_seq[j - 1][k][0][0],)})
+                                upd_seq.append({element.get_id(): ([-1, upd_seq[j - 1][k][0][0]],)})
                         elif j < len(upd_seq) - 1:
                             for k in upd_seq[j + 1]:
-                                upd_seq.append({element.get_id(): (upd_seq[j + 1][k][0][0],)})
+                                upd_seq.append({element.get_id(): ([-1, upd_seq[j + 1][k][0][0]],)})
                     else:
                         rei = real_elements.index(j)
                         for k in seq[rei]:
