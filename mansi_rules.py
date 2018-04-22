@@ -2,6 +2,7 @@
 import grammar
 import log_handler
 import mansi_stemmer
+import copy
 import structures_collection as coll
 
 # ...
@@ -2464,14 +2465,14 @@ def stem_token(ic, elem):
                 if gr_index >= len(pos_ext):
                     cel = ic.clone_within_cluster(elem, gr_index)
                     cel.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
-                    cel_stem = stems_ext[0]
+                    cel_stem = copy.deepcopy(stems_ext[0])
                     cel_stem.set_prop('element_id', cel.get_ic_id())
                     cel_stem.remove_prop('status')
                     ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
                 else:
                     cel = ic.clone_within_cluster(elem, gr_index)
                     cel.set_parameter('mansi:basic_pos', pos_ext[gr_index].get_prop('pos_tag'))
-                    cel_stem = stems_ext[gr_index]
+                    cel_stem = copy.deepcopy(stems_ext[gr_index])
                     cel_stem.set_prop('element_id', cel.get_ic_id())
                     cel_stem.remove_prop('status')
                     ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
