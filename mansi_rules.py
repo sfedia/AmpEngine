@@ -21,7 +21,7 @@ rombandeeva = grammar.Container()
 
 #####
 
-rombandeeva.add_element('universal:morpheme', '^та!л', 'tal_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^та̄л', 'tal_suffix').applied(
     *[
         grammar.LinkSentence('# & universal:entity=(token) & mansi:simple_pos=(adj)'),
         [grammar.Action('sem:make_opposite')]  # CAR
@@ -121,10 +121,10 @@ lps_matrix = [
     ['sing', '1', 'ум', 'um'],
     ['sing', '2', 'ын', 'yn'],
     ['sing', '3', 'е', 'e'],
-    ['dual', '1', 'ме!н', 'men'],
-    ['dual', '3', 'е!н', 'en'],
+    ['dual', '1', 'ме̄н', 'men'],
+    ['dual', '3', 'е̄н', 'en'],
     ['plur', '1', 'ув', 'uv'],
-    ['plur', '3', 'а!ныл', 'anyl'],
+    ['plur', '3', 'а̄ныл', 'anyl'],
 ]
 
 for number, person, suffix, id in lps_matrix:
@@ -137,7 +137,7 @@ for number, person, suffix, id in lps_matrix:
         ]
     )
 
-rombandeeva.add_element('universal:morpheme', '^ы!н', 'yn_suffix_lps').add_class('lps').applied(
+rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_suffix_lps').add_class('lps').applied(
     *[
         grammar.LinkSentence(
             is_noun + '& gram:possessor:number!=(sing) & gram:possessor:person=(2)'
@@ -204,7 +204,7 @@ rombandeeva.add_element('universal:morpheme', '^т', 't_case_suffix').applied(
 
 rombandeeva.add_element('universal:morpheme', '^ыт', 'yt_case_suffix').applied(
     *[
-        grammar.LinkSentence(is_noun + '& universal:reg_match=(%MANSI_CONS2_END%){pre=(ыт)}'),
+        grammar.LinkSentence(is_noun),# + '& universal:reg_match=(%MANSI_CONS2_END%){pre=(ыт)}'),
         [grammar.Action('gram:case:set_loc')]
     ]
 ).add_class('case_suffix')
@@ -271,36 +271,36 @@ rombandeeva.get_class('infinitive_excl_suff', await=True).added_behaviour('overr
 
 # infinitive!
 
-rombandeeva.add_element('universal:morpheme', '^ун!кве', 'u+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^уӈкве', 'u+_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(
-            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(ун!кве)} & universal:syl_count:odd=(){pre=(ун!кве)}'
+            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(уӈкве)} & universal:syl_count:odd=(){pre=(уӈкве)}'
         ),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^юн!кве', 'yu+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^юӈкве', 'yu+_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(
-            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(ун!кве)} & universal:syl_count:odd=(){pre=(ун!кве)}'
+            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(уӈкве)} & universal:syl_count:odd=(){pre=(уӈкве)}'
         ),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^ан!кве', 'a+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^аӈкве', 'a+_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(
-            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(ун!кве)} & universal:syl_count:even=(){pre=(ун!кве)}'
+            is_verb + '& universal:reg_match=(%MANSI_CONS_END%){pre=(уӈкве)} & universal:syl_count:even=(){pre=(уӈкве)}'
         ),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^н!кве', 'null+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ӈкве', 'null+_infinitive_suffix').applied(
     *[
-        grammar.LinkSentence(is_verb + '& universal:reg_match=(%MANSI_VOW_END%){pre=(н!кве)} & universal:syl_count=(1)'),
+        grammar.LinkSentence(is_verb),# + '& universal:reg_match=(%MANSI_VOW_END%){pre=(ӈкве)} & universal:syl_count=(1)'),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
@@ -548,7 +548,7 @@ rombandeeva.add_element('universal:collocation', '''
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^н!', 'ng_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ӈ', 'ng_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:set_attr') # ATTR
@@ -557,7 +557,7 @@ rombandeeva.add_element('universal:morpheme', '^н!', 'ng_suffix').applied(
     [grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(noun)')]
 )
 
-rombandeeva.add_element('universal:morpheme', '^ын!', 'yng_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ыӈ', 'yng_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:set_attr')
@@ -566,7 +566,7 @@ rombandeeva.add_element('universal:morpheme', '^ын!', 'yng_suffix').applied(
     [grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(noun)')]
 )
 
-rombandeeva.add_element('universal:morpheme', '^ин!', 'ing_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^иӈ', 'ing_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:set_attr')
@@ -711,7 +711,7 @@ rombandeeva.get_class('kem_abstraction', await=True).added_behaviour('''
 ''')
 
 rombandeeva.add_element('universal:collocation', '''
-    <[mansi:basic_pos=(numeral)]> *1 <[universal:content=(суп) | universal:content=(па!л)]>
+    <[mansi:basic_pos=(numeral)]> *1 <[universal:content=(суп) | universal:content=(па̄л)]>
 ''', 'num_partial_colloc').applied(
     grammar.LinkSentence('# & universal:entity=(input)'),
     [
@@ -724,66 +724,66 @@ rombandeeva.add_element('universal:collocation', '''
 personal_pronouns = {
     '1SG': {
         'nom': 'ам',
-        'acc': 'а!нум',
-        'dat': 'а!нумн',
-        'abl': 'а!нумныл',
-        'instr': 'а!нумтыл',
+        'acc': 'а̄нум',
+        'dat': 'а̄нумн',
+        'abl': 'а̄нумныл',
+        'instr': 'а̄нумтыл',
     },
     '2SG': {
-        'nom': 'нан!',
-        'acc': 'нан!ын',
-        'dat': 'нан!ынн',
-        'abl': 'нан!ынныл',
-        'instr': 'нан!ынтыл',
+        'nom': 'наӈ',
+        'acc': 'наӈын',
+        'dat': 'наӈынн',
+        'abl': 'наӈынныл',
+        'instr': 'наӈынтыл',
     },
     '3SG': {
         'nom': 'тав',
         'acc': 'таве',
-        'dat': 'таве!н',
-        'abl': 'таве!ныл',
+        'dat': 'таве̄н',
+        'abl': 'таве̄ныл',
         'instr': 'таветыл',
     },
     '1DU': {
-        'nom': 'ме!н',
-        'acc': 'ме!нме!н',
-        'dat': 'ме!нме!нн',
-        'abl': 'ме!нме!нныл',
-        'instr': 'ме!нме!нтыл',
+        'nom': 'ме̄н',
+        'acc': 'ме̄нме̄н',
+        'dat': 'ме̄нме̄нн',
+        'abl': 'ме̄нме̄нныл',
+        'instr': 'ме̄нме̄нтыл',
     },
     '2DU': {
-        'nom': 'нэ!н',
-        'acc': 'нэ!нан',
-        'dat': 'нэ!нанн',
-        'abl': 'нэ!нанныл',
-        'instr': 'нэ!нантыл',
+        'nom': 'нэ̄н',
+        'acc': 'нэ̄нан',
+        'dat': 'нэ̄нанн',
+        'abl': 'нэ̄нанныл',
+        'instr': 'нэ̄нантыл',
     },
     '3DU': {
-        'nom': 'тэ!н',
-        'acc': 'тэ!нтэ!н',
-        'dat': 'тэ!нтэ!нн',
-        'abl': 'тэ!нтэ!нныл',
-        'instr': 'тэ!нтэ!нтыл',
+        'nom': 'тэ̄н',
+        'acc': 'тэ̄нтэ̄н',
+        'dat': 'тэ̄нтэ̄нн',
+        'abl': 'тэ̄нтэ̄нныл',
+        'instr': 'тэ̄нтэ̄нтыл',
     },
     '1PL': {
-        'nom': 'ма!н',
-        'acc': 'ма!нав',
-        'dat': 'ма!навн',
-        'abl': 'ма!навныл',
-        'instr': 'ма!навтыл'
+        'nom': 'ма̄н',
+        'acc': 'ма̄нав',
+        'dat': 'ма̄навн',
+        'abl': 'ма̄навныл',
+        'instr': 'ма̄навтыл'
     },
     '2PL': {
-        'nom': 'на!н',
-        'acc': 'на!нан',
+        'nom': 'на̄н',
+        'acc': 'на̄нан',
         'dat': 'нананн',
-        'abl': 'на!нанныл',
-        'instr': 'на!нантыл'
+        'abl': 'на̄нанныл',
+        'instr': 'на̄нантыл'
     },
     '3PL': {
-        'nom': 'та!н',
-        'acc': 'та!наныл',
-        'dat': 'та!нанылн',
-        'abl': 'та!нанылныл',
-        'instr': 'та!нанылтыл'
+        'nom': 'та̄н',
+        'acc': 'та̄наныл',
+        'dat': 'та̄нанылн',
+        'abl': 'та̄нанылныл',
+        'instr': 'та̄нанылтыл'
     }
 }
 
@@ -821,7 +821,7 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
    )
 )
 
-rombandeeva.add_element('universal:morpheme', '^на!', 'na_pr_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^на̄', 'na_pr_suffix').applied(
     grammar.LinkSentence('# & mansi:simple_pos=(pronoun) & mansi:pronoun:is_personal=()'),
     [
         grammar.Action('gram:set_refl')  # REFL
@@ -840,8 +840,8 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
 lps_matrix_2 = [
     ['sing', '1', '^м'],
     ['sing', '3', '^тэ'],
-    ['dual', '1', '^ме!н'],
-    ['dual', '3', '^тэ!н'],
+    ['dual', '1', '^ме̄н'],
+    ['dual', '3', '^тэ̄н'],
     ['plur', '1', '^в'],
     ['plur', '3', '^ныл']
 ]
@@ -875,8 +875,8 @@ rombandeeva.add_element(
 
 interrog_pronoun = [
     ['хотъют', 'хотъютыг', 'хотъютыт', 'hotyut'],
-    ['хо!н!ха', 'хо!н!хаг', 'хо!н!хат', 'honha'],
-    ['ма!ныр', 'ма!нарыг', 'ма!нарыт', 'manyr']
+    ['хо̄ӈха', 'хо̄ӈхаг', 'хо̄ӈхат', 'honha'],
+    ['ма̄ныр', 'ма̄нарыг', 'ма̄нарыт', 'manyr']
 ]
 
 for sing, dual, plur, id_word in interrog_pronoun:
@@ -943,10 +943,10 @@ for j, group in enumerate(demonstr_pronoun_matrix):
 
 det_pronoun_matrix = [
     ['tamle', 'тамле'],
-    ['kasyn', 'ка!сын!'],
+    ['kasyn', 'ка̄сыӈ'],
     ['pussyn', 'пуссын'],
-    ['tova', 'то!ва'],
-    ['tasavit', 'таса!вит']
+    ['tova', 'то̄ва'],
+    ['tasavit', 'таса̄вит']
 ]
 for id_word, mansi_word in det_pronoun_matrix:
     rombandeeva.add_element(
@@ -961,7 +961,7 @@ for id_word, mansi_word in det_pronoun_matrix:
         ]
     )
 
-hotpa = ['хо!тпа', 'хо!тпаг', 'хо!тпат']
+hotpa = ['хо̄тпа', 'хо̄тпаг', 'хо̄тпат']
 matyr = ['матыр', 'матарыг', 'матарыт']
 
 for j in range(3):
@@ -976,11 +976,11 @@ for j in range(3):
         )
 
 matyr_hotpa_matrix = [
-    ['nom', 'хо!тпа', 'матыр'],
-    ['dat', 'хо!тпан', 'матарн'],
-    ['abl', 'хо!тпаныл', 'матарныл'],
-    ['instr', 'хо!тпал', 'матарыл'],
-    ['trans', 'хо!тпаг', 'матарыг']
+    ['nom', 'хо̄тпа', 'матыр'],
+    ['dat', 'хо̄тпан', 'матарн'],
+    ['abl', 'хо̄тпаныл', 'матарныл'],
+    ['instr', 'хо̄тпал', 'матарыл'],
+    ['trans', 'хо̄тпаг', 'матарыг']
 ]
 
 for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
@@ -1001,10 +1001,10 @@ for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
         ]
     )
 
-# negative pronouns нэ!мхо!тпа and нэ!матыр
+# negative pronouns нэ̄мхо̄тпа and нэ̄матыр
 for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
     rombandeeva.add_element(
-        'universal:token', 'нэ!м' + h_paradigm, 'NEG_hotpa_{}'.format(case)
+        'universal:token', 'нэ̄м' + h_paradigm, 'NEG_hotpa_{}'.format(case)
     ).applied(
         grammar.LinkSentence('# & universal:entity=(input)'),
         [
@@ -1012,7 +1012,7 @@ for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
         ]
     )
     rombandeeva.add_element(
-        'universal:token', 'нэ!' + m_paradigm, 'NEG_matyr_{}'.format(case)
+        'universal:token', 'нэ̄' + m_paradigm, 'NEG_matyr_{}'.format(case)
     ).applied(
         grammar.LinkSentence('# & universal:entity=(input)'),
         [
@@ -1119,7 +1119,7 @@ rombandeeva.add_element('universal:morpheme', grammar.Temp.NULL, 'conj_null').ap
 ).add_class('conj_set')
 #
 
-present_s_consonant_suffs = [('ye!g', 'е!г'), ('i', 'и'), ('ye', 'е'), ('ye!', 'е!')]
+present_s_consonant_suffs = [('ye!g', 'е̄г'), ('i', 'и'), ('ye', 'е'), ('ye!', 'е̄')]
 for code, suff in present_s_consonant_suffs:
     rombandeeva.add_element(
         'universal:morpheme',
@@ -1137,7 +1137,7 @@ for code, suff in present_s_consonant_suffs:
         ]
     )
 
-present_h_consonant_suffs = [('eg', 'эг'), ('e!g', 'э!г'), ('y', 'ы'), ('e', 'э'), ('e!', 'э!')]
+present_h_consonant_suffs = [('eg', 'эг'), ('e!g', 'э̄г'), ('y', 'ы'), ('e', 'э'), ('e!', 'э̄')]
 for code, suff in present_h_consonant_suffs:
     rombandeeva.add_element(
         'universal:morpheme',
@@ -1160,7 +1160,7 @@ rombandeeva.add_element('universal:morpheme', '^ыс', 'ys_past_suffix').applied
         '''# & universal:entity=(token)
             & mansi:basic_pos=(verb)
             & universal:syl_count=(1)
-            & universal:reg_match(%MANSI_CONS_1,2_END%){pre=(ыс)}'''
+            & universal:reg_match=(%MANSI_CONS_1,2_END%){pre=(ыс)}'''
     ),
     [
         grammar.Action('gram:tense:set_past')
@@ -1186,7 +1186,7 @@ rombandeeva.add_element('universal:morpheme', '^с', 's_past_suffix').applied(
         '''# & universal:entity=(token)
             & mansi:basic_pos=(verb)
             & universal:syl_count>(1)
-            & universal:reg_match(%MANSI_VOW_END%){pre=(с)}'''
+            & universal:reg_match=(%MANSI_VOW_END%){pre=(с)}'''
     ),
     [
         grammar.Action('gram:tense:set_past')
@@ -1323,7 +1323,7 @@ rombandeeva.add_element(
     ]
 ).add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ме!н', 'men_1dual_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ме̄н', 'men_1dual_ind_objless').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1336,7 +1336,7 @@ rombandeeva.add_element('universal:morpheme', '^ме!н', 'men_1dual_ind_objless
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ы!н', 'yn_2_dual/plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_2_dual/plur_ind_objless').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1402,7 +1402,7 @@ rombandeeva.add_element('universal:morpheme', '^в', 'v_1plur_ind_objless').appl
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^э!в', 'ev_1plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄в', 'ev_1plur_ind_objless').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1446,7 +1446,7 @@ rombandeeva.add_element('universal:collocation', '''
 
 rombandeeva.add_element(
     'universal:collocation',
-    '<[gram:verb:infinitive=()]> *1 <[mansi:lemma=(патун!кве)]>',
+    '<[gram:verb:infinitive=()]> *1 <[mansi:lemma=(патуӈкве)]>',
     'future_patunkwe'
 ).applied(
     grammar.LinkSentence('# & universal:entity=(input)'),
@@ -1525,7 +1525,7 @@ rombandeeva.add_element('universal:morpheme', '^тэ', 'te_obj_conj').applied(
     ]
 ).add_class('l_non_friendly').add_class('verb_conj_personal')
 
-rombandeeva.add_element('mansi:VowMorpheme', '^ме!н', 'men_obj_conj').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^ме̄н', 'men_obj_conj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:conj=(obj)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['1']),
@@ -1533,7 +1533,7 @@ rombandeeva.add_element('mansi:VowMorpheme', '^ме!н', 'men_obj_conj').applied
     ]
 ).add_class('l_friendly').add_class('verb_conj_personal')
 
-rombandeeva.add_element('mansi:VowMorpheme', '^ы!н', 'yyn_obj_conj').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^ы̄н', 'yyn_obj_conj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:conj=(obj)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['2']),
@@ -1542,7 +1542,7 @@ rombandeeva.add_element('mansi:VowMorpheme', '^ы!н', 'yyn_obj_conj').applied(
     ]
 ).add_class('l_friendly').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^тэ!н', 'teen_obj_conj').applied(
+rombandeeva.add_element('universal:morpheme', '^тэ̄н', 'teen_obj_conj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:conj=(obj)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['3']),
@@ -1558,7 +1558,7 @@ rombandeeva.add_element('mansi:VowMorpheme', '^ув', 'uv_obj_conj').applied(
     ]
 ).add_class('l_friendly').add_class('verb_conj_personal')
 
-rombandeeva.add_element('mansi:morphemeYU', '^а!ныл', 'jaanyl_obj_conj').applied(
+rombandeeva.add_element('mansi:morphemeYU', '^а̄ныл', 'jaanyl_obj_conj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:conj=(obj)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['3']),
@@ -1625,7 +1625,7 @@ rombandeeva.add_element('universal:morpheme', grammar.Temp.NULL, 'null_suffix_su
     ]
 ).add_class('subj_pass_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('mansi:VowMorpheme', '^ме!н', 'men_suffix_subj_pass').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^ме̄н', 'men_suffix_subj_pass').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:conj=(subj_pass)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['1']),
@@ -1709,14 +1709,14 @@ rombandeeva.add_element('mansi:VowMorpheme', '^н', 'n_suffix_imperative').appli
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^э!', 'ee_suffix_imperative_present').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄', 'ee_suffix_imperative_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
         grammar.Action('gram:tense:set_present')
     ]
 ).add_class('imperative_present_2du_pl')
 
-rombandeeva.add_element('universal:morpheme', '^е!', 'yee_suffix_imperative_present').applied(
+rombandeeva.add_element('universal:morpheme', '^е̄', 'yee_suffix_imperative_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
         grammar.Action('gram:tense:set_present')
@@ -1812,10 +1812,10 @@ vcp_ext_matrix = [
     ['sing', '1', 'ум', 'um'],
     ['sing', '2', 'ын', 'yn'],
     ['sing', '3', 'е', 'e'],
-    ['dual', '1', 'ме!н', 'men'],
-    ['dual', '3', 'е!н', 'en'],
+    ['dual', '1', 'ме̄н', 'men'],
+    ['dual', '3', 'е̄н', 'en'],
     ['plur', '1', 'ув', 'uv'],
-    ['plur', '3', 'а!ныл', 'anyl']
+    ['plur', '3', 'а̄ныл', 'anyl']
 ]
 for number, person, suffix, id_name in vcp_ext_matrix:
     rombandeeva.add_element(
@@ -1884,7 +1884,7 @@ rombandeeva.add_element('universal:morpheme', '^е', 'ye_latentive_present').app
     ]
 ).add_class('tense_suffs_latentive')
 
-rombandeeva.add_element('universal:morpheme', '^е!', 'yee_latentive_present').applied(
+rombandeeva.add_element('universal:morpheme', '^е̄', 'yee_latentive_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(latentive)'),
     [
         grammar.Action('gram:tense:set_present')
@@ -1898,7 +1898,7 @@ rombandeeva.add_element('universal:morpheme', '^э', 'e_latentive_present').appl
     ]
 ).add_class('tense_suffs_latentive')
 
-rombandeeva.add_element('universal:morpheme', '^э!', 'ee_latentive_present').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄', 'ee_latentive_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(latentive)'),
     [
         grammar.Action('gram:tense:set_present')
@@ -1943,12 +1943,12 @@ rombandeeva.add_element('universal:morpheme', '^ам', 'am_suffix_past_latentive
 ).add_class('latentive_suffs_past').add_class('latentive_suffs')
 
 # i am not sure we need syl_count there
-rombandeeva.add_element('universal:morpheme', '^у!м', 'uum_suffix_past_latentive').applied(
+rombandeeva.add_element('universal:morpheme', '^ӯм', 'uum_suffix_past_latentive').applied(
     grammar.LinkSentence(
         '''# & universal:entity=(token)
         & mansi:basic_pos=(verb)
-        & mansi:syl_count=(1){pre=(у!м)}
-        & universal:reg_match=(%MANSI_VOW%[лн]){pre=(у!м)}
+        & mansi:syl_count=(1){pre=(ӯм)}
+        & universal:reg_match=(%MANSI_VOW%[лн]){pre=(ӯм)}
         '''
     ),
     [
@@ -1997,7 +1997,7 @@ rombandeeva.add_element('universal:morpheme', '^мыгт', 'mygt_suffix').applie
     ]
 ).add_class('word_formation')
 
-dur_suffs = ['а!нт', 'ант', 'гал', 'л', 'ас', 'асьл', 'ал', 'а!л', 'с', 'ыгл', 'тл']
+dur_suffs = ['а̄нт', 'ант', 'гал', 'л', 'ас', 'асьл', 'ал', 'а̄л', 'с', 'ыгл', 'тл']
 
 for e, suff in enumerate(dur_suffs):
     rombandeeva.add_element('universal:morpheme', '^' + suff, 'dur_suff_' + str(e)).applied(
@@ -2008,7 +2008,7 @@ for e, suff in enumerate(dur_suffs):
     ).add_class('word_formation')
 
 
-iter_suffs = ['а!л', 'ыгл', 'гала!л', 'ыгла!л', 'а!лыгл', 'ата!л', 'лант', 'гал']
+iter_suffs = ['а̄л', 'ыгл', 'гала̄л', 'ыгла̄л', 'а̄лыгл', 'ата̄л', 'лант', 'гал']
 
 for e, suff in enumerate(iter_suffs):
     rombandeeva.add_element('universal:morpheme', '^' + suff, 'iter_suff_' + str(e)).applied(
@@ -2094,7 +2094,7 @@ rombandeeva.add_element('universal:morpheme', '_^лап', 'lap_prefix').applied(
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '_^э!л', 'eel_prefix').applied(
+rombandeeva.add_element('universal:morpheme', '_^э̄л', 'eel_prefix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
         grammar.Action('direct:set_meaning', arguments=['от'])
@@ -2108,7 +2108,7 @@ rombandeeva.add_element('universal:morpheme', '_^ёл', 'yol_prefix').applied(
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '_^но!х', 'noh_prefix').applied(
+rombandeeva.add_element('universal:morpheme', '_^но̄х', 'noh_prefix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
         grammar.Action('direct:set_meaning', arguments=['вверх'])
@@ -2133,7 +2133,7 @@ rombandeeva.add_element('universal:morpheme', '_^кон', 'kon_prefix').applied(
 
 rombandeeva.add_element(
     'universal:collocation',
-    '<[mansi:basic_pos=(noun)]> *1 <[mansi:lemma=(патун!кве)]>',
+    '<[mansi:basic_pos=(noun)]> *1 <[mansi:lemma=(патуӈкве)]>',
     'compound_verb'
 ).applied(
     grammar.LinkSentence('# & universal:entity=(input)'),
@@ -2199,7 +2199,7 @@ rombandeeva.add_element('universal:morpheme', '^нэ', 'nе_participle').applied
     ]
 ).add_class('participle_suffix')
 
-rombandeeva.add_element('universal:morpheme', '^нэ!', 'nee_participle').applied(
+rombandeeva.add_element('universal:morpheme', '^нэ̄', 'nee_participle').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
         grammar.Action('mansi:make_participle'),  # PTCP
@@ -2310,11 +2310,11 @@ rombandeeva.add_element(
 # page 153
 
 postpos_mutable = [
-    ('ки!выр', 'ki*vyr'),
+    ('кӣвыр', 'ki*vyr'),
     ('хал', 'hal'),
-    ('ва!та', 'va*ta'),
-    ('ёлы-па!л', 'yoly_pa*l'), # collocation as variant
-    ('нуми-па!л', 'numi_pa*l') # collocation as variant
+    ('ва̄та', 'va*ta'),
+    ('ёлы-па̄л', 'yoly_pa*l'), # collocation as variant
+    ('нуми-па̄л', 'numi_pa*l') # collocation as variant
 ]
 
 for pp_word, pp_id in postpos_mutable:
@@ -2334,7 +2334,7 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
     parent_filter=grammar.LinkSentence('universal:class=(postpos_mutable)')
 )
 
-rombandeeva.add_element('universal:token', 'па!л', 'pa*l_postpos_in_colloc').applied(
+rombandeeva.add_element('universal:token', 'па̄л', 'pa*l_postpos_in_colloc').applied(
     grammar.LinkSentence('# & universal:entity=(collocation)'),
     [
         grammar.Action('mansi:basic_pos:set_postpos')
@@ -2344,25 +2344,25 @@ rombandeeva.add_element('universal:token', 'па!л', 'pa*l_postpos_in_colloc').
 postpos_unmutable = [
     ['мус', ('до',)],
     ['ёт', ('с',)],
-    ['ма!гыс', ('для', 'за')],
+    ['ма̄гыс', ('для', 'за')],
     ['палт', ('к', 'у')],
     ['тармыл', ('на',)],
     ['паттыиг', ('вместо', 'взамен')],
     ['уртыиг', ('вместо', 'взамен')],
-    ['пе!нтсыл', ('вместо', 'взамен')],
-    ['у!лтта', ('через',)],
+    ['пе̄нтсыл', ('вместо', 'взамен')],
+    ['ӯлтта', ('через',)],
     ['нупыл', ('в направлении',)],
     ['хосыт', ('по',)],
     ['ляльт', ('против',)],
     ['торыг', ('перед',)],
     ['урыл', ('о', 'про')],
-    ['о!вылтытыт', ('о', 'про')],
+    ['о̄вылтытыт', ('о', 'про')],
     ['коны-пал', ('кроме',)],
     ['сыс', ('во время',)],
-    ['э!ртын', ('когда',)],
-    ['э!рт', ('когда',)],
+    ['э̄ртын', ('когда',)],
+    ['э̄рт', ('когда',)],
     ['хольт', ('как',)],
-    ['та!ра', ('мимо',)]
+    ['та̄ра', ('мимо',)]
 ]
 
 pp_i = 0
