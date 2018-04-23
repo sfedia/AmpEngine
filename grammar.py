@@ -1029,17 +1029,17 @@ class LinkSentence:
                 try:
                     multiple_choice = converter.convert_param_pair(param_pair.key, param_pair.value)
                 except converter.CannotConvertSystemTypes:
-                    raise CannotGetParameter()
+                    raise CannotGetParameter(param_pair.key)
 
             else:
                 if param_pair.operator == "!=" and param_pair.is_bool_check():
                     return True, element, elems_set
-                raise CannotGetParameter()
+                raise CannotGetParameter(param_pair.key)
 
         param_set = (parameter,) if not multiple_choice else multiple_choice
 
         if not param_set:
-            raise CannotGetParameter()
+            raise CannotGetParameter(param_pair.key)
 
         for parameter in param_set:
             if not param_pair.is_bool_check():
