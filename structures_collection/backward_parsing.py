@@ -263,6 +263,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                         co_local.add_group(structures_collection.char_level.CharIndexGroup(ci))
                     else:
                         co_local.add_group(structures_collection.char_level.CharIndexGroup(ci[1:], is_virtual=True))
+                co_list.append(co_local)
 
             input_container.segment_element(input_container_element, 'universal:morpheme', co_list, set_group=group_index)
             group_index += 1
