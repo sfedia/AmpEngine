@@ -345,12 +345,13 @@ class GroupCollection:
             self.groups[0] = none_group
             return
         cur_group = 0
-        found_group = [el for el in elements if el.get_group() == cur_group]
-        while found_group:
+        while True:
             found_group = [el for el in elements if el.get_group() == cur_group]
+            if not found_group:
+                break
             self.groups[cur_group] = found_group
+            self.group_count = cur_group + 1
             cur_group += 1
-            self.group_count += 1
 
         # self.groups[N] = Array of CharOutline
         if spread_ci:
