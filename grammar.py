@@ -144,7 +144,7 @@ class InputContainer:
             if collection.auto_segmentation.Handler.is_auto(system):
                 continue
             bw_to_values = collection.backward_parsing.Handler.to_values(system)
-            if not bw_to_values:
+            if not bw_to_values and collection.dependency.systems[system]:
                 raise SegMethodNotFound(system)
             for to_value in bw_to_values:
                 for element in self.get_by_system_name(system):
