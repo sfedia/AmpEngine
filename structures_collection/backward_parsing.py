@@ -255,7 +255,7 @@ def morpheme_in_token(input_container_element, container, input_container):
                 element_id = list(seq_element.keys())[0]
                 co_local = structures_collection.char_level.CharOutline(
                     [],
-                    attachment=container.get_by_id(element_id).get_content(),
+                    attachment=container.get_by_id(element_id).get_clear_content(),
                     metadata={'mc_id': element_id}
                 )
                 for ci in seq_element[element_id]:
