@@ -206,13 +206,16 @@ class HookBank:
 class InputContainerElement:
     def __init__(
             self,
-            system_name, content, input_container, char_outline=None, params=dict(),
+            system_name, content, input_container, char_outline=None, params=None,
             parent=None, group=None, fork_id=None, mc_id_link=None, rate_value=None
             ):
         self.system_name = system_name
         self.content = content
         self.input_container = input_container
-        self.params = params
+        if not params:
+            self.params = {}
+        else:
+            self.params = params
         self.char_outline = char_outline
         self.mc_id_link = mc_id_link
         self.ic_id = input_container.generate_ic_id()
