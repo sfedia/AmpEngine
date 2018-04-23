@@ -9,3 +9,7 @@ class Clear:
                 return content[1:]
             return content
         return content
+
+    @staticmethod
+    def get_mansi_vowels():
+        return [x for x in 'ёуеыаоэяию']
