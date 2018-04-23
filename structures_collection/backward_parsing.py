@@ -240,10 +240,15 @@ def morpheme_in_token(input_container_element, container, input_container):
         for seq in filtered_seqs:
             add_to_lfs = True
             el_seq = [container.get_by_id(list(x.keys())[0]) for x in seq]
-            for mc_element in el_seq:
-                for link in mc_element.get_applied()['links']:
-                    # BS Array
-                    if not link.check(input_container_element, el_seq, lambda: True):
+            bses = el_seq
+            for j, elem in enumerate(el_seq):
+                elem.set_transmitter_local_index(j)
+            for j, elem in enumerate(el_seq):
+                for link in elem.get_applied()['links']:
+                    lc_bool, bses, input_container_element = link.check(
+                        input_container_element, bses, lambda x: True, return_bs=True
+                    )
+                    if not lc_bool:
                         add_to_lfs = False
                         break
                 if not add_to_lfs:
