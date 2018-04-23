@@ -2469,7 +2469,10 @@ def stem_token(ic, elem):
                     cel.set_parameter('mansi:basic_pos', pos_ext[gr_index].get_prop('pos_tag'))
                     cel_stem = copy.deepcopy(stems_ext[gr_index])
                     cel_stem.set_prop('element_id', cel.get_ic_id())
-                    cel_stem.remove_prop('status')
+                    try:
+                        cel_stem.remove_prop('status')
+                    except log_handler.log_object.PropNotFound:
+                        pass
                     ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
                 else:
                     elm.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
