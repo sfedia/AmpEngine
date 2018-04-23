@@ -1,3 +1,3 @@
 #!/usr/bin/python3
 
-#from output_templates import
+from output_templates import mansi
