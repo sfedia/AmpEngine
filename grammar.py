@@ -367,7 +367,7 @@ class GroupCollection:
     def group(self, index):
         return self.groups[index]
 
-    def groups(self, index_pair=False):
+    def itergroups(self, index_pair=False):
         def none_alias(x): return x if x is not None else 0
         sorted_indices = sorted(
             [x for x in range(self.group_count)],
