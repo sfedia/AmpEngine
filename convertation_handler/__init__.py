@@ -45,6 +45,10 @@ def convert_param_pair(st_a, value):
                 variants.append((k[1], convert(st_a, k[1], value)))
             except CannotConvertSystemTypes:
                 pass
+
+    if not variants:
+        raise CannotConvertSystemTypes()
+
     return variants
 
 
