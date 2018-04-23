@@ -371,6 +371,8 @@ class GroupCollection:
 
     def itergroups(self, index_pair=False):
         def none_alias(x): return x if x is not None else 0
+        if (self.parent_ic_id, 0) not in self.input_container.group_data:
+            return []
         sorted_indices = sorted(
             [x for x in range(self.group_count)],
             key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate']),
