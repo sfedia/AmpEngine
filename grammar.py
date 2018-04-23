@@ -90,6 +90,8 @@ class InputContainer:
         ices = []
         if set_group is not None:
             self.group_data[(parent_ic, set_group)] = {'rate': group_rate}
+        elif (parent_ic, 0) not in self.group_data:
+            self.group_data[(parent_ic, 0)] = {'rate': group_rate}
         element.set_cluster_length(child_system, len(c_outlines))
         for outline_object in c_outlines:
             try:
