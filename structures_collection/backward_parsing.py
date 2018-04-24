@@ -217,14 +217,16 @@ def morpheme_in_token(input_container_element, container, input_container):
                 upd_seq = []
 
                 real_elements = [j for j, el in enumerate(cn_seq) if el.get_content() != grammar.Temp.NULL]
+                nc = 0
                 for j, element in enumerate(cn_seq):
                     if element.get_content() == grammar.Temp.NULL:
+                        nc -= 1
                         if j > 0:
-                            for k in upd_seq[j - 1]:
-                                upd_seq.append({element.get_id(): ([-1, upd_seq[j - 1][k][0][0]],)})
+                            for k in upd_seq[j + nc]:
+                                upd_seq.append({element.get_id(): ([-1, upd_seq[j + nc][k][0][0]],)})
                         elif j < len(upd_seq) - 1:
                             for k in upd_seq[j + 1]:
-                                upd_seq.append({element.get_id(): ([-1, upd_seq[j + 1][k][0][0]],)})
+                                upd_seq.append({element.get_id(): ([-1, upd_seq[j + nc][k][0][0]],)})
                     else:
                         rei = real_elements.index(j)
                         for k in seq[rei]:
