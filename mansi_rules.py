@@ -2361,7 +2361,6 @@ input_container.onseg_hook_bank.end_del = list(set(input_container.onseg_hook_ba
 
 
 def stem_token(ic, elem):
-    print('CALL')
     stem_results = ic.onseg_hook_bank.stemmer.find(
         elem.get_content(),
         start_del=[],
