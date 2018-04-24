@@ -22,8 +22,7 @@ class InputContainer:
         self.ic_log = logs.log_object.New()
         self.create_default_icl_sectors()
         self.main_container = None
-        self.config_obj = collections.namedtuple('InputContainerSettings', 'param_rewrite')
-        self.config = self.config_obj(param_rewrite=False)
+        self.config = InputContainerConfig()
         self.group_data = {}
         self.onseg_hooks = {}
         self.onseg_hook_bank = HookBank()
@@ -199,6 +198,11 @@ class InputContainer:
                                 branching=action.branching_allowed()
                             )
                     break
+
+
+class InputContainerConfig:
+    def __init__(self):
+        self.param_rewrite = False
 
 
 class HookBank:
