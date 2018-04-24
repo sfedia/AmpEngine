@@ -2399,6 +2399,21 @@ for lemma, meanings in postpos_unmutable:
 
 
 text = 'танки'
+
+
+def remove_macrons(text):
+    chars = {
+        "а̄": "а",
+        "ӯ": "у",
+        "э̄": "э",
+        "е̄": "е",
+        "о̄": "о",
+        "ӣ": "и"
+    }
+    for c in chars:
+        text = text.replace(c, chars[c])
+    return text
+
 input_container = grammar.InputContainer(text, prevent_auto=True)
 input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
 input_container.onseg_hook_bank.end_del = [
