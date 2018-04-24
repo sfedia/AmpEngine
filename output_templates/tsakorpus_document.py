@@ -3,6 +3,7 @@
 import output_templates.tsakorpus_encode as tsa_encode
 import grammar
 import json
+import string
 
 
 class Template:
@@ -108,7 +109,7 @@ class Template:
                 print(token_object)
                 sentence_object["words"].append(token_object)
             for j, char in enumerate(sentence.get_content()):
-                if char == ",":
+                if char in string.punctuation:
                     sentence_object["words"].append({
                         "wf": char,
                         "wtype": "punct",
