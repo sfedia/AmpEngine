@@ -18,6 +18,7 @@ class Encode:
             "ART": "pos",
             "CONJ": "pos",
             "CNJ": "pos",
+            "PTCP": "pos",
             "N": "pos",
             "NUM": "pos",
             "PREP": "pos",
@@ -33,18 +34,32 @@ class Encode:
             "abl": "case",
             "nom": "case",
             "lat": "case",
-            "ins": "case",
+            "instr": "case",
             "loc": "case",
+            "dat": "case",
             "acc": "case",
             "trans": "case",
+            "mult": "case",
+            "sol": "case",
+            "emph": "case",
+            "voc": "case",
+            "car": "case",
             "prs": "tense",
             "pst": "tense",
             "evid": "mood",
             "ind": "mood",
+            "aud": "mood",
+            "sbjv": "mood",
+            "opt": "mood",
+            "supl": "supl",
             "fut": "tense",
             "pl": "number",
             "du": "number",
             "sg": "number",
+            "inch": "aspect",
+            "dur": "aspect",
+            "refl": "voice",
+            "pass": "voice",
             "ptcp": "v_form",
             "cvb": "v_form",
             "pres": "ptcp_form",
@@ -59,6 +74,7 @@ class Encode:
             "detr": "v_deriv",
             "caus": "v_deriv",
             "smlf": "v_deriv",
+            "pred": "v_deriv",
             "attr": "attr",
             "dim": "n_deriv",
             "pej": "n_deriv",
@@ -72,6 +88,10 @@ class Encode:
             "2pl": "poss",
             "3pl": "poss",
             "comp": "comp",
+            "cmpr": "comp",
+            "prop2": "attr",
+            "dem": "pr_deriv",
+            "det": "pr_deriv",
             "ord": "num_deriv",
             "coll": "num_deriv",
             "distr": "num_deriv",
@@ -95,7 +115,10 @@ class Encode:
 
     def check_lgr(self):
         for lgr_abbr in lgr.lgr_values:
-            print(lgr_abbr, '=>', self.tsa_encode_value(lgr_abbr))
+            try:
+                print(lgr_abbr, '=>', self.tsa_encode_value(lgr_abbr))
+            except AttributeError:
+                print(lgr_abbr, '=>', '???')
 
     def lgr2tsa(self, lgr_abbr):
         lgr_abbr = self.prepare_abbr(lgr_abbr)
