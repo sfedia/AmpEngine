@@ -421,6 +421,10 @@ class Container:
             self.entities.append(entity_object)
         return entity_object
 
+    def iter_content_reassignment(self, content_function):
+        for row in self.rows:
+            row.content = content_function(row.content)
+
     def get_class(self, identifier, await=False):
         for entity in self.entities:
             if entity.get_level() == 'class' and entity.get_identifier() == identifier:
