@@ -71,6 +71,9 @@ class InputContainer:
     def get_by_system_name(self, system_name):
         return [element for element in self.elements if element.get_system_name() == system_name]
 
+    def get_by_fork_id(self, fork_id):
+        return [element for element in self.elements if element.get_fork_id() == fork_id]
+
     def clone_within_cluster(self, element, new_group_index):
         new_element = copy(element)
         new_element.group = new_group_index
