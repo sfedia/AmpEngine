@@ -39,6 +39,10 @@ class Template:
                         group_text = ""
                         group_props = {}
                         group_parts = ""
+                        try:
+                            translation = token.get_parameter('mansi:translation')
+                        except grammar.ParameterNotFound:
+                            translation = ""
                         for morpheme in group:
                             morpheme_markers = []
                             for action in self.container.get_by_id(morpheme.mc_id_link).get_actions():
@@ -62,6 +66,8 @@ class Template:
                         print(group_parts)
                         print(group_props)
                         print(lex_stem)
+                        print(translation)
+
 
 class InputContainerIsEmpty(Exception):
     pass
