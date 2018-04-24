@@ -76,6 +76,7 @@ class InputContainer:
         new_element.group = new_group_index
         del new_element.params
         new_element.params = copy(element.params)
+        new_element.fork_id = element.get_ic_id()
         new_element.ic_id = self.generate_ic_id()
         self.elements.append(new_element)
         return self.get_by_ic_id(new_element.ic_id)
