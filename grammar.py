@@ -72,6 +72,8 @@ class InputContainer:
     def clone_within_cluster(self, element, new_group_index):
         new_element = copy(element)
         new_element.group = new_group_index
+        del new_element.params
+        new_element.params = copy(element.params)
         new_element.ic_id = self.generate_ic_id()
         self.elements.append(new_element)
         return self.get_by_ic_id(new_element.ic_id)
