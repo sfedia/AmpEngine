@@ -20,6 +20,7 @@ class Template:
         }
         for sentence in sentences:
             start_point = sentence.get_char_outline().get_groups()[0]
+            print('SP', start_point)
             sentence_gc = grammar.GroupCollection(
                 sentence.get_ic_id(),
                 input_container,
@@ -33,11 +34,12 @@ class Template:
             }
             for token in sentence_gc.group(0):
                 off_start, off_end = token.get_char_outline().get_groups()
+                print(off_start, off_end)
                 token_object = {
                     "wf": token.get_content(),
                     "wtype": "word",
-                    "off_start": off_start - start_point,
-                    "off_end": off_end - start_point + 1,
+                    "off_start": off_start,
+                    "off_end": off_end + 1,
                     "next_word": -1,
                     "sentence_index": -1
                 }
@@ -132,7 +134,7 @@ class Template:
                 "next_word": sentence_object["words"][-1]["next_word"] + 1
             })
             document_object["sentences"].append(sentence_object)
-        return json.dumps(document_object, indent=4)
+        return json.dumps(document_object, indent=2)
 
 
 
