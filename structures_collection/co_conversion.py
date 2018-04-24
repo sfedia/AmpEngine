@@ -192,7 +192,7 @@ class LayerConversion:
             act_type, act_index, act_rc, act_shift = a.get(cum_shift)
             cum_shift += act_shift
             for n, pid_gc in enumerate(clustered_gc):
-                for i, group in pid_gc.groups(index_pair=True):
+                for i, group in pid_gc.itergroups(index_pair=True):
                     for l, elem in enumerate(group):
                         if elem.check_ca_matching(act_index):
                             clustered_gc[n].groups[i].ca_for_element(a.get(cum_shift))
