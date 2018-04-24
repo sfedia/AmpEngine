@@ -132,7 +132,7 @@ class Template:
                 "next_word": sentence_object["words"][-1]["next_word"] + 1
             })
             document_object["sentences"].append(sentence_object)
-        return json.dumps(document_object)
+        return json.dumps(document_object, indent=4)
 
 
 
