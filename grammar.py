@@ -1116,12 +1116,12 @@ class LinkSentence:
 
         parsed_sector = re.finditer(sector_rx, sector)
         for seq in parsed_sector:
-            # AND/OR operators
-            if re.search(r'[&\|]', seq.group(0)):
-                parsed_list.append(seq.group(6))
             # bracket group
-            elif re.search(r'^\[.*\]$', seq.group(0)):
+            if re.search(r'^\[.*\]$', seq.group(0)):
                 parsed_list.append(self.parse_sector(seq.group(8), element))
+            # AND/OR operators
+            elif re.search(r'[&\|]', seq.group(0)):
+                parsed_list.append(seq.group(6))
             # parameter checking
             elif re.search(r'[<>!=\?]\s*\(', seq.group(0)):
                 par_name = seq.group(1)
