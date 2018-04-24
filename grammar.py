@@ -22,8 +22,8 @@ class InputContainer:
         self.ic_log = logs.log_object.New()
         self.create_default_icl_sectors()
         self.main_container = None
-        self.isobj = collections.namedtuple('InputContainerSettings', 'param_rewrite')
-        self.settings = self.isobj(param_rewrite=False)
+        self.config_obj = collections.namedtuple('InputContainerSettings', 'param_rewrite')
+        self.config = self.config_obj(param_rewrite=False)
         self.group_data = {}
         self.onseg_hooks = {}
         self.onseg_hook_bank = HookBank()
