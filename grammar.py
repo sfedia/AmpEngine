@@ -36,6 +36,7 @@ class InputContainer:
 
     def connect_mc(self, main_container):
         self.main_container = main_container
+        self.main_container.copy_ic_config(self.config)
 
     def segment_into_childs(self, system_name):
         if system_name not in collection.dependency.systems:
@@ -401,8 +402,12 @@ class Container:
         self.rows = []
         self.entities = []
         self.cont_log = logs.log_object.New()
+        self.config = None
         for system in collection.dependency.systems:
             self.add_entity(ContainerEntity('system', system, self))
+
+    def copy_ic_config(self, config):
+        self.config = config
 
     def add_entity(self, entity_object):
         if entity_object not in self.entities:
