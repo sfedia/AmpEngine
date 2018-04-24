@@ -14,14 +14,35 @@ class Template:
         tsa_encoder = tsa_encode.Encode()
         if not sentences:
             raise InputContainerIsEmpty()
+        document_object = {
+            "meta": kwargs["meta"],
+            "sentences": []
+        }
         for sentence in sentences:
+            start_point = sentence.get_char_outline().get_groups()[0]
             sentence_gc = grammar.GroupCollection(
                 sentence.get_ic_id(),
                 input_container,
                 elements=sentence.get_childs(lambda el: el.get_system_name() == 'universal:token')
             )
+            sentence_object = {
+                "text": sentence.get_content() + ".",
+                "words": [],
+                "lang": 0,
+                "meta": kwargs["meta"]
+            }
             for token in sentence_gc.group(0):
+                off_start, off_end = token.get_char_outline().get_groups()
+                token_object = {
+                    "wf": token.get_content(),
+                    "wtype": "word",
+                    "off_start": off_start - start_point,
+                    "off_end": off_end - start_point + 1,
+                    "next_word": -1,
+                    "sentence_index": -1
+                }
                 ana_elements = [token] + input_container.get_by_fork_id(token.get_ic_id())
+                analyses = []
                 for e, element in enumerate(ana_elements):
                     element_morph = grammar.GroupCollection(
                         element.get_ic_id(),
@@ -38,6 +59,7 @@ class Template:
                             lex_stem = token.get_content()
                         group_text = ""
                         group_props = {}
+                        group_gloss = ""
                         group_parts = ""
                         try:
                             translation = token.get_parameter('mansi:translation')
@@ -57,16 +79,61 @@ class Template:
                                 print('Marker:', marker)
                                 markers.append(".".join([x[0] for x in marker]))
                             group_text += "-" + ".".join(markers)
+                            group_gloss += "-" + ".".join(markers)
                             group_text += "{%s}" % (morpheme.get_content())
                             group_parts += "-" + morpheme.get_content()
                         group_text += "-"
 
                         print("Group:")
-                        print(group_text)
-                        print(group_parts)
-                        print(group_props)
-                        print(lex_stem)
-                        print(translation)
+                        group_object = {}
+                        group_object['lex'] = lex_stem
+                        group_object['parts'] = lex_stem + group_parts
+                        group_object['gloss'] = "STEM" + group_gloss
+                        group_object['gloss_index'] = "STEM{%s}" % (lex_stem) + group_text
+                        for gprop in group_props:
+                            group_object[gprop] = group_props[gprop]
+                        group_object['trans_ru'] = translation
+                        print(group_object)
+                        analyses.append(group_object)
+                        #print(group_text)
+                        #print(group_parts)
+                        #print(group_gloss)
+                        #print(group_props)
+                        #print(lex_stem)
+                        #print(translation)
+                if analyses:
+                    token_object["ana"] = analyses
+                print(token_object)
+                sentence_object["words"].append(token_object)
+            for j, char in enumerate(sentence.get_content()):
+                if char == ",":
+                    sentence_object["words"].append({
+                        "wf": char,
+                        "wtype": "punct",
+                        "off_start": j,
+                        "off_end": j + 1,
+                        "next_word": -1,
+                        "sentence_index": -1
+                    })
+            sentence_object["words"] = sorted(sentence_object["words"], key=lambda w: w["off_start"])
+            start_index = 0
+            if sentence_object["words"][0]["wtype"] == "punct":
+                start_index = 1
+            g = 0
+            for i in range(start_index, len(sentence_object["words"])):
+                sentence_object["words"][i]["next_word"] = i + 1
+                sentence_object["words"][i]["sentence_index"] = g
+                g += 1
+            sentence_object["words"].append({
+                "wf": ".",
+                "wtype": "punct",
+                "off_start": sentence_object["words"][-1]["off_end"] + 1,
+                "off_end": sentence_object["words"][-1]["off_end"] + 2,
+                "next_word": sentence_object["words"][-1]["next_word"] + 1
+            })
+            document_object["sentences"].append(sentence_object)
+        return json.dumps(document_object)
+
 
 
 class InputContainerIsEmpty(Exception):
