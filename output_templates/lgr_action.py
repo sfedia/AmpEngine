@@ -58,7 +58,7 @@ lgr_values = {
     'mansi:pronoun:set_sol': lambda action: 'SOL',
     'gram:case:set_nom': lambda action: 'NOM',
     'mansi:pronoun:personal:1PL': lambda action: '1PL',
-    'mansi:make_transgressive': lambda action: 'PCTP',  # ?
+    'mansi:make_transgressive': lambda action: 'PTCP',  # ?
     'mansi:russian_loan_word': lambda action: None,
     'mansi:translation:set_new': lambda action: None,
     'gram:noun_to_adj': lambda action: None,
