@@ -2378,18 +2378,27 @@ def stem_token(ic, elem):
                     pos_cat[fpos] = []
                 if substem[1] not in pos_cat[fpos]:
                     pos_cat[fpos].append(substem[1])
-    stags = sorted(pos_cat.keys(), key=lambda x: len(pos_cat[x]))
-    for jp, pos_tag in enumerate(stags):
-        nel = ic.clone_within_cluster(elem, jp) if jp else elem
-        nel.set_parameter('mansi:basic_pos', pos_tag)
-        for positions in pos_cat[pos_tag]:
-            ic.ic_log.add_log(
-                "STEMS_EXTRACTED",
-                element_id=nel.get_ic_id(),
-                cluster_id=nel.get_parent_ic_id(),
-                positions=positions,
-                group=jp if len(pos_cat) > 1 else None
-            )
+        stags = sorted(pos_cat.keys(), key=lambda x: len(pos_cat[x]))
+        for jp, pos_tag in enumerate(stags):
+            nel = ic.clone_within_cluster(elem, jp) if jp else elem
+            nel.set_parameter('mansi:basic_pos', pos_tag)
+            for positions in pos_cat[pos_tag]:
+                ic.ic_log.add_log(
+                    "STEMS_EXTRACTED",
+                    element_id=nel.get_ic_id(),
+                    cluster_id=nel.get_parent_ic_id(),
+                    positions=positions,
+                    group=jp if len(pos_cat) > 1 else None
+                )
+    else:
+        ic.ic_log.add_log(
+            "STEMS_EXTRACTED",
+            element_id=elem.get_ic_id(),
+            cluster_id=elem.get_parent_ic_id(),
+            positions=list(range(len(elem.get_content()))),
+            group=None
+        )
+        elem.set_parameter('mansi:basic_pos', 'unknown')
 
     return ic
 
