@@ -4,6 +4,7 @@ import itertools
 import grammar
 import structures_collection.char_level
 import structures_collection.minor as mnr
+import structures_collection.static
 
 
 class HandlerStart:
@@ -258,7 +259,20 @@ def morpheme_in_token(input_container_element, container, input_container):
             if add_to_lfs:
                 lnk_filtered_seqs.append(seq)
 
-        for j, seq in enumerate(lnk_filtered_seqs):
+        prw_filtered_seqs = []
+        if input_container.config.param_rewrite:
+            prw_filtered_seqs = lnk_filtered_seqs
+        else:
+            for seq in lnk_filtered_seqs:
+                idl = [list(x.keys())[0] for x in seq]
+                act_list = [container.get_by_id(x).get_applied()['actions'] for x in idl]
+                act_list = list(itertools.chain(*act_list))
+                params_list = [structures_collection.static.Handler.get_func_params(x.get_path()) for x in act_list]
+                params_list = list(itertools.chain(*params_list))
+                if len(params_list) == len(set(params_list)):
+                    prw_filtered_seqs.append(seq)
+
+        for j, seq in enumerate(prw_filtered_seqs):
             co_list = []
             for seq_element in seq:
                 element_id = list(seq_element.keys())[0]
