@@ -2368,89 +2368,29 @@ def stem_token(ic, elem):
         end_del=ic.onseg_hook_bank.end_del,
         end_add=['аӈкве', 'юӈкве', 'уӈкве', 'ӈкве']
     )
-    pos_tags = [stem['pos_tags'][0] for stem in stem_results]
-    pos_tags = list(set(pos_tags))
-    try:
-        ic.ic_log.add_sector("MAX_CLUSTER_PTL")
-    except log_handler.log_object.LogSectorAlreadyExists:
-        pass
-    max_ptl = ic.ic_log.get_log_sequence("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id())
-    if not max_ptl:
-        ic.ic_log.add_log("MAX_CLUSTER_PTL", cluster_id=elem.get_parent_ic_id(), int_value=len(pos_tags))
-    elif len(pos_tags) > max_ptl[0].get_prop('int_value'):
-        ic.ic_log.edit_log_document(
-            "MAX_CLUSTER_PTL",
-            {'cluster_id': elem.get_parent_ic_id()}, 0, {'int_value': len(pos_tags)}
-        )
-
     if stem_results:
+        pos_cat = {}
         for stem in stem_results:
             for substem in stem['stems']:
-                ic.ic_log.add_log(
-                    "STEMS_EXTRACTED",
-                    element_id=elem.get_ic_id(),
-                    cluster_id=elem.get_parent_ic_id(),
-                    positions=substem[1],
-                    group=pos_tags.index(stem['pos_tags'][0]),
-                    status='preview'
-                )
-        for group_index, pos_tag in enumerate(pos_tags):
+                if not stem['pos_tags']:
+                    continue
+                fpos = stem['pos_tags'][0]
+                if fpos not in pos_cat:
+                    pos_cat[fpos] = []
+                if substem[1] not in pos_cat[fpos]:
+                    pos_cat[fpos].append(substem[1])
+    stags = sorted(pos_cat.keys(), key=lambda x: len(pos_cat[x]))
+    for jp, pos_tag in enumerate(stags):
+        nel = ic.clone_within_cluster(elem, jp) if jp else elem
+        nel.set_parameter('mansi:basic_pos', pos_tag)
+        for positions in pos_cat[pos_tag]:
             ic.ic_log.add_log(
-                "POS_EXTRACTED",
-                element_id=elem.get_ic_id(),
-                cluster_id=elem.get_parent_ic_id(),
-                pos_tag=pos_tag,
-                group=group_index,
-                status='preview'
+                "STEMS_EXTRACTED",
+                element_id=nel.get_ic_id(),
+                cluster_id=nel.get_parent_ic_id(),
+                positions=positions,
+                group=jp if len(pos_cat) > 1 else None
             )
-    else:
-        ic.ic_log.add_log(
-            "STEMS_EXTRACTED",
-            element_id=elem.get_ic_id(),
-            cluster_id=elem.get_parent_ic_id(),
-            positions=list(range(len(elem.get_content()))),
-            group=0,
-            status='preview'
-        )
-        ic.ic_log.add_log(
-            "POS_EXTRACTED",
-            element_id=elem.get_ic_id(),
-            cluster_id=elem.get_parent_ic_id(),
-            pos_tag="unknown",
-            group=0,
-            status='preview'
-        )
-
-    if elem.is_last_in_cluster('universal:token'):
-        ic.nullint_for_cluster(elem.get_parent_ic_id())
-        for elm in ic.get_by_ic_id(elem.get_parent_ic_id()).get_childs():
-            stems_ext = ic.ic_log.get_log_sequence(
-                "STEMS_EXTRACTED", element_id=elm.get_ic_id(), cluster_id=elm.get_parent_ic_id()
-            )
-            pos_ext = ic.ic_log.get_log_sequence(
-                "POS_EXTRACTED", element_id=elm.get_ic_id(), cluster_id=elm.get_parent_ic_id()
-            )
-            max_ptl = ic.ic_log.get_log_sequence("MAX_CLUSTER_PTL", cluster_id=elm.get_parent_ic_id())
-            for gr_index in range(max_ptl[0].get_prop('int_value')):
-                if gr_index > 0:
-                    if gr_index >= len(pos_ext):
-                        gr_index = 0
-                    cel = ic.clone_within_cluster(elm, gr_index)
-                    cel.set_parameter('mansi:basic_pos', pos_ext[gr_index].get_prop('pos_tag'))
-                    cel_stem = copy.deepcopy(stems_ext[gr_index])
-                    cel_stem.set_prop('element_id', cel.get_ic_id())
-                    try:
-                        cel_stem.remove_prop('status')
-                    except log_handler.log_object.PropNotFound:
-                        pass
-                    ic.ic_log.add_log_document("STEMS_EXTRACTED", cel_stem)
-                else:
-                    elm.set_parameter('mansi:basic_pos', pos_ext[0].get_prop('pos_tag'))
-                    stems_ext[gr_index].remove_prop('status')
-
-        ic.ic_log.remove_logs_from_sector(
-           "STEMS_EXTRACTED", ic.ic_log.get_log_sequence("STEMS_EXTRACTED", status='preview')
-        )
 
     return ic
 
