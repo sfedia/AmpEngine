@@ -1155,10 +1155,14 @@ class LinkSentence:
             if link_slice[i] in ('&', '|'):
                 complete_list.append(link_slice[i])
             elif type(link_slice[i]) == LinkSentence.ParameterPair:
-                ce_result = self.check_element(element, link_slice[i], elems_set, check_function)
-                complete_list.append(ce_result[0])
-                element = ce_result[1]
-                elems_set = ce_result[2]
+                try:
+                    ce_result = self.check_element(element, link_slice[i], elems_set, check_function)
+                    complete_list.append(ce_result[0])
+                    element = ce_result[1]
+                    elems_set = ce_result[2]
+                except CannotGetParameter:
+                    complete_list.append(False)
+
             else:
                 complete_list.append(self.is_good(link_slice[i], element, elems_set, check_function))
 
