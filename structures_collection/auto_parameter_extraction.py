@@ -3,6 +3,7 @@
 import re
 import collections
 import grammar
+import structures_collection as collection
 
 
 class HandlerStart:
@@ -98,6 +99,29 @@ def class_of_element(element, arguments=[], compared_value=None):
     if compared_value is None:
         raise ValueError("There should be a class name to compare with")
     return bool_equiv(compared_value in element.get_class_names(), compared_value)
+
+
+@extract_parameter(None, 'universal:syl_count')
+def syl_count(element, arguments=[], compared_value=None):
+    args = Arguments(arguments)
+    pre_param = args.get_argument('pre', allow_none=True)
+    min_strategy = True if args.get_argument('max_strategy', allow_none=True) is None else False
+    if pre_param is None:
+        sc = 0
+        for char in element.get_content():
+            if char in collection.minor.Mansi.get_mansi_vowels():
+                sc += 1
+        return sc
+    else:
+        cv_pattern = re.compile(pre_param)
+        positions = [x.start() for x in cv_pattern.finditer(element.get_content())]
+        if min_strategy:
+            for pos in positions if min_strategy else reversed(positions):
+                sc = 0
+                for char in element.get_content()[:pos]:
+                    if char in collection.minor.Mansi.get_mansi_vowels():
+                        sc += 1
+                return sc
 
 
 @extract_parameter(None, 'universal:reg_match')
