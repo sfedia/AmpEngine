@@ -22,7 +22,7 @@ class Template:
                     input_container,
                     elements=token.get_childs(lambda tkn: tkn.get_system_name() == 'universal:morpheme')
                 )
-                for group in token_gc.groups():
+                for group in token_gc.itergroups():
                     # get stem and print it
                     group_text = ""
                     group_markers = ""
