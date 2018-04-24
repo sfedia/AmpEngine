@@ -32,7 +32,7 @@ class Template:
                         for action in self.container.get_by_id(morpheme.mc_id_link).get_actions():
                             # branching !!!
                             morpheme_markers.append(
-                                lgr.lgr_values[action](action) if action.get_path() in lgr.lgr_values else '?'
+                                lgr.lgr_values[action.get_path()](action) if action.get_path() in lgr.lgr_values else '?'
                             )
                         group_markers += "-" + ".".join(morpheme_markers)
                     print("Group:")
