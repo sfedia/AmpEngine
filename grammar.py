@@ -839,7 +839,13 @@ class SubclassesOrder:
         if not co_sequence:
             return []
         container = co_sequence[0].container
+        sequence_params = list(itertools.chain(*[self.extract_ap(x) for x in co_sequence]))
         for null in subst_nulls:
+            if not self.main_container.config.param_rewrite:
+                for prm in self.extract_ap(container.get_by_id(null['null_ice'][0])):
+                    if prm in sequence_params:
+                        print(null)
+                        continue
             insertion_made = False
             for pre_element_data in null['pre']:
                 for j, element in enumerate(co_sequence):
@@ -1259,6 +1265,8 @@ class LinkSentence:
             raise WrongLinkSentence()
 
     def check(self, element, elems_set, check_function, return_bs=False):
+        if element.input_container.config.debug_mode:
+            print('LINK:', self.link)
         parsed_list = self.parse_sector(self.link, element)
         return self.is_good(parsed_list, element, elems_set, check_function, return_bs)
 
