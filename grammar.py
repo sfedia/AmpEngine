@@ -413,11 +413,24 @@ class GroupCollection:
         def none_alias(x): return x if x is not None else 0
         if (self.parent_ic_id, 0) not in self.input_container.group_data:
             return []
-        sorted_indices = sorted(
-            [x for x in range(self.group_count)],
-            key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate']),
-            reverse=True
-        )
+
+        if not self.input_container.config.broad_exception_mode:
+            sorted_indices = sorted(
+                [x for x in range(self.group_count)],
+                key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate']),
+                reverse=True
+            )
+        else:
+            try:
+                sorted_indices = sorted(
+                    [x for x in range(self.group_count)],
+                    key=lambda index: none_alias(self.input_container.group_data[(self.parent_ic_id, index)]['rate']),
+                    reverse=True
+                )
+            except KeyError:
+                sorted_indices = [x for x in range(self.group_count)]
+        if not self.groups:
+            return []
         if not index_pair:
             return [self.groups[x] for x in sorted_indices]
         else:
