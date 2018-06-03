@@ -829,6 +829,12 @@ class SubclassesOrder:
             "cn_sequence": cn_sequence
         }
 
+    @staticmethod
+    def extract_ap(container_element):
+        act_list = container_element.get_applied()['actions']
+        param_list = [collection.static.Handler.get_func_params(x.get_path()) for x in act_list]
+        return list(itertools.chain(*param_list))
+
     def null_substitution(self, co_sequence, subst_nulls):
         if not co_sequence:
             return []
