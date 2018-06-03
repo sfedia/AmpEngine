@@ -8,6 +8,7 @@ import itertools
 import collections
 import random
 import string
+import time
 from copy import copy
 
 
@@ -222,6 +223,14 @@ class InputContainer:
 class InputContainerConfig:
     def __init__(self):
         self.param_rewrite = False
+        self.gm_cycle_limit = 0
+        self.debug_mode = False
+        self.broad_exception_mode = False
+        self.show_index = False
+        self.submessages = self.Messages
+
+    class Messages:
+        cycle_limit_exceeded = False
 
 
 class HookBank:
