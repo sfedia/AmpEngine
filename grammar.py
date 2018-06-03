@@ -157,8 +157,22 @@ class InputContainer:
             if not bw_to_values and collection.dependency.systems[system]:
                 raise SegMethodNotFound(system)
             for to_value in bw_to_values:
-                for element in self.get_by_system_name(system):
-                    collection.backward_parsing.Handler.get_parser(system, to_value)(element, self.main_container, self)
+                se = self.get_by_system_name(system)
+                lse = len(se)
+                for j, element in enumerate(se):
+                    if self.config.show_index:
+                        print('{}/{} = {}'.format(j, lse, element.get_content()))
+                    if self.config.broad_exception_mode:
+                        try:
+                            collection.backward_parsing.Handler.get_parser(system, to_value)(
+                                element, self.main_container, self
+                            )
+                        except:
+                            pass
+                    else:
+                        collection.backward_parsing.Handler.get_parser(system, to_value)(
+                            element, self.main_container, self
+                        )
 
     def add_onseg_hook(self, ext_system, onseg_hook):
         """
