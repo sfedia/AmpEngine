@@ -280,7 +280,9 @@ class InputContainerElement:
     def set_mc_link(self, mc_id_link):
         self.mc_id_link = mc_id_link
 
-    def get_parameter(self, key, args=[], value=None):
+    def get_parameter(self, key, args=None, value=None):
+        if args is None:
+            args = []
         try:
             extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.system_name, key)
             self.params[key] = extractors[0].extractor(self, args, value)
@@ -649,7 +651,9 @@ class ContainerEntity:
 
 
 class BWList:
-    def __init__(self, exclude_mutations=[]):
+    def __init__(self, exclude_mutations=None):
+        if exclude_mutations is None:
+            exclude_mutations = []
         self.exclude_mutations = exclude_mutations
 
 
@@ -949,7 +953,9 @@ class ContainerElement:
             raise ParameterAlreadyExists()
         return self
 
-    def get_parameter(self, key, args=[], value=None):
+    def get_parameter(self, key, args=None, value=None):
+        if args is None:
+            args = []
         try:
             extractors = collection.auto_parameter_extraction.Handler.get_param_extractors(self.type, key)
             self.parameters[key] = extractors[0](self.content, args, value)
@@ -1129,9 +1135,11 @@ class LinkSentence:
         return result, element, elems_set
 
     class ParameterPair:
-        def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=[]):
+        def __init__(self, key, value="", sharp=False, operator="=", bool_check=False, arguments=None):
             self.key = key
             self.bool_check = bool_check
+            if arguments is None:
+                arguments = []
             if not value:
                 self.bool_check = True
             self.value = value
