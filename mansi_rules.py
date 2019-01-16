@@ -5,6 +5,7 @@ import mansi_stemmer
 import copy
 import structures_collection as coll
 import output_templates
+import re
 
 # ...
 # first we should check if the whole token exists in dictionaries
@@ -38,7 +39,7 @@ for element in rombandeeva.get_by_class_name('caus_suffixes'):
     # or just element.applied ??
     rombandeeva.get_by_id(element.get_id()).applied(
         *[
-            grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb) & sem:causative!=()'),
+            grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
             [
                 grammar.Action('sem:make_causative')
             ]
@@ -288,7 +289,21 @@ rombandeeva.add_element('universal:morpheme', '^уӈкве', 'u+_infinitive_suff
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
+rombandeeva.add_element('universal:morpheme', '^уӈкв', 'u+_infinitive_suffix_short').applied(
+    *[
+        grammar.LinkSentence(is_verb),
+        [grammar.Action('gram:verb:set_infinitive')]
+    ]
+).add_class('infinitive_excl_suff').add_class('inf_suff')
+
 rombandeeva.add_element('universal:morpheme', '^юӈкве', 'yu+_infinitive_suffix').applied(
+    *[
+        grammar.LinkSentence(is_verb),
+        [grammar.Action('gram:verb:set_infinitive')]
+    ]
+).add_class('infinitive_excl_suff').add_class('inf_suff')
+
+rombandeeva.add_element('universal:morpheme', '^юӈкв', 'yu+_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
@@ -302,7 +317,21 @@ rombandeeva.add_element('universal:morpheme', '^аӈкве', 'a+_infinitive_suff
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
+rombandeeva.add_element('universal:morpheme', '^аӈкв', 'a+_infinitive_suffix_short').applied(
+    *[
+        grammar.LinkSentence(is_verb),
+        [grammar.Action('gram:verb:set_infinitive')]
+    ]
+).add_class('infinitive_excl_suff').add_class('inf_suff')
+
 rombandeeva.add_element('universal:morpheme', '^ӈкве', 'null+_infinitive_suffix').applied(
+    *[
+        grammar.LinkSentence(is_verb),
+        [grammar.Action('gram:verb:set_infinitive')]
+    ]
+).add_class('infinitive_excl_suff').add_class('inf_suff')
+
+rombandeeva.add_element('universal:morpheme', '^ӈкв', 'null+_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
@@ -849,7 +878,7 @@ lps_matrix_2 = [
     ['plur', '3', '^ныл']
 ]
 
-p_lps_filter = '# & universal:entity=(token) & mansi:basic_pos=(pronoun) & mansi:pronoun:is_personal=()'
+p_lps_filter = '# & universal:entity=(token) & mansi:basic_pos=(pronoun)'
 for number, person, suffix in lps_matrix_2:
     rombandeeva.add_element(
         'universal:morpheme',
@@ -2398,7 +2427,31 @@ for lemma, meanings in postpos_unmutable:
     pp_i += 1
 
 
-text = 'танки'
+def luima_seripos_prepare(txt):
+    txt = txt.replace("—", "")
+    txt_lines = txt.splitlines()
+    for j, line in enumerate(txt_lines):
+        line = line.strip(" ")
+        if not line.endswith("."):
+            line += "."
+    txt = "\n".join(txt_lines)
+    txt = re.sub(r"\n", "", txt)
+    txt = re.sub(r"\.", ". ", txt)
+    txt = re.sub(r"\s{2,}", " ", txt)
+    chars = {
+        "": "э",
+        "": "о",
+        "": "а",
+        "": "е",
+        "ӯ": "у",
+        "": "ё",
+        "": "я",
+        "«": "",
+        "»": "",
+    }
+    for c in chars:
+        txt = txt.replace(c, chars[c])
+    return txt.lower()
 
 
 def remove_macrons(text):
@@ -2414,6 +2467,25 @@ def remove_macrons(text):
         text = text.replace(c, chars[c])
     return text
 
+
+text = open('texts/test_gen/1.txt', encoding='utf-8').read()
+text = luima_seripos_prepare(text)
+text_id = "luima_seripos_testgen_1"
+meta = {
+    "filename": text_id,
+    "author": "luima_seripos",
+    "researcher": "-",
+    "title": text_id,
+    "genre": "newspaper",
+    "place": "-",
+    "dialect": "standard",
+    "year_from": 2017,
+    "year_to": 2017,
+    "year": 2017
+}
+print('text:', text)
+rombandeeva.iter_content_reassignment(remove_macrons)
+print('aaa')
 input_container = grammar.InputContainer(text, prevent_auto=True)
 input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
 input_container.onseg_hook_bank.end_del = [
@@ -2433,6 +2505,7 @@ def stem_token(ic, elem):
     )
     if stem_results:
         pos_cat = {}
+        pos_transl = {}
         for stem in stem_results:
             for substem in stem['stems']:
                 if not stem['pos_tags']:
@@ -2440,12 +2513,16 @@ def stem_token(ic, elem):
                 fpos = stem['pos_tags'][0]
                 if fpos not in pos_cat:
                     pos_cat[fpos] = []
+                    pos_transl[fpos] = ', '.join(stem['translation']) if stem['translation'] else None
+
                 if substem[1] not in pos_cat[fpos]:
                     pos_cat[fpos].append(substem[1])
         stags = sorted(pos_cat.keys(), key=lambda x: len(pos_cat[x]))
         for jp, pos_tag in enumerate(stags):
             nel = ic.clone_within_cluster(elem, jp) if jp else elem
             nel.set_parameter('mansi:basic_pos', pos_tag)
+            if pos_transl[pos_tag]:
+                nel.set_parameter('mansi:translation', pos_transl[pos_tag])
             for positions in pos_cat[pos_tag]:
                 ic.ic_log.add_log(
                     "STEMS_EXTRACTED",
@@ -2467,15 +2544,27 @@ def stem_token(ic, elem):
     return ic
 
 
+print('yyy')
+input_container.config.param_rewrite = True
+input_container.config.gm_cycle_limit = 100
+input_container.config.broad_exception_mode = True
+input_container.config.show_index = True
+input_container.config.submessages.cycle_limit_exceeded = True
 input_container.add_onseg_hook('universal:token', stem_token)
 input_container.start_auto_segmentation()
+print('iii')
 input_container.onseg_hook_bank.stemmer.write_cache()
 input_container.connect_mc(rombandeeva)
+print('uuu')
 input_container.run_mc_analysis()
+print('hhh')
 
 #print([(x.get_system_name(), x.get_content()) for x in input_container.elements])
-mns_template = output_templates.mansi.Template(rombandeeva)
-mns_template.run(input_container)
+mns_template = output_templates.tsakorpus_document.Template(rombandeeva)
+tsa_output = mns_template.run(input_container, meta=meta)
+with open('json_output/{}.json'.format(text_id), 'w') as to:
+    to.write(tsa_output)
+    to.close()
 
 # page 159: ?
 
