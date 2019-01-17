@@ -79,38 +79,41 @@ class IterativeSingleSegmentation:
 
     def start(self):
         try:
-            return self.continue_sequence([], 0)
+            return self.continue_sequence([], 0, start=True)
         except SegmentationIterFailed:
             return None
 
-    def continue_sequence(self, left_id_sequence, char_index):
-        if char_index >= len(self.frame_string):
+    def continue_sequence(self, left_id_sequence, char_index, start=False):
+        if not start and char_index >= len(self.frame_string):
             csc = self.common_sequence_check(left_id_sequence)
             if csc:
                 return csc
             else:
                 raise SegmentationIterFailed()
         else:
-            if self.frame_string[char_index] not in bp_cache["universal:morpheme_by_init_char"]:
+            if self.frame_string[char_index] in bp_cache["universal:morpheme_by_init_char"]:
                 next_options = bp_cache["universal:morpheme_by_init_char"][self.frame_string[char_index]]
             else:
                 next_options = self.container.iter_content_filter(
-                    lambda x: mnr.Clear.remove_spec_chars('universal:morpheme', x).startswith(self.frame_string[char_index]),
+                    lambda x: self.frame_string[char_index:].startswith(
+                        mnr.Clear.remove_spec_chars('universal:morpheme', x)
+                    ),
                     sort_desc=True,
                     system_filter='universal:morpheme'
                 )
                 bp_cache["universal:morpheme_by_init_char"][self.frame_string[char_index]] = next_options
 
-            for option in next_options:
-                option_id = option.get_ic_id()
+            for q, option in enumerate(next_options):
+                option_id = option.get_id()
                 self.elements_on_id[option_id] = option
                 try:
                     return self.continue_sequence(
-                        left_id_sequence + [option.get_ic_id()],
+                        left_id_sequence + [option.get_id()],
                         char_index + len(mnr.Clear.remove_spec_chars('universal:morpheme', option.get_content()))
                     )
                 except SegmentationIterFailed:
                     continue
+            raise SegmentationIterFailed()
 
     def common_sequence_check(self, id_sequence):
         if not self.check_sequence(id_sequence):
@@ -138,13 +141,14 @@ class IterativeSingleSegmentation:
                 )
                 if not lc_bool:
                     return False
+        return True
 
     def check_avnulls_of_sequence(self, id_sequence):
         el_seq = [self.elements_on_id[x] for x in id_sequence]
         for e, elem in enumerate(el_seq):
             elem.set_transmitter_local_index(e)
         available_nulls = []
-        if "grammar_nulls" not in bp_cache:
+        if not bp_cache["grammar_nulls"]:
             bp_cache["grammar_nulls"] = self.container.iter_content_filter(
                 lambda x: x == grammar.Temp.NULL, system_filter='universal:morpheme'
             )
