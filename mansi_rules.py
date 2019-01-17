@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 import grammar
 import log_handler
-import mansi_stemmer
+from trie_stemmer.word_entry import WordEntry
+import trie_stemmer.stemmer
 import copy
 import structures_collection as coll
 import output_templates
@@ -2427,49 +2428,7 @@ for lemma, meanings in postpos_unmutable:
     pp_i += 1
 
 
-def luima_seripos_prepare(txt):
-    txt = txt.replace("—", "")
-    txt_lines = txt.splitlines()
-    for j, line in enumerate(txt_lines):
-        line = line.strip(" ")
-        if not line.endswith("."):
-            line += "."
-    txt = "\n".join(txt_lines)
-    txt = re.sub(r"\n", "", txt)
-    txt = re.sub(r"\.", ". ", txt)
-    txt = re.sub(r"\s{2,}", " ", txt)
-    chars = {
-        "": "э",
-        "": "о",
-        "": "а",
-        "": "е",
-        "ӯ": "у",
-        "": "ё",
-        "": "я",
-        "«": "",
-        "»": "",
-    }
-    for c in chars:
-        txt = txt.replace(c, chars[c])
-    return txt.lower()
-
-
-def remove_macrons(text):
-    chars = {
-        "а̄": "а",
-        "ӯ": "у",
-        "э̄": "э",
-        "е̄": "е",
-        "о̄": "о",
-        "ӣ": "и"
-    }
-    for c in chars:
-        text = text.replace(c, chars[c])
-    return text
-
-
 text = open('texts/test_gen/1.txt', encoding='utf-8').read()
-text = luima_seripos_prepare(text)
 text_id = "luima_seripos_testgen_1"
 meta = {
     "filename": text_id,
@@ -2483,54 +2442,28 @@ meta = {
     "year_to": 2017,
     "year": 2017
 }
-print('text:', text)
-rombandeeva.iter_content_reassignment(remove_macrons)
-print('aaa')
+
 input_container = grammar.InputContainer(text, prevent_auto=True)
-input_container.onseg_hook_bank.stemmer = mansi_stemmer.stemmer.Stem(save_cache='mansi_stemmer/cache_table.sqlite3')
-input_container.onseg_hook_bank.end_del = [
-    coll.minor.Clear.remove_spec_chars('universal:morpheme', ct.get_content())
-    for ct in rombandeeva.iter_content_filter(lambda x: True, system_filter='universal:morpheme')
-    if ct.get_content() != grammar.Temp.NULL
-]
-input_container.onseg_hook_bank.end_del = list(set(input_container.onseg_hook_bank.end_del))
+input_container.onseg_hook_bank.stemmer = trie_stemmer.stemmer
 
 
 def stem_token(ic, elem):
-    stem_results = ic.onseg_hook_bank.stemmer.find(
-        elem.get_content(),
-        start_del=[],
-        end_del=ic.onseg_hook_bank.end_del,
-        end_add=['аӈкве', 'юӈкве', 'уӈкве', 'ӈкве']
-    )
-    if stem_results:
-        pos_cat = {}
-        pos_transl = {}
-        for stem in stem_results:
-            for substem in stem['stems']:
-                if not stem['pos_tags']:
-                    continue
-                fpos = stem['pos_tags'][0]
-                if fpos not in pos_cat:
-                    pos_cat[fpos] = []
-                    pos_transl[fpos] = ', '.join(stem['translation']) if stem['translation'] else None
+    stem_results = input_container.onseg_hook_bank.stemmer.get_stem_for(elem.get_content())
 
-                if substem[1] not in pos_cat[fpos]:
-                    pos_cat[fpos].append(substem[1])
-        stags = sorted(pos_cat.keys(), key=lambda x: len(pos_cat[x]))
-        for jp, pos_tag in enumerate(stags):
-            nel = ic.clone_within_cluster(elem, jp) if jp else elem
-            nel.set_parameter('mansi:basic_pos', pos_tag)
-            if pos_transl[pos_tag]:
-                nel.set_parameter('mansi:translation', pos_transl[pos_tag])
-            for positions in pos_cat[pos_tag]:
-                ic.ic_log.add_log(
-                    "STEMS_EXTRACTED",
-                    element_id=nel.get_ic_id(),
-                    cluster_id=nel.get_parent_ic_id(),
-                    positions=positions,
-                    group=jp if len(pos_cat) > 1 else None
-                )
+    if stem_results:
+        for n, stem_group in enumerate(stem_results):
+            nel = ic.clone_within_cluster(elem, n) if n else elem
+            nel.set_parameter('mansi:basic_pos', stem_group.entry.get_pos())
+            translation = stem_group.entry.get_translation()
+            if translation:
+                nel.set_parameter('mansi:translation', translation)
+            ic.ic_log.add_log(
+                "STEMS_EXTRACTED",
+                element_id=nel.get_ic_id(),
+                cluster_id=nel.get_parent_ic_id(),
+                positions=list(range(stem_group.index)),
+                group=None
+            )
     else:
         ic.ic_log.add_log(
             "STEMS_EXTRACTED",
@@ -2545,15 +2478,15 @@ def stem_token(ic, elem):
 
 
 print('yyy')
-input_container.config.param_rewrite = True
-input_container.config.gm_cycle_limit = 100
-input_container.config.broad_exception_mode = True
-input_container.config.show_index = True
-input_container.config.submessages.cycle_limit_exceeded = True
+#input_container.config.param_rewrite = True
+#input_container.config.gm_cycle_limit = 100
+#input_container.config.broad_exception_mode = True
+#input_container.config.show_index = True
+#input_container.config.submessages.cycle_limit_exceeded = True
 input_container.add_onseg_hook('universal:token', stem_token)
 input_container.start_auto_segmentation()
 print('iii')
-input_container.onseg_hook_bank.stemmer.write_cache()
+#input_container.onseg_hook_bank.stemmer.write_cache()
 input_container.connect_mc(rombandeeva)
 print('uuu')
 input_container.run_mc_analysis()
