@@ -74,39 +74,6 @@ def re_split2co(text, split_regex, catch_group=0):
             result.append(
                 structures_collection.char_level.CharOutline([to_ + 1, len(text) - 1], attachment=text[to_ + 1:])
             )
-
-
-def split_string(content, split_syms, alternate=[]):
-    """
-    `split_string` function
-    :param content: string to split
-    :param split_syms: symbol patterns to ignore and split
-    :param alternate: symbol to be ignored before/after the main symbol group
-    :return: Array of CharOutline objects (with attachment)
-    """
-
-    start = 0
-    extracted_values = []
-    after_ss = False
-    addition_state = False
-    for e, char in enumerate(content):
-        if e > 0 and char in split_syms or (char in alternate and after_ss):
-            if char in split_syms:
-                after_ss = True
-            if not addition_state:
-                extracted_values.append(
-                    structures_collection.char_level.CharOutline([start, e - 1], attachment=content[start:e])
-                )
-                addition_state = True
-            start = e + 1
-        elif char not in split_syms:
-            addition_state = False
-            after_ss = False
-    if start < len(content) - 1:
-        extracted_values.append(
-            structures_collection.char_level.CharOutline([start, len(content) - 1], attachment=content[start:])
-        )
-    return extracted_values
     return result if result else structures_collection.char_level.CharOutline([0, len(text) - 1], attachment=text)
 
 
