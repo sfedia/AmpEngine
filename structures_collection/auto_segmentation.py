@@ -95,7 +95,7 @@ def sentence_to_tokens(content, metadata=None):
     :return: Array of CharOutline objects (with attachment)
     """
 
-    return split_string(content, [x for x in string.punctuation] + [" "], alternate=[" "])
+    return re_split2co(content, r'[!"#\$%&\'\(\)\*\+,\.\/\:\;<=>?\@[\\\]^_`{|}~«»„“–—\s]+')
 
 
 class SegmentTemplateNotFound(Exception):
