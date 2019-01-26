@@ -82,6 +82,3 @@ def get_stem_for(luima_string):
         stem_result(entry, s.luima_cut_index(len(pref)))
         for (pref, entry) in stem_base.prefix_items(s.standard_string)[::-1] if legal_length(pref, s)
     ]
-
-
-#print(get_stem_for("потыртас")[1].entry.get_pos())
