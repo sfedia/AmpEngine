@@ -446,6 +446,7 @@ class Container:
     def __init__(self):
         self.rows = []
         self.entities = []
+        self.elements_on_id = dict()
         self.cont_log = logs.log_object.New()
         self.config = None
         for system in collection.dependency.systems:
@@ -482,8 +483,11 @@ class Container:
         return self.rows
 
     def get_by_id(self, element_id):
+        if element_id in self.elements_on_id:
+            return self.elements_on_id[element_id]
         for row in self.rows:
             if row.id == element_id:
+                self.elements_on_id[element_id] = row
                 return row
         return False
 
