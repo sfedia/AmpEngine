@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import re
 import structures_collection.char_level
 import string
 
@@ -52,6 +53,7 @@ def segmentation(from_, to_):
 def re_split2co(text, split_regex, catch_group=0):
     split_ranges = [
         range(splitter.start(catch_group), splitter.end(catch_group)) for splitter in re.finditer(split_regex, text)
+        if splitter.start(catch_group) != -1
     ]
     result = list()
     begin = 0
