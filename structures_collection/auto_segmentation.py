@@ -49,6 +49,32 @@ def segmentation(from_, to_):
     return segm_decorator
 
 
+def re_split2co(text, split_regex, catch_group=0):
+    split_ranges = [
+        range(splitter.start(catch_group), splitter.end(catch_group)) for splitter in re.finditer(split_regex, text)
+    ]
+    result = list()
+    begin = 0
+    for n, split_range in enumerate(split_ranges):
+        from_, to_ = split_range
+        if from_ != 0:
+            result.append(
+                structures_collection.char_level.CharOutline([begin, from_ - 1], attachment=text[begin:from_])
+            )
+            begin = to_ + 1
+        elif n < len(split_ranges) - 1:
+            b_from_ = split_ranges[n + 1][0]
+            result.append(
+                structures_collection.char_level.CharOutline([to_, b_from_ - 1], attachment=text[to_:b_from_])
+            )
+            begin = to_ + 1
+        else:
+            result.append(
+                structures_collection.char_level.CharOutline([to_ + 1, len(text) - 1], attachment=text[to_ + 1:])
+            )
+    return result if result else [text]
+
+
 def split_string(content, split_syms, alternate=[]):
     """
     `split_string` function
