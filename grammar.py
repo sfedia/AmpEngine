@@ -823,8 +823,10 @@ class SubclassesOrder:
             rx_grouping = re.compile(check_regex).match(mask_product)
             if not rx_grouping:
                 continue
+            """
             if re.search(non_ev_str, rx_grouping.groups()[0]) or re.search(non_ev_str, rx_grouping.groups()[-1]):
                 continue
+            """
             return {
                 "check": True,
                 "nulls": subst_nulls,
