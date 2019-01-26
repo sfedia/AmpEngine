@@ -117,7 +117,7 @@ def input_to_sentences(content, metadata=None):
     :param metadata: incidental metadata (optional)
     :return: Array of CharOutline objects (with attachment)
     """
-    return split_string(content, [".", "!", "?"], alternate=[" "])
+    return re_split2co(content, r'(^|[^\s]{2,})([\.!\?]\s*)', catch_group=2)
 
 
 @segmentation('universal:sentence', 'universal:token')
