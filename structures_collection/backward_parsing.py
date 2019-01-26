@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from collections import namedtuple
+import datrie
 import itertools
 import grammar
 import structures_collection.char_level
@@ -41,13 +42,32 @@ def new_parser(parent_system, child_system):
 
 bp_cache = {
     "universal:morpheme_by_init_char": {},
-    "grammar_nulls": []
+    "grammar_nulls": [],
+    "container_trie": None
 }
 
 
 class IterativeSingleSegmentation:
     def __init__(self, container, input_container_element, frame_string, co_start):
         self.container = container
+        if bp_cache["container_trie"] is None:
+            morpheme_chars = ""
+            morphemes = self.container.iter_content_filter(
+                lambda x: True,
+                sort_desc=True,
+                system_filter='universal:morpheme'
+            )
+            for morpheme in morphemes:
+                morpheme_chars += morpheme.get_content()
+            morpheme_chars = ''.join(ch for ch, _ in itertools.groupby(morpheme_chars))
+            bp_cache["container_trie"] = datrie.Trie(morpheme_chars)
+            for morpheme in morphemes:
+                body = mnr.Clear.remove_spec_chars('universal:morpheme', morpheme.get_content())
+                if body not in bp_cache["container_trie"]:
+                    bp_cache["container_trie"][body] = [morpheme.get_id()]
+                else:
+                    bp_cache["container_trie"][body].append(morpheme.get_id())
+
         self.input_container_element = input_container_element
         self.frame_string = frame_string
         self.co_start = co_start
@@ -61,10 +81,10 @@ class IterativeSingleSegmentation:
                 attachment=self.elements_on_id[element_id].get_clear_content(),
                 metadata={'mc_id': element_id}
             )
-            if self.elements_on_id[element_id].get_content() == grammar.Temp.NULL:
+            if self.elements_on_id[element_id].get_content() != grammar.Temp.NULL:
                 co_local.add_group(
                     structures_collection.char_level.CharIndexGroup(
-                        [self.co_start, self.co_start + len(self.elements_on_id[element_id].get_content())]
+                        [self.co_start, self.co_start + len(self.elements_on_id[element_id].get_content()) - 1]
                     )
                 )
                 self.co_start += len(self.elements_on_id[element_id].get_content())
@@ -78,47 +98,43 @@ class IterativeSingleSegmentation:
         return co_list
 
     def start(self):
-        try:
-            return self.continue_sequence([], 0, start=True)
-        except SegmentationIterFailed:
+        branches = self.extract_sequences([], self.frame_string)
+        if not branches:
             return None
+        for branch_cat in branches:
+            for j, sequence in enumerate(itertools.product(*branch_cat)):
+                if j > 200:
+                    break
+                for element_id in sequence:
+                    self.elements_on_id[element_id] = self.container.get_by_id(element_id)
+                csc = self.common_sequence_check(list(sequence))
+                if csc:
+                    return csc
+                else:
+                    pass
+        return None
 
-    def continue_sequence(self, left_id_sequence, char_index, start=False):
-        if not start and char_index >= len(self.frame_string):
-            csc = self.common_sequence_check(left_id_sequence)
-            if csc:
-                return csc
-            else:
-                raise SegmentationIterFailed()
-        else:
-            if self.frame_string[char_index] in bp_cache["universal:morpheme_by_init_char"]:
-                next_options = bp_cache["universal:morpheme_by_init_char"][self.frame_string[char_index]]
-            else:
-                next_options = self.container.iter_content_filter(
-                    lambda x: self.frame_string[char_index:].startswith(
-                        mnr.Clear.remove_spec_chars('universal:morpheme', x)
-                    ),
-                    sort_desc=True,
-                    system_filter='universal:morpheme'
-                )
-                bp_cache["universal:morpheme_by_init_char"][self.frame_string[char_index]] = next_options
+    def extract_sequences(self, left_id_sequence, substring):
+        branches = []
+        prefix_items = bp_cache["container_trie"].prefix_items(substring)
+        if not prefix_items:
+            return False
+        for (prefix, element_ids) in prefix_items:
+            new_sequence = left_id_sequence + [element_ids]
+            branch = self.extract_sequences(new_sequence, substring[len(prefix):])
+            if branch:
+                branches.extend(branch)
+            elif substring[len(prefix):] == "":
+                branches.append(new_sequence)
 
-            for q, option in enumerate(next_options):
-                option_id = option.get_id()
-                self.elements_on_id[option_id] = option
-                try:
-                    return self.continue_sequence(
-                        left_id_sequence + [option.get_id()],
-                        char_index + len(mnr.Clear.remove_spec_chars('universal:morpheme', option.get_content()))
-                    )
-                except SegmentationIterFailed:
-                    continue
-            raise SegmentationIterFailed()
+        return branches
 
     def common_sequence_check(self, id_sequence):
         if not self.check_sequence(id_sequence):
             return False
         avnulls = self.check_avnulls_of_sequence(id_sequence)
+        if not self.check_prw_of_sequence(id_sequence):
+            return False
         orders = self.container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_sequence)
         for order in orders:
             order_check = self.check_sequence_by_order(id_sequence, order, avnulls)
@@ -126,7 +142,7 @@ class IterativeSingleSegmentation:
                 if order_check.strict:
                     return False
             else:
-                id_sequence = order_check.sequence
+                id_sequence = [elem.get_id() for elem in order_check.sequence]
         return id_sequence
 
     def check_sequence(self, id_sequence):
@@ -163,6 +179,7 @@ class IterativeSingleSegmentation:
                     self.input_container_element, bsid_obj, lambda x: True, return_bs=True
                 )
                 if lc_bool:
+                    self.elements_on_id[null.get_id()] = null
                     available_nulls.append(null)
         return available_nulls
 
@@ -173,10 +190,14 @@ class IterativeSingleSegmentation:
         return result(order_check["check"], order.is_strict(), order_check["cn_sequence"])
 
     def check_prw_of_sequence(self, id_sequence):
-        act_list = [self.container.get_by_id(x).get_applied()['actions'] for x in id_sequence]
-        act_list = list(itertools.chain(*act_list))
-        params_list = [structures_collection.static.Handler.get_func_params(x.get_path()) for x in act_list]
-        params_list = list(itertools.chain(*params_list))
+        act_list = [self.elements_on_id[x].get_applied()['actions'] for x in id_sequence]
+        params_list = [
+            structures_collection.static.Handler.get_func_params(x.get_path()) for x in itertools.chain(*act_list)
+        ]
+        params_list = [
+            ':'.join(prm.split(':', 2)[:2]).replace('mansi:tense', 'gram:tense')
+            for prm in itertools.chain(*params_list)
+        ]
         return len(params_list) == len(set(params_list))
 
 
@@ -221,12 +242,16 @@ def morpheme_in_token(input_container_element, container, input_container):
             input_container_element.get_content()[co_start:],
             co_start
         )
-        markup = iss_instance.start()
-        markup_outlines = iss_instance.generate_char_outlines(markup)
-        input_container.segment_element(
-            input_container_element, 'universal:morpheme', markup_outlines, set_group=group_index
-        )
-        group_index += 1
+        try:
+            markup = iss_instance.start()
+        except RecursionError:
+            markup = None
+        if markup is not None:
+            markup_outlines = iss_instance.generate_char_outlines(markup)
+            input_container.segment_element(
+                input_container_element, 'universal:morpheme', markup_outlines, set_group=group_index
+            )
+            group_index += 1
 
 
 class ParserNotFound(Exception):
