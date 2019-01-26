@@ -1195,6 +1195,13 @@ for code, suff in present_h_consonant_suffs:
             grammar.Action('gram:tense:set_present')
         ]
     )
+rombandeeva.get_system('universal:morpheme').subclasses_order(
+    '? << .inf_suff |',
+    parent_filter=grammar.LinkSentence(
+        'universal:entity=(token) & mansi:basic_pos=(verb)'
+    ),
+    strict=True
+)
 
 rombandeeva.add_element('universal:morpheme', '^ыс', 'ys_past_suffix').applied(
     grammar.LinkSentence(
