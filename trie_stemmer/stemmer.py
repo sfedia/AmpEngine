@@ -25,11 +25,10 @@ class WordEntry:
         return self.lemma
 
     def get_pos(self, update=False):
-        if self.common_pos is not None and not update:
-            return self.common_pos
+        if self.pos_options:
+            return Counter(self.pos_options).most_common(1)[0][0]
         else:
-            self.common_pos = Counter(self.pos_options).most_common(1)[0][0]
-            return self.common_pos
+            return "unknown"
 
     def get_translation(self):
         if self.rus_meanings:
@@ -41,6 +40,8 @@ class WordEntry:
 class LuimaSeriposToStandard:
     def __init__(self, luima_string):
         self.luima_string = luima_string
+        # -> lower
+        self.luima_string = self.luima_string.lower()
         self.standard_string = luima_string
         self.difference = None
         self.luima2standard = {
