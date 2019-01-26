@@ -74,7 +74,6 @@ def re_split2co(text, split_regex, catch_group=0):
             result.append(
                 structures_collection.char_level.CharOutline([to_ + 1, len(text) - 1], attachment=text[to_ + 1:])
             )
-    return result if result else [text]
 
 
 def split_string(content, split_syms, alternate=[]):
@@ -108,6 +107,7 @@ def split_string(content, split_syms, alternate=[]):
             structures_collection.char_level.CharOutline([start, len(content) - 1], attachment=content[start:])
         )
     return extracted_values
+    return result if result else structures_collection.char_level.CharOutline([0, len(text) - 1], attachment=text)
 
 
 @segmentation('universal:input', 'universal:sentence')
