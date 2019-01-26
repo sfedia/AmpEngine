@@ -1730,7 +1730,7 @@ rombandeeva.add_element('universal:morpheme', '^е', 'ye_suffix_imperative_prese
 ).add_class('imperative_present_2sg')
 
 rombandeeva.get_system('universal:morpheme').subclasses_order(
-    '| .BASE > .imperative_present_2sg  >> .obj_conj_object_number > #n_suffix_imperative |',
+    '| .imperative_present_2sg  >> .obj_conj_object_number > #n_suffix_imperative |',
     parent_filter=grammar.LinkSentence('universal:entity=(token) & mansi:basic_pos=(verb)'),
     select_into={
         'id': 'imperative_group_2sg',
@@ -1768,7 +1768,7 @@ rombandeeva.add_element('universal:morpheme', '^е̄', 'yee_suffix_imperative_pr
 # NEEDS IMPROVEMENT TO SUPPORT MUTATION STRATEGY
 
 rombandeeva.get_system('universal:morpheme').subclasses_order(
-    '| .BASE > .imperative_present_2du_pl >> .obj_conj_object_number > #n_suffix_imperative |',
+    '| .imperative_present_2du_pl >> .obj_conj_object_number > #n_suffix_imperative |',
     parent_filter=grammar.LinkSentence('universal:entity=(token) & mansi:basic_pos=(verb)'),
     select_into={
         'id': 'imperative_group_2du_pl',
@@ -1915,7 +1915,7 @@ rombandeeva.add_element('universal:morpheme', '^ан', 'an_for_latentive_praes')
 ).add_class('latentive_suffs_present').add_class('latentive_suffs')
 
 rombandeeva.get_system('universal:morpheme').subclasses_order(
-    '| .BASE > .latentive_suffs >> .tense_suffs_latentive >> .obj_conj_object_number >+ .verb_conj_personal',
+    '| .latentive_suffs >> .tense_suffs_latentive >> .obj_conj_object_number >+ .verb_conj_personal',
     parent_filter=grammar.LinkSentence('universal:entity=(token) & mansi:basic_pos=(verb)')
 )
 
@@ -2002,7 +2002,7 @@ rombandeeva.add_element('mansi:VowMorpheme', '^има', 'ima_latentive_subj_pass
 ).add_class('latentive_suff_subj_pass')
 
 rombandeeva.get_system('universal:morpheme').subclasses_order(
-    '| .BASE > .latentive_suff_subj_pass > .verb_conj_personal |',
+    '| .latentive_suff_subj_pass > .verb_conj_personal |',
     parent_filter=grammar.LinkSentence('universal:entity=(token) & mansi:basic_pos=(verb)')
 )
 
