@@ -740,9 +740,9 @@ class SubclassesOrder:
 
     def create_asterisk_pattern(self, p_type, p_value, double=False):
         if not double:
-            return r'\*' + ('#' if p_type == 'id' else 'r\.') + self.name_escape(p_value) + r'\*'
+            return r'\*' + ('#' if p_type == 'id' else r'\.') + self.name_escape(p_value) + r'\*'
         else:
-            return r'\\*' + ('#' if p_type == 'id' else 'r\\.') + self.name_escape(p_value, double=True) + r'\\*'
+            return r'\\*' + ('#' if p_type == 'id' else r'\\.') + self.name_escape(p_value, double=True) + r'\\*'
 
     @staticmethod
     def double_pattern_to_single(pattern):
