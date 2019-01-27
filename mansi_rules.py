@@ -1260,7 +1260,7 @@ rombandeeva.add_element('universal:morpheme', '^м', 'm_unob_suffix').applied(
     ),
     [
         grammar.Action('gram:mood:set_latentive'),
-        grammar.Action('mansi:tense:set_past')
+        grammar.Action('gram:tense:set_past')
     ]
 )
 
@@ -1273,7 +1273,7 @@ rombandeeva.add_element('universal:morpheme', '^ум', 'um_unob_suffix').applied
     ),
     [
         grammar.Action('gram:mood:set_latentive'),
-        grammar.Action('mansi:tense:set_past')
+        grammar.Action('gram:tense:set_past')
     ]
 )
 
@@ -1286,7 +1286,7 @@ rombandeeva.add_element('universal:morpheme', '^ам', 'am_unob_suffix').applied
     ),
     [
         grammar.Action('gram:mood:set_latentive'),
-        grammar.Action('mansi:tense:set_past')
+        grammar.Action('gram:tense:set_past')
     ]
 )
 
