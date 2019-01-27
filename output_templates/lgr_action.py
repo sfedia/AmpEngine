@@ -76,7 +76,6 @@ lgr_values = {
     'mansi:basic_pos:set_verb': lambda action: 'V',
     'gram:make_reflexive': lambda action: 'REFL',
     'mansi:object_number:set_plur': lambda action: 'PL.O',
-    'mansi:tense:set_past': lambda action: 'PST',
     'gram:mood:set_imperative': lambda action: 'IMP',
     'mansi:verb_to_noun': lambda action: 'SBST',
     'gram:set_iterative': lambda action: 'ITER',
