@@ -2457,23 +2457,10 @@ for lemma, meanings in postpos_unmutable:
 """
 
 
-text = open('texts/test_gen/1.txt', encoding='utf-8').read()
-text_id = "luima_seripos_testgen_1"
-meta = {
-    "filename": text_id,
-    "author": "luima_seripos",
-    "researcher": "-",
-    "title": text_id,
-    "genre": "newspaper",
-    "place": "-",
-    "dialect": "standard",
-    "year_from": 2017,
-    "year_to": 2017,
-    "year": 2017
-}
-
-input_container = grammar.InputContainer(text, prevent_auto=True)
-input_container.onseg_hook_bank.stemmer = trie_stemmer.stemmer
+def luima_seripos_formatting(s):
+    s = s.replace('­', '')
+    s = s.replace('¬', '')
+    return s
 
 
 def stem_token(ic, elem):
