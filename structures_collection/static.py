@@ -505,12 +505,6 @@ def gram_mood_set_latentive(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('mansi:tense:set_past', params_affected=[])
-# args -> []
-def mansi_tense_set_past(element, arguments=[], branching=[]):
-    return element
-
-
 @new_func('mansi:verb:set_person', params_affected=[])
 # args -> [1]
 def mansi_verb_set_person(element, arguments=[], branching=[]):
