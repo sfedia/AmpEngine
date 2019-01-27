@@ -824,6 +824,7 @@ personal_pronouns = {
     }
 }
 
+"""
 for person_number in personal_pronouns:
     for case in personal_pronouns[person_number]:
         rombandeeva.add_element(
@@ -835,6 +836,7 @@ for person_number in personal_pronouns:
                 grammar.Action('gram:case:set_' + case)
             ]
         )
+"""
 
 rombandeeva.add_element('universal:morpheme', '^ки', 'ki_pronoun_suff').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(pronoun)'),
@@ -925,6 +927,7 @@ interrog_pronoun = [
     ['ма̄ныр', 'ма̄нарыг', 'ма̄нарыт', 'manyr']
 ]
 
+"""
 for sing, dual, plur, id_word in interrog_pronoun:
     rombandeeva.add_element('universal:token', sing, '{}_sing'.format(id_word)).applied(
         grammar.LinkSentence('# & universal:entity=(input)'),
@@ -944,7 +947,7 @@ for sing, dual, plur, id_word in interrog_pronoun:
             grammar.Action('gram:number:set_plur')
         ]
     ).add_class('interrog_pronoun')
-
+"""
 
 #rombandeeva.get_class('interrog_pronoun').intrusion(
 #    class_list=['case_suffixes'],
@@ -962,6 +965,7 @@ demonstr_pronoun_matrix = [
 
 cases = ['nom', 'acc', 'dat', 'abl', 'instr', 'trans']
 num = ['sing', 'dual', 'plur']
+"""
 for j, group in enumerate(demonstr_pronoun_matrix):
     for e, number in enumerate(group):
         if not number:
@@ -986,6 +990,7 @@ for j, group in enumerate(demonstr_pronoun_matrix):
                 grammar.Action('mansi:pronoun:demonstrative')
             ]
         )
+"""
 
 det_pronoun_matrix = [
     ['tamle', 'тамле'],
@@ -994,6 +999,8 @@ det_pronoun_matrix = [
     ['tova', 'то̄ва'],
     ['tasavit', 'таса̄вит']
 ]
+
+"""
 for id_word, mansi_word in det_pronoun_matrix:
     rombandeeva.add_element(
         'universal:token:start',
@@ -1006,10 +1013,12 @@ for id_word, mansi_word in det_pronoun_matrix:
             grammar.Action('mansi:pronoun:determinative')
         ]
     )
+"""
 
 hotpa = ['хо̄тпа', 'хо̄тпаг', 'хо̄тпат']
 matyr = ['матыр', 'матарыг', 'матарыт']
 
+"""
 for j in range(3):
     for s in ('hotpa', 'matyr'):
         rombandeeva.add_element(
@@ -1020,6 +1029,7 @@ for j in range(3):
                 grammar.Action('gram:number:set_{}'.format(num[j]))
             ]
         )
+"""
 
 matyr_hotpa_matrix = [
     ['nom', 'хо̄тпа', 'матыр'],
@@ -1029,6 +1039,7 @@ matyr_hotpa_matrix = [
     ['trans', 'хо̄тпаг', 'матарыг']
 ]
 
+"""
 for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
     rombandeeva.add_element(
         'universal:token', h_paradigm, 'hotpa_{}'.format(case)
@@ -1065,6 +1076,7 @@ for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
             grammar.Action('gram:case:set_{}'.format(case))
         ]
     )
+"""
 
 # pronouns need further description
 
@@ -1181,6 +1193,7 @@ for code, suff in present_s_consonant_suffs:
             grammar.Action('gram:tense:set_present')
         ]
     )
+
 
 present_h_consonant_suffs = [('eg', 'эг'), ('e!g', 'э̄г'), ('y', 'ы'), ('e', 'э'), ('e!', 'э̄')]
 for code, suff in present_h_consonant_suffs:
@@ -2375,6 +2388,7 @@ postpos_mutable = [
     ('нуми-па̄л', 'numi_pa*l') # collocation as variant
 ]
 
+"""
 for pp_word, pp_id in postpos_mutable:
     rombandeeva.add_element('universal:token', pp_word, pp_id).applied(
         grammar.LinkSentence('# & universal:entity=(input)'),
@@ -2382,6 +2396,7 @@ for pp_word, pp_id in postpos_mutable:
             grammar.Action('mansi:basic_pos:set_postpos')
         ]
     ).add_class('postpos_mutable')
+"""
 
 #rombandeeva.get_class('postpos_mutable', await=True).intrusion(
 #    class_list=['case_suffixes', 'verb_conj_personal']
@@ -2392,12 +2407,14 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
     parent_filter=grammar.LinkSentence('universal:class=(postpos_mutable)')
 )
 
+"""
 rombandeeva.add_element('universal:token', 'па̄л', 'pa*l_postpos_in_colloc').applied(
     grammar.LinkSentence('# & universal:entity=(collocation)'),
     [
         grammar.Action('mansi:basic_pos:set_postpos')
     ]
 ).add_class('postpos_mutable')
+"""
 
 postpos_unmutable = [
     ['мус', ('до',)],
@@ -2424,6 +2441,7 @@ postpos_unmutable = [
 ]
 
 pp_i = 0
+"""
 for lemma, meanings in postpos_unmutable:
     pp_actions = [grammar.Action('mansi:basic_pos:set_postpos')]
     if type(meanings) == str:
@@ -2436,6 +2454,7 @@ for lemma, meanings in postpos_unmutable:
         pp_actions
     )
     pp_i += 1
+"""
 
 
 text = open('texts/test_gen/1.txt', encoding='utf-8').read()
