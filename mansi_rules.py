@@ -2297,28 +2297,44 @@ rombandeeva.add_element('universal:morpheme', '^ан', 'an_participle').applied(
 # TRANSGRESSIVE
 
 rombandeeva.add_element('universal:morpheme', '^им', 'im_transgressive').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+    grammar.LinkSentence(
+        '''# & universal:entity=(token)
+        & [ mansi:basic_pos=(verb) | mansi:basic_pos=(participle) ]
+        '''
+    ),
     [
         grammar.Action('mansi:make_transgressive')
     ]
 )
 
 rombandeeva.add_element('universal:morpheme', '^ым', 'ym_transgressive').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+    grammar.LinkSentence(
+        '''# & universal:entity=(token)
+        & [ mansi:basic_pos=(verb) | mansi:basic_pos=(participle) ]
+        '''
+    ),
     [
         grammar.Action('mansi:make_transgressive')
     ]
 )
 
 rombandeeva.add_element('universal:morpheme', '^м', 'm_transgressive').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+    grammar.LinkSentence(
+        '''# & universal:entity=(token)
+        & [ mansi:basic_pos=(verb) | mansi:basic_pos=(participle) ]
+        '''
+    ),
     [
         grammar.Action('mansi:make_transgressive')
     ]
 )
 
 rombandeeva.add_element('universal:morpheme', '^т', 't_transgressive').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+    grammar.LinkSentence(
+        '''# & universal:entity=(token)
+        & [ mansi:basic_pos=(verb) | mansi:basic_pos=(participle) ]
+        '''
+    ),
     [
         grammar.Action('mansi:make_transgressive')
     ]
