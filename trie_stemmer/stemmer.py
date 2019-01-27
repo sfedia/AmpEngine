@@ -66,6 +66,7 @@ class LuimaSeriposToStandard:
 
 
 dirname = os.path.dirname(__file__)
+print(os.path.join(dirname, 'dict_entries.trie'))
 stem_base = datrie.Trie.load(os.path.join(dirname, 'dict_entries.trie'))
 stem_result = namedtuple("StemResult", ["entry", "index"])
 
