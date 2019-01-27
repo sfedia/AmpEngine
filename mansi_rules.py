@@ -2473,6 +2473,7 @@ def stem_token(ic, elem):
             translation = stem_group.entry.get_translation()
             if translation:
                 nel.set_parameter('mansi:translation', translation)
+            nel.set_parameter('mansi:full_lemma', stem_group.entry.full_lemma)
             ic.ic_log.add_log(
                 "STEMS_EXTRACTED",
                 element_id=nel.get_ic_id(),
