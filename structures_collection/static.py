@@ -27,7 +27,10 @@ class HandlerStart:
         return self.funcs.values()
 
     def get_func_params(self, func_name):
-        return self.params_affected[func_name]
+        if func_name in self.params_affected:
+            return self.params_affected[func_name]
+        else:
+            return []
 
 
 Handler = HandlerStart()
