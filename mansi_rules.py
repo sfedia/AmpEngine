@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 import grammar
 import log_handler
+from collections import Counter
 from trie_stemmer.word_entry import WordEntry
 import trie_stemmer.stemmer
 import copy
+import os
+import json
 import structures_collection as coll
 import output_templates
 import re
