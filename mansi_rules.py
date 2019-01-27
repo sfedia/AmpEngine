@@ -2464,7 +2464,7 @@ def luima_seripos_formatting(s):
 
 
 def stem_token(ic, elem):
-    stem_results = input_container.onseg_hook_bank.stemmer.get_stem_for(elem.get_content())
+    stem_results = ic.onseg_hook_bank.stemmer.get_stem_for(elem.get_content())
 
     if stem_results:
         for n, stem_group in enumerate(stem_results):
