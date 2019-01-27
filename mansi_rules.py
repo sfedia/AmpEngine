@@ -2506,27 +2506,96 @@ def stem_token(ic, elem):
     return ic
 
 
-print('yyy')
-#input_container.config.param_rewrite = True
-#input_container.config.gm_cycle_limit = 100
-#input_container.config.broad_exception_mode = True
-#input_container.config.show_index = True
-#input_container.config.submessages.cycle_limit_exceeded = True
-input_container.add_onseg_hook('universal:token', stem_token)
-input_container.start_auto_segmentation()
-print('iii')
-#input_container.onseg_hook_bank.stemmer.write_cache()
-input_container.connect_mc(rombandeeva)
-print('uuu')
-input_container.run_mc_analysis()
-print('hhh')
+class OutputFileChecker:
+    def __init__(self):
+        self.luima_seripos_json_files = [
+            re.sub(r'\.json$', '', file) for file in os.listdir('luima_seripos/db_json')
+        ]
+        self.release_ready_files = [
+            re.sub(r'.+\/|_\d+\.json$', '', file) for file in open("json_output/release1_ready.txt").read().splitlines()
+        ]
+        self.need_files = [
+            file + ".json" for file in self.luima_seripos_json_files if file not in self.release_ready_files
+        ]
 
-#print([(x.get_system_name(), x.get_content()) for x in input_container.elements])
-mns_template = output_templates.tsakorpus_document.Template(rombandeeva)
-tsa_output = mns_template.run(input_container, meta=meta)
-with open('json_output/{}.json'.format(text_id), 'w') as to:
-    to.write(tsa_output)
-    to.close()
+    def get_files_on_threads(self, n):
+        return self.chunk_list(self.need_files, n)
+
+    @staticmethod
+    def say_ready(file_name):
+        with open("json_output/release1_ready.txt", "a") as rlr:
+            rlr.write("\n" + file_name)
+            rlr.close()
+
+    @staticmethod
+    def chunk_list(seq, num):
+        avg = len(seq) / float(num)
+        out = []
+        last = 0.0
+
+        while last < len(seq):
+            out.append(seq[int(last):int(last + avg)])
+            last += avg
+
+        return out
+
+
+#threads_count = 5
+#output_file_checker = OutputFileChecker()
+#thread_files = output_file_checker.get_files_on_threads(threads_count)
+
+
+def ae_thread(num):
+    my_files = thread_files[num]
+    for luima_file_path in my_files:
+        print('Working of file:', luima_file_path)
+        luima_file = json.loads(open('luima_seripos/db_json/' + luima_file_path).read())
+        for n, text_block in enumerate(luima_file["content"]["correct"]):
+            text = text_block
+            text = luima_seripos_formatting(text)
+            text_id = "%s_%d" % (luima_file_path.replace(".json", ""), n)
+            meta = {
+                "filename": text_id,
+                "author": "luima_seripos",
+                "researcher": "-",
+                "title": text_id,
+                "genre": "newspaper",
+                "place": "-",
+                "dialect": "standard",
+                "year_from": 2012,
+                "year_to": 2018
+            }
+            input_container = grammar.InputContainer(text, prevent_auto=True)
+            input_container.onseg_hook_bank.stemmer = trie_stemmer.stemmer
+
+            input_container.config.param_rewrite = True
+            # input_container.config.gm_cycle_limit = 100
+            # input_container.config.broad_exception_mode = True
+            #input_container.config.show_index = True
+            # input_container.config.submessages.cycle_limit_exceeded = True
+            input_container.add_onseg_hook('universal:token', stem_token)
+            input_container.start_auto_segmentation()
+            # input_container.onseg_hook_bank.stemmer.write_cache()
+            input_container.connect_mc(rombandeeva)
+            input_container.run_mc_analysis()
+
+            # print([(x.get_system_name(), x.get_content()) for x in input_container.elements])
+            mns_template = output_templates.tsakorpus_document.Template(rombandeeva)
+            tsa_output = mns_template.run(input_container, meta=meta)
+            output_file_checker.say_ready('json_output/release1/{}.json'.format(text_id))
+            with open('json_output/release1/{}.json'.format(text_id), 'w') as to:
+                to.write(tsa_output)
+                to.close()
+
+
+#print(WordEntry)
+#processes = dict()
+#for n in range(threads_count):
+#    processes[n] = threading.Thread(target=ae_thread, args=(n,))
+#    processes[n].start()
+#for n in range(threads_count):
+#    processes[n].join()
+    #processes[n].join()
 
 # page 159: ?
 
