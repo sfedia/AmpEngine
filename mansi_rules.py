@@ -861,7 +861,7 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
 )
 
 rombandeeva.add_element('universal:morpheme', '^на̄', 'na_pr_suffix').applied(
-    grammar.LinkSentence('# & mansi:basic_pos=(pronoun)'),
+    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(pronoun)'),
     [
         grammar.Action('gram:set_refl')  # REFL
     ]
