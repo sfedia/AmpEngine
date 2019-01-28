@@ -133,8 +133,8 @@ class IterativeSingleSegmentation:
         if not self.check_sequence(id_sequence):
             return False
         avnulls = self.check_avnulls_of_sequence(id_sequence)
-        if not self.check_prw_of_sequence(id_sequence):
-            return False
+        #if not self.check_prw_of_sequence(id_sequence):
+        #    return False
         orders = self.container.get_system('universal:morpheme').get_subcl_orders_affecting_ids(id_sequence)
         for order in orders:
             order_check = self.check_sequence_by_order(id_sequence, order, avnulls)
@@ -194,10 +194,7 @@ class IterativeSingleSegmentation:
         params_list = [
             structures_collection.static.Handler.get_func_params(x.get_path()) for x in itertools.chain(*act_list)
         ]
-        params_list = [
-            ':'.join(prm.split(':', 2)[:2]).replace('mansi:tense', 'gram:tense')
-            for prm in itertools.chain(*params_list)
-        ]
+        params_list = list(itertools.chain(*params_list))
         return len(params_list) == len(set(params_list))
 
 
