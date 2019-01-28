@@ -175,27 +175,31 @@ def mansi_sem_tool_or_action(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('mansi:adj_to_noun', params_affected=[])
+@new_func('mansi:adj_to_noun', params_affected=['mansi:from_adj'])
 # args -> []
 def mansi_adj_to_noun(element, arguments=[], branching=[]):
+    element.set_parameter('mansi:from_adj', True)
     return element
 
 
-@new_func('mansi:sem:obj-size', params_affected=[])
+@new_func('mansi:sem:obj-size', params_affected=['mansi:gloss:q'])
 # args -> []
 def mansi_sem_obj_size(element, arguments=[], branching=[]):
+    element.set_parameter('mansi:gloss:q', True)
     return element
 
 
-@new_func('mansi:verb_to_noun:size', params_affected=[])
+@new_func('mansi:verb_to_noun:size', params_affected=['mansi:from_verb'])
 # args -> []
 def mansi_verb_to_noun_size(element, arguments=[], branching=[]):
+    element.set_parameter('mansi:from_verb', True)
     return element
 
 
-@new_func('mansi:sem:coll', params_affected=[])
+@new_func('mansi:sem:coll', params_affected=['sem:collective'])
 # args -> []
 def mansi_sem_coll(element, arguments=[], branching=[]):
+    element.set_parameter('sem:collective', True)
     return element
 
 
@@ -213,9 +217,10 @@ def mansi_set_pred(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_dimin', params_affected=[])
+@new_func('gram:set_dimin', params_affected=['gram:diminished'])
 # args -> []
 def gram_set_dimin(element, arguments=[], branching=[]):
+    element.set_parameter('gram:diminished', True)
     return element
 
 
@@ -226,9 +231,10 @@ def gram_adj_superlative(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_attr', params_affected=[])
+@new_func('gram:set_attr', params_affected=['gram:is_attributive'])
 # args -> []
 def gram_set_attr(element, arguments=[], branching=[]):
+    element.set_parameter('gram:is_attributive', True)
     return element
 
 
@@ -267,9 +273,10 @@ def mansi_phrase_adj(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('sem:magnification_colloc', params_affected=[])
+@new_func('sem:magnification_colloc', params_affected=['sem:magnification'])
 # args -> []
 def sem_magnification_colloc(element, arguments=[], branching=[]):
+    element.set_parameter('sem:magnification', True)
     return element
 
 
@@ -294,15 +301,17 @@ def gram_numeral_co_to_repet_colloc(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:numeral:cardinal_to_round', params_affected=[])
+@new_func('gram:numeral:cardinal_to_round', params_affected=['gram:numeral:from_cardinal'])
 # args -> []
 def gram_numeral_cardinal_to_round(element, arguments=[], branching=[]):
+    element.set_parameter('gram:numeral:from_cardinal', True)
     return element
 
 
-@new_func('mansi:numeral:partial_colloc', params_affected=[])
+@new_func('mansi:numeral:partial_colloc', params_affected=['gram:numeral_type'])
 # args -> []
 def mansi_numeral_partial_colloc(element, arguments=[], branching=[]):
+    element.set_parameter('gram:numeral_type', 'partial')
     return element
 
 
@@ -414,15 +423,17 @@ def mansi_pronoun_lich_ukaz(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('mansi:pronoun:set_sol', params_affected=[])
+@new_func('mansi:pronoun:set_sol', params_affected=['gram:case'])
 # args -> []
 def mansi_pronoun_set_sol(element, arguments=[], branching=[]):
+    element.set_parameter('gram:case', 'sol')
     return element
 
 
-@new_func('gram:set_refl', params_affected=[])
+@new_func('gram:set_refl', params_affected=['gram:voice'])
 # args -> []
 def gram_set_refl(element, arguments=[], branching=[]):
+    element.set_parameter('gram:voice', 'refl')
     return element
 
 
@@ -442,12 +453,6 @@ def mansi_set_basic_pos_pronoun(element, arguments=[], branching=[]):
 @new_func('mansi:pronoun:determinative', params_affected=[])
 # args -> []
 def mansi_pronoun_determinative(element, arguments=[], branching=[]):
-    return element
-
-
-@new_func('gram:make_reflexive', params_affected=[])
-# args -> []
-def gram_make_reflexive(element, arguments=[], branching=[]):
     return element
 
 
@@ -486,15 +491,17 @@ def mansi_conj_set_objectless(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:tense:set_present', params_affected=[])
+@new_func('gram:tense:set_present', params_affected=['gram:tense'])
 # args -> []
 def gram_tense_set_present(element, arguments=[], branching=[]):
+    element.set_parameter('gram:tense', 'present')
     return element
 
 
-@new_func('gram:tense:set_past', params_affected=[])
+@new_func('gram:tense:set_past', params_affected=['gram:tense'])
 # args -> []
 def gram_tense_set_past(element, arguments=[], branching=[]):
+    element.set_parameter('gram:tense', 'past')
     return element
 
 
@@ -519,9 +526,10 @@ def gram_set_number_plur(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:tense:set_future', params_affected=[])
+@new_func('gram:tense:set_future', params_affected=['gram:tense'])
 # args -> []
 def gram_tense_set_future(element, arguments=[], branching=[]):
+    element.set_parameter('gram:tense', 'future')
     return element
 
 
@@ -571,27 +579,31 @@ def gram_mood_set_optative(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_semelfactive', params_affected=[])
+@new_func('gram:set_semelfactive', params_affected=['gram:aspect'])
 # args -> []
 def gram_set_semelfactive(element, arguments=[], branching=[]):
+    element.set_parameter('gram:aspect', 'semelfactive')
     return element
 
 
-@new_func('gram:set_inchoative', params_affected=[])
+@new_func('gram:set_inchoative', params_affected=['gram:aspect'])
 # args -> []
 def gram_set_inchoative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:aspect', 'inchoative')
     return element
 
 
-@new_func('gram:set_durative', params_affected=[])
+@new_func('gram:set_durative', params_affected=['gram:aspect'])
 # args -> []
 def gram_set_durative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:aspect', 'durative')
     return element
 
 
-@new_func('gram:set_iterative', params_affected=[])
+@new_func('gram:set_iterative', params_affected=['gram:aspect'])
 # args -> []
 def gram_set_iterative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:aspect', 'iterative')
     return element
 
 
@@ -615,9 +627,10 @@ def mansi_basic_pos_set_verb(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_resultative', params_affected=[])
+@new_func('gram:set_resultative', params_affected=['gram:is_resultative'])
 # args -> []
 def gram_set_resultative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:is_resultative', True)
     return element
 
 
@@ -635,9 +648,10 @@ def mansi_make_participle(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_present', params_affected=[])
+@new_func('gram:set_present', params_affected=['gram:tense'])
 # args -> []
 def gram_set_present(element, arguments=[], branching=[]):
+    element.set_parameter('gram:tense', 'present')
     return element
 
 
@@ -654,21 +668,24 @@ def mansi_basic_pos_set_adv(element, arguments=[], branching=[]):
     return element
 
 
-@new_func('gram:set_comparative', params_affected=[])
+@new_func('gram:set_comparative', params_affected=['gram:dop'])
 # args -> []
 def gram_set_comparative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:dop', 'comparative')
     return element
 
 
-@new_func('gram:adv:comparative', params_affected=[])
+@new_func('gram:adv:comparative', params_affected=['gram:dop'])
 # args -> []
 def gram_adv_comparative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:dop', 'comparative')
     return element
 
 
-@new_func('gram:set_superlative', params_affected=[])
+@new_func('gram:set_superlative', params_affected=['gram:dop'])
 # args -> []
 def gram_set_superlative(element, arguments=[], branching=[]):
+    element.set_parameter('gram:dop', 'superlative')
     return element
 
 
