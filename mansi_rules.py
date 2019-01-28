@@ -1085,14 +1085,14 @@ for case, h_paradigm, m_paradigm in matyr_hotpa_matrix:
 rombandeeva.add_element('universal:morpheme', '^ахт', 'aht_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
-        grammar.Action('gram:make_reflexive')  # REFL
+        grammar.Action('gram:set_refl')  # REFL
     ]
 ).add_class('trans_suffs')
 
 rombandeeva.add_element('universal:morpheme', '^хат', 'hat_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
     [
-        grammar.Action('gram:make_reflexive')  # REFL
+        grammar.Action('gram:set_refl')  # REFL
     ]
 ).add_class('trans_suffs')
 
