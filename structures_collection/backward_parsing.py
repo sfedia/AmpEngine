@@ -53,7 +53,7 @@ class IterativeSingleSegmentation:
         if bp_cache["container_trie"] is None:
             morpheme_chars = ""
             morphemes = self.container.iter_content_filter(
-                lambda x: True,
+                lambda x: not x.startswith('_^'),
                 sort_desc=True,
                 system_filter='universal:morpheme'
             )
