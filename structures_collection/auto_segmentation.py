@@ -58,7 +58,7 @@ def re_split2co(text, split_regex, catch_group=0):
     result = list()
     begin = 0
     for n, split_range in enumerate(split_ranges):
-        from_, to_ = split_range
+        from_, to_ = split_range[0], split_range[-1]
         if from_ != 0:
             result.append(
                 structures_collection.char_level.CharOutline([begin, from_ - 1], attachment=text[begin:from_])
@@ -74,6 +74,10 @@ def re_split2co(text, split_regex, catch_group=0):
             result.append(
                 structures_collection.char_level.CharOutline([to_ + 1, len(text) - 1], attachment=text[to_ + 1:])
             )
+    if begin < len(text):
+        result.append(
+            structures_collection.char_level.CharOutline([begin, len(text) - 1], attachment=text[begin:])
+        )
     return result if result else [structures_collection.char_level.CharOutline([0, len(text) - 1], attachment=text)]
 
 
