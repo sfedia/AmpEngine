@@ -66,7 +66,7 @@ class Template:
                             log_stem = input_container.ic_log.get_log_sequence(
                                 "STEMS_EXTRACTED", element_id=token.get_ic_id(), group=e if e else None
                             )[0].get_prop('positions')
-                            lex_stem = token.get_content()[log_stem[0]:log_stem[-1]+1]
+                            lex_stem = token.get_content()[log_stem[0]:log_stem[-1] + 1]
                         except IndexError:
                             lex_stem = token.get_content()
                         full_lemma = token.get_parameter('mansi:full_lemma')
