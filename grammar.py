@@ -294,7 +294,7 @@ class InputContainerElement:
             else:
                 return self.params[key].get_branches()[0]
         else:
-            raise ParameterNotFound()
+            raise ParameterNotFound(key)
 
     def get_ic_id(self):
         return self.ic_id
