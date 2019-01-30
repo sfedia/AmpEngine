@@ -92,7 +92,7 @@ class Template:
                         group_object['lex'] = lex_stem
                         group_object['parts'] = lex_stem + group_parts
                         group_object['gloss'] = "STEM" + group_gloss
-                        group_object['gloss_index'] = "STEM{%s}" % (lex_stem) + group_text
+                        group_object['gloss_index'] = "STEM{%s}" % lex_stem + group_text
                         for gprop in group_props:
                             group_object[gprop] = group_props[gprop]
                         group_object['trans_ru'] = translation
