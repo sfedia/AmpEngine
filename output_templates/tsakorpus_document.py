@@ -69,6 +69,7 @@ class Template:
                             lex_stem = token.get_content()[log_stem[0]:log_stem[-1]+1]
                         except IndexError:
                             lex_stem = token.get_content()
+                        full_lemma = token.get_parameter('mansi:full_lemma')
                         group_text = ""
                         group_props = {}
                         group_gloss = ""
