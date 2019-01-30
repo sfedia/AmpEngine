@@ -58,8 +58,9 @@ class IterativeSingleSegmentation:
                 system_filter='universal:morpheme'
             )
             for morpheme in morphemes:
-                morpheme_chars += morpheme.get_content()
-            morpheme_chars = ''.join(ch for ch, _ in itertools.groupby(morpheme_chars))
+                if morpheme.get_content() != grammar.Temp.NULL:
+                    morpheme_chars += morpheme.get_clear_content()
+            morpheme_chars = ''.join(ch for ch in set(morpheme_chars))
             bp_cache["container_trie"] = datrie.Trie(morpheme_chars)
             for morpheme in morphemes:
                 body = mnr.Clear.remove_spec_chars('universal:morpheme', morpheme.get_content())
