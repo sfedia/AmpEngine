@@ -88,8 +88,8 @@ class Template:
                         group_text += "-"
 
                         print("Group:")
-                        group_object = {}
-                        group_object['lex'] = lex_stem
+                        group_object = dict()
+                        group_object['lex'] = full_lemma
                         group_object['parts'] = lex_stem + group_parts
                         group_object['gloss'] = "STEM" + group_gloss
                         group_object['gloss_index'] = "STEM{%s}" % lex_stem + group_text
