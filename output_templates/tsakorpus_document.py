@@ -52,7 +52,16 @@ class Template:
                         input_container,
                         elements=token.get_childs(lambda tkn: tkn.get_system_name() == 'universal:morpheme')
                     )
-                    for j, group in element_morph.itergroups(index_pair=True):
+                    em_itergroups = element_morph.itergroups(index_pair=True)
+                    if not em_itergroups:
+                        try:
+                            translation = token.get_parameter('mansi:translation')
+                            analyses.append({
+                                "trans_ru": translation
+                            })
+                        except grammar.ParameterNotFound:
+                            pass
+                    for j, group in em_itergroups:
                         try:
                             log_stem = input_container.ic_log.get_log_sequence(
                                 "STEMS_EXTRACTED", element_id=token.get_ic_id(), group=e if e else None
