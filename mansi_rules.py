@@ -1177,7 +1177,7 @@ rombandeeva.add_element('universal:morpheme', grammar.Temp.NULL, 'conj_null').ap
 ).add_class('conj_set')
 #
 
-present_s_consonant_suffs = [('ye!g', 'е̄г'), ('i', 'и'), ('ye', 'е'), ('ye!', 'е̄')]
+present_s_consonant_suffs = [('jēɣ', 'е̄г'), ('i', 'и'), ('je', 'е'), ('jē', 'е̄')]
 for code, suff in present_s_consonant_suffs:
     rombandeeva.add_element(
         'universal:morpheme',
@@ -1196,7 +1196,7 @@ for code, suff in present_s_consonant_suffs:
     )
 
 
-present_h_consonant_suffs = [('eg', 'эг'), ('e!g', 'э̄г'), ('y', 'ы'), ('e', 'э'), ('e!', 'э̄')]
+present_h_consonant_suffs = [('eɣ', 'эг'), ('ēɣ', 'э̄г'), ('i', 'ы'), ('e', 'э'), ('ē', 'э̄')]
 for code, suff in present_h_consonant_suffs:
     rombandeeva.add_element(
         'universal:morpheme',
@@ -1221,7 +1221,7 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
     strict=True
 )
 
-rombandeeva.add_element('universal:morpheme', '^ыс', 'ys_past_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ыс', 'əs_past_suffix').applied(
     grammar.LinkSentence(
         '''# & universal:entity=(token)
             & mansi:basic_pos=(verb)
@@ -1256,7 +1256,7 @@ rombandeeva.add_element('universal:morpheme', '^с', 's_past_suffix').applied(
     ]
 ).add_class('past_suffixes')
 
-rombandeeva.add_element('universal:morpheme', '^м', 'm_unob_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^м', 'm_ev_suffix').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1270,7 +1270,7 @@ rombandeeva.add_element('universal:morpheme', '^м', 'm_unob_suffix').applied(
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^ум', 'um_unob_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ум', 'um_ev_suffix').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1284,7 +1284,7 @@ rombandeeva.add_element('universal:morpheme', '^ум', 'um_unob_suffix').applied
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^ам', 'am_unob_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ам', 'am_ev_suffix').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1298,7 +1298,7 @@ rombandeeva.add_element('universal:morpheme', '^ам', 'am_unob_suffix').applied
     ]
 )
 
-rombandeeva.add_element('mansi:morpheme_soft', '^има', 'ima_unob_suffix').applied(
+rombandeeva.add_element('mansi:morpheme_soft', '^има', 'ima_ev_pass_suffix').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1311,7 +1311,7 @@ rombandeeva.add_element('mansi:morpheme_soft', '^има', 'ima_unob_suffix').app
     ]
 )
 
-rombandeeva.add_element('mansi:morpheme_soft', '^ыма', 'yma_unob_suffix').applied(
+rombandeeva.add_element('mansi:morpheme_soft', '^ыма', 'ima_2_ev_pass_suffix').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1327,7 +1327,7 @@ rombandeeva.add_element('mansi:morpheme_soft', '^ыма', 'yma_unob_suffix').app
 # page 116
 # INDICATIVE
 
-rombandeeva.add_element('universal:morpheme', '^ум', 'um_1sing_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ум', 'um_1sg_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1340,7 +1340,7 @@ rombandeeva.add_element('universal:morpheme', '^ум', 'um_1sing_ind_objless').a
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^н', 'n_2sing_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^н', 'n_2sg_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1353,7 +1353,7 @@ rombandeeva.add_element('universal:morpheme', '^н', 'n_2sing_ind_objless').appl
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ын', 'yn_2sing_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ын', 'ən_2sg_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1378,7 +1378,7 @@ rombandeeva.add_element(
     ]
 ).add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ме̄н', 'men_1dual_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ме̄н', 'mēn_1du_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1391,7 +1391,7 @@ rombandeeva.add_element('universal:morpheme', '^ме̄н', 'men_1dual_ind_objles
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_2_dual_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ы̄н', 'ə̄n_2du_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1404,7 +1404,7 @@ rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_2_dual_ind_objless'
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_2_plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ы̄н', 'ə̄n_2pl_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1417,7 +1417,7 @@ rombandeeva.add_element('universal:morpheme', '^ы̄н', 'yn_2_plur_ind_objless'
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ыг', 'yg_3dual_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ыг', 'əɣ_3du_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1430,7 +1430,7 @@ rombandeeva.add_element('universal:morpheme', '^ыг', 'yg_3dual_ind_objless').a
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^г', 'g_3dual_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^г', 'ɣ_3du_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1443,7 +1443,7 @@ rombandeeva.add_element('universal:morpheme', '^г', 'g_3dual_ind_objless').appl
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^ув', 'uv_1plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^ув', 'uw_1pl_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1456,7 +1456,7 @@ rombandeeva.add_element('universal:morpheme', '^ув', 'uv_1plur_ind_objless').a
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^в', 'v_1plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^в', 'w_1pl_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
@@ -1469,7 +1469,7 @@ rombandeeva.add_element('universal:morpheme', '^в', 'v_1plur_ind_objless').appl
     ]
 ).add_class('objectless_conj_suffixes').add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^э̄в', 'ev_1plur_ind_objless').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄в', 'ēw_1pl_ind_subj').applied(
     grammar.LinkSentence(
         '''#
         & universal:entity=(token)
