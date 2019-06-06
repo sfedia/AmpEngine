@@ -1256,6 +1256,8 @@ rombandeeva.add_element('universal:morpheme', '^с', 's_past_suffix').applied(
     ]
 ).add_class('past_suffixes')
 
+# заменить Action latentive --> evidential
+
 rombandeeva.add_element('universal:morpheme', '^м', 'm_ev_suffix').applied(
     grammar.LinkSentence(
         '''#
