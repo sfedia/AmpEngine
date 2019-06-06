@@ -1782,14 +1782,14 @@ rombandeeva.add_element('mansi:VowMorpheme', '^н', 'n_suffix_imperative').appli
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^э̄', 'ee_suffix_imperative_present').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄', 'ē_suffix_imperative_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb) & gram:tense!=()'),
     [
         grammar.Action('gram:tense:set_present')
     ]
 ).add_class('imperative_present_2du_pl')
 
-rombandeeva.add_element('universal:morpheme', '^е̄', 'yee_suffix_imperative_present').applied(
+rombandeeva.add_element('universal:morpheme', '^е̄', 'jē_suffix_imperative_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb) & gram:tense!=()'),
     [
         grammar.Action('gram:tense:set_present')
