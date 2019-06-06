@@ -1845,14 +1845,14 @@ rombandeeva.add_element(
 
 # page 128
 
-rombandeeva.add_element('mansi:VowMorpheme', '^$[ы]нув', 'ynuv_suffix').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^$[ы]нув', 'ənuw_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token)'),
     [
         grammar.Action('gram:mood:set_conjunctive')
     ]
 ).add_class('nuv_suffixes')
 
-rombandeeva.add_element('mansi:VowMorpheme', '^$[а]нув', 'anuv_suffix').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^$[а]нув', 'anuw_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token)'),
     [
         grammar.Action('gram:mood:set_conjunctive')
@@ -1872,7 +1872,7 @@ for numb in ('sing', 'plur'):
         ]
 ).add_class('verb_conj_personal')
 
-rombandeeva.add_element('universal:morpheme', '^е', 'ye_conjunctive_obj').applied(
+rombandeeva.add_element('universal:morpheme', '^е', 'je_conjunctive_obj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(conjunctive)'),
     [
         grammar.Action('mansi:verb:set_person', arguments=['3']),
@@ -1883,12 +1883,12 @@ rombandeeva.add_element('universal:morpheme', '^е', 'ye_conjunctive_obj').appli
 ### verb_conj_personal EXTENSION
 vcp_ext_matrix = [
     ['sing', '1', 'ум', 'um'],
-    ['sing', '2', 'ын', 'yn'],
+    ['sing', '2', 'ын', 'ən'],
     ['sing', '3', 'е', 'e'],
-    ['dual', '1', 'ме̄н', 'men'],
-    ['dual', '3', 'е̄н', 'en'],
-    ['plur', '1', 'ув', 'uv'],
-    ['plur', '3', 'а̄ныл', 'anyl']
+    ['dual', '1', 'ме̄н', 'mēn'],
+    ['dual', '3', 'е̄н', 'ēn'],
+    ['plur', '1', 'ув', 'uw'],
+    ['plur', '3', 'а̄ныл', 'ānəl']
 ]
 for number, person, suffix, id_name in vcp_ext_matrix:
     rombandeeva.add_element(
@@ -1927,7 +1927,7 @@ rombandeeva.add_element('universal:morpheme', '^н', 'n_for_latentive_praes').ap
     ]
 ).add_class('latentive_suffs_present').add_class('latentive_suffs')
 
-rombandeeva.add_element('universal:morpheme', '^ын', 'yn_for_latentive_praes').applied(
+rombandeeva.add_element('universal:morpheme', '^ын', 'ən_for_latentive_praes').applied(
     grammar.LinkSentence(
         '# & universal:entity=(token) & mansi:basic_pos=(verb)'
     ),
@@ -1950,14 +1950,14 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
     parent_filter=grammar.LinkSentence('universal:entity=(token) & mansi:basic_pos=(verb)')
 )
 
-rombandeeva.add_element('universal:morpheme', '^е', 'ye_latentive_present').applied(
+rombandeeva.add_element('universal:morpheme', '^е', 'je_latentive_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(latentive) & gram:tense!=()'),
     [
         grammar.Action('gram:tense:set_present')
     ]
 ).add_class('tense_suffs_latentive')
 
-rombandeeva.add_element('universal:morpheme', '^е̄', 'yee_latentive_present').applied(
+rombandeeva.add_element('universal:morpheme', '^е̄', 'jē_latentive_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(latentive) & gram:tense!=()'),
     [
         grammar.Action('gram:tense:set_present')
@@ -1971,7 +1971,7 @@ rombandeeva.add_element('universal:morpheme', '^э', 'e_latentive_present').appl
     ]
 ).add_class('tense_suffs_latentive')
 
-rombandeeva.add_element('universal:morpheme', '^э̄', 'ee_latentive_present').applied(
+rombandeeva.add_element('universal:morpheme', '^э̄', 'ē_latentive_present').applied(
     grammar.LinkSentence('# & universal:entity=(token) & gram:mood=(latentive) & gram:tense!=()'),
     [
         grammar.Action('gram:tense:set_present')
@@ -2014,7 +2014,7 @@ rombandeeva.add_element('universal:morpheme', '^ам', 'am_suffix_past_latentive
 ).add_class('latentive_suffs_past').add_class('latentive_suffs')
 
 # i am not sure we need syl_count there
-rombandeeva.add_element('universal:morpheme', '^ӯм', 'uum_suffix_past_latentive').applied(
+rombandeeva.add_element('universal:morpheme', '^ӯм', 'ūm_suffix_past_latentive').applied(
     grammar.LinkSentence(
         '''# & universal:entity=(token)
         & mansi:basic_pos=(verb)
