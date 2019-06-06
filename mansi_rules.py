@@ -286,56 +286,56 @@ rombandeeva.get_class('infinitive_excl_suff', await=True).added_behaviour('overr
 
 # infinitive!
 
-rombandeeva.add_element('universal:morpheme', '^уӈкве', 'u+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^уӈкве', 'uŋkwe_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^уӈкв', 'u+_infinitive_suffix_short').applied(
+rombandeeva.add_element('universal:morpheme', '^уӈкв', 'uŋkw_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^юӈкве', 'yu+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^юӈкве', 'juŋkwe_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^юӈкв', 'yu+_infinitive_suffix_short').applied(
+rombandeeva.add_element('universal:morpheme', '^юӈкв', 'juŋkw_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^аӈкве', 'a+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^аӈкве', 'aŋkwe_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^аӈкв', 'a+_infinitive_suffix_short').applied(
+rombandeeva.add_element('universal:morpheme', '^аӈкв', 'aŋkw_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^ӈкве', 'null+_infinitive_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ӈкве', 'ŋkwe_infinitive_suffix').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
     ]
 ).add_class('infinitive_excl_suff').add_class('inf_suff')
 
-rombandeeva.add_element('universal:morpheme', '^ӈкв', 'null+_infinitive_suffix_short').applied(
+rombandeeva.add_element('universal:morpheme', '^ӈкв', 'ŋkw_infinitive_suffix_short').applied(
     *[
         grammar.LinkSentence(is_verb),
         [grammar.Action('gram:verb:set_infinitive')]
@@ -474,7 +474,7 @@ rombandeeva.add_element('mansi:morphemeYU', '^та', 'ta_wb_from_verb_suffix').a
 
 ### EDIT
 
-rombandeeva.add_element('mansi:VowMorpheme', '^си', 'si_suffix').applied(
+rombandeeva.add_element('mansi:VowMorpheme', '^си', 'ɕi_coll_suffix').applied(
     *[
         grammar.LinkSentence(is_noun),
         [
@@ -483,7 +483,7 @@ rombandeeva.add_element('mansi:VowMorpheme', '^си', 'si_suffix').applied(
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^х', 'h_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^х', 'x_vn_suffix').applied(
     *[
         grammar.LinkSentence(is_noun),
         [
@@ -492,7 +492,7 @@ rombandeeva.add_element('universal:morpheme', '^х', 'h_suffix').applied(
     ]
 ).add_class('verb_to_noun').add_class('yu.verb_ending_excl').add_class('verb_to_noun_suff')
 
-rombandeeva.add_element('universal:morpheme', '^ах', 'ah_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^ах', 'ax_vn_suffix').applied(
     *[
         grammar.LinkSentence(is_noun),
         [
@@ -544,14 +544,14 @@ rombandeeva.add_element('universal:char_regex', 'ololo', 'random2728').applied(
 
 # page 77
 
-rombandeeva.add_element('universal:morpheme', '^нув', 'nuv_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^нув', 'nuw_cmpr_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:adj:comparative')  # CMPR
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^нуве', 'nuve_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^нуве', 'nuwe_cmpr_pred_suffix').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:adj:comparative'),
@@ -559,7 +559,7 @@ rombandeeva.add_element('universal:morpheme', '^нуве', 'nuve_suffix').applie
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^кве', 'kve_suffix_adj').applied(
+rombandeeva.add_element('universal:morpheme', '^кве', 'kwe_suffix_adj').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
     [
         grammar.Action('gram:set_dimin')  # DIM
