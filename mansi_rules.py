@@ -27,7 +27,7 @@ rombandeeva = grammar.Container()
 
 #####
 
-rombandeeva.add_element('universal:morpheme', '^та̄л', 'tal_suffix').applied(
+rombandeeva.add_element('universal:morpheme', '^та̄л', 'tāl_suffix').applied(
     *[
         grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adj)'),
         [grammar.Action('sem:make_opposite')]  # CAR
