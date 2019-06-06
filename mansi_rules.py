@@ -2242,28 +2242,30 @@ rombandeeva.add_element('universal:morpheme', '^м', 'm_ptcp').applied(
     ]
 ).add_class('participle_suffix')
 
-rombandeeva.add_element('universal:morpheme', '^ум', 'um_ptcp').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
-    [
-        grammar.Action('gram:set_participle'),  # PTCP
-        grammar.Action('gram:set_resultative')  # RES
-    ]
-).add_class('participle_suffix')
+#повторяется
 
-rombandeeva.add_element('universal:morpheme', '^ам', 'am_ptcp').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
-    [
-        grammar.Action('gram:set_participle'),  # PTCP
-        grammar.Action('gram:set_resultative')  # RES
-    ]
-).add_class('participle_suffix')
+#rombandeeva.add_element('universal:morpheme', '^ум', 'um_ptcp').applied(
+#    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+#    [
+#        grammar.Action('gram:set_participle'),  # PTCP
+#        grammar.Action('gram:set_resultative')  # RES
+#    ]
+#).add_class('participle_suffix')
 
-rombandeeva.add_element('universal:morpheme', '^им', 'im_ptcp').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
-    [
-        grammar.Action('gram:set_converb')  # CVB
-    ]
-).add_class('participle_suffix')
+#rombandeeva.add_element('universal:morpheme', '^ам', 'am_ptcp').applied(
+#    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+#    [
+#        grammar.Action('gram:set_participle'),  # PTCP
+#        grammar.Action('gram:set_resultative')  # RES
+#    ]
+#).add_class('participle_suffix')
+
+#rombandeeva.add_element('universal:morpheme', '^им', 'im_ptcp').applied(
+#    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
+#    [
+#        grammar.Action('gram:set_converb')  # CVB
+#    ]
+#).add_class('participle_suffix')
 
 rombandeeva.add_element('universal:morpheme', '^н', 'n_ptcp').applied(
     grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(verb)'),
@@ -2379,40 +2381,42 @@ rombandeeva.add_element(
     ]
 )
 
-rombandeeva.add_element('universal:morpheme', '^нув', 'nuv_suffix_adv').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adv)'),
-    [
-        grammar.Action('gram:adv:comparative')
-    ]
-)
+#повторяется
 
-rombandeeva.add_element('universal:morpheme', '^нуве', 'nuve_suffix_adv').applied(
-    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adv)'),
-    [
-        grammar.Action('gram:adv:comparative')
-    ]
-)
+#rombandeeva.add_element('universal:morpheme', '^нув', 'nuw_suffix_adv').applied(
+#    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adv)'),
+#    [
+#        grammar.Action('gram:adv:comparative')
+#    ]
+#)
 
-rombandeeva.add_element(
-    'universal:collocation',
-    '<[[mansi:lemma=(сяр)|mansi:lemma=(сака)]]> *1 <[mansi:basic_pos=(adv)]>',
-    'syntactic_adv_superlative'
-).applied(
-    grammar.LinkSentence('# & universal:entity=(input)'),
-    [
-        grammar.Action('mansi:basic_pos:set_adv'),
-        grammar.Action('gram:set_superlative')
-    ]
-)
+#rombandeeva.add_element('universal:morpheme', '^нуве', 'nuwe_suffix_adv').applied(
+#    grammar.LinkSentence('# & universal:entity=(token) & mansi:basic_pos=(adv)'),
+#    [
+#        grammar.Action('gram:adv:comparative')
+#    ]
+#)
+
+#rombandeeva.add_element(
+#    'universal:collocation',
+#    '<[[mansi:lemma=(сяр)|mansi:lemma=(сака)]]> *1 <[mansi:basic_pos=(adv)]>',
+#    'syntactic_adv_superlative'
+#).applied(
+#    grammar.LinkSentence('# & universal:entity=(input)'),
+#    [
+#        grammar.Action('mansi:basic_pos:set_adv'),
+#        grammar.Action('gram:set_superlative')
+#    ]
+#)
 
 # page 153
 
 postpos_mutable = [
-    ('кӣвыр', 'ki*vyr'),
-    ('хал', 'hal'),
-    ('ва̄та', 'va*ta'),
-    ('ёлы-па̄л', 'yoly_pa*l'), # collocation as variant
-    ('нуми-па̄л', 'numi_pa*l') # collocation as variant
+    ('кӣвыр', 'kīwər'),
+    ('хал', 'xal'),
+    ('ва̄та', 'wāta'),
+    ('ёлы-па̄л', 'joli_pāl'), # collocation as variant
+    ('нуми-па̄л', 'numi_pāl') # collocation as variant
 ]
 
 """
@@ -2435,7 +2439,7 @@ rombandeeva.get_system('universal:morpheme').subclasses_order(
 )
 
 """
-rombandeeva.add_element('universal:token', 'па̄л', 'pa*l_postpos_in_colloc').applied(
+rombandeeva.add_element('universal:token', 'па̄л', 'pāl_postpos_in_colloc').applied(
     grammar.LinkSentence('# & universal:entity=(collocation)'),
     [
         grammar.Action('mansi:basic_pos:set_postpos')
