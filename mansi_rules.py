@@ -531,13 +531,6 @@ def vtn_set_mutation_links(element):
 
 rombandeeva.get_class('yu.verb_ending_excl', await=True).added_behaviour('override mutate>MUTATION')
 
-rombandeeva.add_element('universal:char_regex', 'ololo', 'random2728').applied(
-    grammar.LinkSentence('something'),
-    [
-        grammar.Action('MUTATION')
-    ]
-)
-
 # LOTS OF WORD BUILDING SUFFIXES
 # ... pages 72-75
 #
