@@ -2,6 +2,7 @@
 import grammar
 import log_handler
 from collections import Counter
+from parser_threading import file_selector
 from trie_stemmer.word_entry import WordEntry
 import trie_stemmer.stemmer
 import copy
@@ -2494,6 +2495,9 @@ def stem_token(ic, elem):
     stem_results = ic.onseg_hook_bank.stemmer.get_stem_for(elem.get_content())
 
     if stem_results:
+        # temporarily
+        stem_results = stem_results[:1]
+        #
         for n, stem_group in enumerate(stem_results):
             nel = ic.clone_within_cluster(elem, n) if n else elem
             nel.set_parameter('mansi:basic_pos', stem_group.entry.get_pos())
@@ -2521,53 +2525,24 @@ def stem_token(ic, elem):
     return ic
 
 
-class OutputFileChecker:
-    def __init__(self):
-        self.luima_seripos_json_files = [
-            re.sub(r'\.json$', '', file) for file in os.listdir('luima_seripos/db_json')
-        ]
-        self.release_ready_files = [
-            re.sub(r'.+\/|_\d+\.json$', '', file) for file in open("json_output/release1_ready.txt").read().splitlines()
-        ]
-        self.need_files = [
-            file + ".json" for file in self.luima_seripos_json_files if file not in self.release_ready_files
-        ]
-
-    def get_files_on_threads(self, n):
-        return self.chunk_list(self.need_files, n)
-
-    @staticmethod
-    def say_ready(file_name):
-        with open("json_output/release1_ready.txt", "a") as rlr:
-            rlr.write("\n" + file_name)
-            rlr.close()
-
-    @staticmethod
-    def chunk_list(seq, num):
-        avg = len(seq) / float(num)
-        out = []
-        last = 0.0
-
-        while last < len(seq):
-            out.append(seq[int(last):int(last + avg)])
-            last += avg
-
-        return out
-
-
-#threads_count = 5
-#output_file_checker = OutputFileChecker()
-#thread_files = output_file_checker.get_files_on_threads(threads_count)
-
-
-def ae_thread(num):
-    my_files = thread_files[num]
+def ae_thread(my_files, ready_list_file):
+    this_selector = file_selector.PreFileSelector(ready_list_file)
     for luima_file_path in my_files:
-        print('Working of file:', luima_file_path)
-        luima_file = json.loads(open('luima_seripos/db_json/' + luima_file_path).read())
-        for n, text_block in enumerate(luima_file["content"]["correct"]):
+        print('Working on file:', luima_file_path)
+        luima_file = json.loads(open('../luima_seripos/db_json/' + luima_file_path).read())
+        if "correct" in luima_file["content"]:
+            correct = luima_file["content"]["correct"]
+        elif "good" in luima_file["content"]:
+            correct = luima_file["content"]["good"]
+        else:
+            print('Smth went wrong.. Skip it')
+            continue
+        for n, text_block in enumerate(correct):
             text = text_block
-            text = luima_seripos_formatting(text)
+            try:
+                text = luima_seripos_formatting(text)
+            except AttributeError:
+                continue
             text_id = "%s_%d" % (luima_file_path.replace(".json", ""), n)
             meta = {
                 "filename": text_id,
@@ -2586,7 +2561,7 @@ def ae_thread(num):
             input_container.config.param_rewrite = True
             # input_container.config.gm_cycle_limit = 100
             # input_container.config.broad_exception_mode = True
-            #input_container.config.show_index = True
+            input_container.config.show_index = True
             # input_container.config.submessages.cycle_limit_exceeded = True
             input_container.add_onseg_hook('universal:token', stem_token)
             input_container.start_auto_segmentation()
@@ -2597,8 +2572,8 @@ def ae_thread(num):
             # print([(x.get_system_name(), x.get_content()) for x in input_container.elements])
             mns_template = output_templates.tsakorpus_document.Template(rombandeeva)
             tsa_output = mns_template.run(input_container, meta=meta)
-            output_file_checker.say_ready('json_output/release1/{}.json'.format(text_id))
-            with open('json_output/release1/{}.json'.format(text_id), 'w') as to:
+            this_selector.say_ready(text_id)
+            with open('../json_output/release2/{}.json'.format(text_id), 'w') as to:
                 to.write(tsa_output)
                 to.close()
 
